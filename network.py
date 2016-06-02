@@ -161,12 +161,15 @@ class Network():
 
         #test on current graph
         if Nodes.getNode(begin).nodeType == "in" and Nodes.getNode(end).nodeType == "in":
+            print("end 1")
             return False
 
         if Nodes.getNode(begin).nodeType == "out" and Nodes.getNode(end).nodeType == "out":
+            print("end 2")
             return False
 
         if end in matrix[begin].keys():
+            print("end 3")
             return False
 
         #retrieve from edges
@@ -183,6 +186,7 @@ class Network():
             indexEnd = self.calculPath.index(Nodes.getNode(end))
             
             if indexEnd< indexBegin:
+                print("end 4")
                 return False
 
             newEdge = Edge(begin, end)
@@ -192,7 +196,6 @@ class Network():
         self.matrixAdj = None
         self.calculPath = None
         self.nbActiveEdge += 1
-
         return True
 
     #add edge on the begin end edge

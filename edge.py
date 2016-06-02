@@ -18,7 +18,7 @@ class Edge():
             self.idEdge = idEdge
 
     def randomWeight():
-        return random.uniform(-1,1)
+        return random.uniform(-2,2)
 
     def printEdge(self):
         print("id {0} begin {1} end {2} weight {3} disable {4}".format(self.idEdge, self.begin, self.end, self.weight, self.disable))

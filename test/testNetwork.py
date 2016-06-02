@@ -8,6 +8,29 @@ from edge import *
 from fun import *
 
 
+
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+def plotMe(n):
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    x = y = np.arange(-1.0, 1.0, 0.01)
+    X, Y = np.meshgrid(x, y)
+    zs = np.array([n.computeNetwork([x,y])[0] for x,y in zip(np.ravel(X), np.ravel(Y))])
+    Z = zs.reshape(X.shape)
+
+    ax.plot_surface(X, Y, Z)
+
+    ax.set_xlabel('input X')
+    ax.set_ylabel('input Y')
+    ax.set_zlabel('output Z')
+
+    plt.show()
+
+
+
 print("first Test: simple network")
 inputNode = [Node(inout="in"), Node(inout="in")]
 outputNode = [Node(inout="out")]
@@ -16,8 +39,8 @@ net = Network(inputNode, outputNode)
 
 net.linkInputOutput()
 
-net.edges[0].weight=0.1
-net.edges[1].weight=0.5
+#net.edges[0].weight=0.1
+#net.edges[1].weight=0.5
 
 net.printNetwork()
 
@@ -44,15 +67,11 @@ else:
 print("Add Node ok")
 
 test = net.addNode(0,2)
-net.edges[3].weight=0.8
+#net.edges[3].weight=0.8
 if test == False:
     print("KO\n\n")
 else:
     print("OK\n\n")
-
-print("\n")
-net.printNetwork()
-print("\n")
 
 print("compute test")
 a = net.computeNetwork([0.5,0.5])
@@ -86,27 +105,49 @@ if a != b:
 else:
     print("OK\n\n")
 
+print("Add Edge OK 1-3")
+test = net.addEdge(1,3)
+
+if test == True:
+    print("OK\n\n")
+else:
+    print("KO\n\n")
+
+a = net.computeNetwork([0.5,0.5])
+
+print("Add Edge ok 0-4")
+test = net.addEdge(0,4)
+
+if test == True:
+    print("OK\n\n")
+else:
+    print("KO\n\n")
+
+print("\n")
+net.printNetwork()
+print("\n")
+
+#CRITIks
+
+# net.hiddenNodes[1].fun=gauss
+# net.hiddenNodes[0].fun=gauss
+
+
+#end
+
+for i in range(10):
+    for e in net.edges:
+        e.weight *= 1.4
+    net.matrixAdj = None
+    plotMe(net)
+    print("\n")
+    net.printNetwork()
+    print("\n")
+
+
 
 
 # import numpy as np
 # for i in np.arange(-1,1,0.1):
 #     for j in np.arange(-1,1,0.1):
 #         print("{0} {1} {2}".format(i,j,net.computeNetwork([i,j])[0]))
-
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x = y = np.arange(-3.0, 3.0, 0.05)
-X, Y = np.meshgrid(x, y)
-zs = np.array([net.computeNetwork([x,y])[0] for x,y in zip(np.ravel(X), np.ravel(Y))])
-Z = zs.reshape(X.shape)
-
-ax.plot_surface(X, Y, Z)
-
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
-
-plt.show()
