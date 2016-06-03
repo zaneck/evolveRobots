@@ -31,16 +31,6 @@ setOfFun = {
 }
     
 
-def randomFun():
-    # setOfFun = {
-    #     0: np.sin,
-    #     1: np.cos,
-    #     2: Function.gauss,
-    #     3: Function.sigmoid,
-    #     4: np.square,
-    #     5: Function.abs_root,
-    #     6: Function.identity,
-    # }
-    
+def randomFun():    
     return setOfFun[random.randint(0,6)]
 
