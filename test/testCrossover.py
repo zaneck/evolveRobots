@@ -53,7 +53,8 @@ def plotMe(n, m, o):
     ax.set_zlabel('output Z')
 
     plt.show()
-
+    plt.savefig('testCrossover.png')
+    
 print("Create two Network")
 inputNode = [Node(inout="in"), Node(inout="in")]
 outputNode = [Node(inout="out")]

@@ -8,7 +8,6 @@ from edge import *
 from fun import *
 
 
-
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
@@ -28,7 +27,7 @@ def plotMe(n):
     ax.set_zlabel('output Z')
 
     plt.show()
-
+    plt.savefig('testNetwork.png')
 
 
 print("first Test: simple network")
