@@ -20,9 +20,18 @@ class Network():
     def linkInputOutput(self):
         for i in self.inputNodes:
             for o in self.outputNodes:
-                e = Edge(i.idNode,o.idNode)
-                self.edges.append(e)
-                self.nbActiveEdge += 1
+
+                test = Edges.get(i.idNode, o.idNode,)
+                print(test)
+                if test != None:
+                    newEdge = Edge(i.idNode, o.idNode, test.idEdge)
+                    self.edges.append(newEdge)
+                    self.edges=sorted(self.edges, key= lambda x : x.idEdge)
+                else:
+                    e = Edge(i.idNode,o.idNode)
+                    self.edges.append(e)
+                    self.nbActiveEdge += 1
+
 
     def toAdj(self):
         if self.matrixAdj == None:
@@ -177,7 +186,7 @@ class Network():
         if test != None:
             newEdge = Edge(begin, end, test.idEdge)
             self.edges.append(newEdge)
-            sort(self.edge, key= lambda x : x.idEdge)
+            self.edges=sorted(self.edges, key= lambda x : x.idEdge)
         
         else:
             #do not create cycle
