@@ -4,10 +4,15 @@ import random
 class Edge():
     idEdgeCpt = 0
 
-    def __init__(self, begin, end, idEdge=None):
+    def __init__(self, begin, end, idEdge=None, weight=None):
         self.begin = begin
         self.end = end
-        self.weight = Edge.randomWeight()
+
+        if weight == None:
+            self.weight = Edge.randomWeight()
+        else:
+            self.weight = weight
+
         self.disable = False
 
         if idEdge == None:
