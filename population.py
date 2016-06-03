@@ -34,6 +34,11 @@ class Population():
             if flagInsert == False: #New species
                 self.species[n].append[n]
 
+    def setAdjustFitness(self):
+        for k in self.species.keys():
+            for n in self.species[k]:
+                n.fitnessAdjust = n.fitness / len(self.species[k])
+            
     def reducePopulation(self):
         #case "do nothing because, nothing to do"
         if self.numberOfNetwork <= self.popMax:
@@ -45,7 +50,7 @@ class Population():
         #for all species
         for k in self.species.keys():
             #sort using fitness
-            self.species[k] = sorted(self.species[k], key = lambda x : x.fitness, reverse=True)
+            self.species[k] = sorted(self.species[k], key = lambda x : x.fitnessAdjust, reverse=True)
             #numberOfOut
             outNumber = math.floor(len(self.species[k]) * reduceRatio)
             self.species[k] = self.species[k][:outNumber]
@@ -59,9 +64,8 @@ class Population():
         for k in self.species.keys():
             sumFitness = 0
             for s in self.species[k]:
-                sumFitness += s.fitness
+                sumFitness += s.fitnessAdjust
 
-            sumFitness /= len(self.species[k])
             res.append(sumFitness)
             sumTotal += sumFitness
 
