@@ -231,3 +231,37 @@ class Network():
         self.calculPath = None
 
         return True
+    
+    def distance(self, n, c1=1, c2=1, c3=0.4):
+        netA = self.edges
+        netB = n.edges
+        netLenA = len(netA)
+        netLenB = len(netB)
+        cptA = 0
+        cptB = 0
+
+        n= max(netLenA, netLenB)
+
+        m=0
+        w=0
+        d=0
+        e=0
+
+        while cptA < netLenA and cptB < netLenB :
+            if netA[cptA].idEdge == netB[cptB].idEdge: #match
+                w += abs(netA[cptA].weight - netB[cptB].weight)
+                m += 1
+                cptA +=1
+                cptB +=1
+
+            elif netA[cptA].inov < netB[cptB].inov: #dismatch
+                d += 1
+                cptA += 1
+
+            else:
+                d += 1
+                cptB += 1
+
+        e= max(0,(netLenA - cptA) + (netLenB - cptB) -1)
+        return ((c1*e)/n) + ((c2*d)/n) + (c3*w/m)
+        #return [e,d,w,m]
