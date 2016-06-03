@@ -15,6 +15,7 @@ class Network():
         self.calculPath= None
 
         self.fitness = None
+        self.fitnessAdjust = None
         self.behavior = None
 
     def linkInputOutput(self):
@@ -227,8 +228,7 @@ class Network():
                 break
 
         #create 2 edge
-        e1 = Edge(begin, newNode.idNode)
-        e1.weight=1
+        e1 = Edge(begin, newNode.idNode, weight=1)
         e2 = Edge(newNode.idNode, end)
         
         self.edges.append(e1)
@@ -274,3 +274,76 @@ class Network():
         e= max(0,(netLenA - cptA) + (netLenB - cptB) -1)
         return ((c1*e)/n) + ((c2*d)/n) + (c3*w/m)
         #return [e,d,w,m]
+
+    def crossover(self, n):
+        child = Network(self.inputNodes, self.outputNodes)
+
+        #node
+        child.hiddenNodes = list(set(self.hiddenNodes) | set(n.hiddenNodes))
+
+        if self.fitness > n.fitness:
+            best = self
+            complement = n
+        else:
+            best = n
+            complement = self
+
+        cptB = 0
+        cptC = 0
+        lenB = len(best.edges)
+        lenC = len(complement.edges)
+        
+        while cptB < lenB and cptC < lenC:
+            print([cptB, cptC, lenB, lenC])
+            edgeB = best.edges[cptB]
+            edgeC = complement.edges[cptC]
+            
+            if edgeB.idEdge == edgeC.idEdge:
+                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
+                if edgeB.disable == True or edgeC.disable == True:
+                    newEdge.disable = True
+
+                cptB += 1
+                cptC += 1
+            
+            elif edgeB.idEdge < edgeC.idEdge:
+                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
+                if edgeB.disable == True :
+                    newEdge.disable = True
+                
+                cptB += 1
+
+            else:
+                newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight)
+                if edgeC.disable == True:
+                    newEdge.disable = True
+
+                cptC += 1
+
+            child.edges.append(newEdge)
+            if newEdge.disable == False:
+                child.nbActiveEdge += 1
+
+        #Tail
+        print("tail")
+        while cptB < lenB:
+            edgeB = best.edges[cptB]
+            
+            newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
+            cptB += 1
+            child.edges.append(newEdge)
+
+            if newEdge.disable == False:
+                child.nbActiveEdge += 1
+        print("complement")
+        while cptC < lenC-1:
+            edgeC = best.edges[cptC]
+            
+            newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight)
+            cptC += 1
+            child.edges.append(newEdge)
+
+            if newEdge.disable == False:
+                child.nbActiveEdge += 1
+
+        return child
