@@ -135,14 +135,10 @@ print("\n")
 
 #end
 
-for i in range(10):
-    for e in net.edges:
-        e.weight *= 1.4
-    net.matrixAdj = None
-    plotMe(net)
-    print("\n")
-    net.printNetwork()
-    print("\n")
+plotMe(net)
+print("\n")
+net.printNetwork()
+print("\n")
 
 
 
