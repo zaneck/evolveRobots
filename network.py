@@ -170,16 +170,13 @@ class Network():
         matrix = self.toAdj()
 
         #test on current graph
-        if Nodes.getNode(begin).nodeType == "in" and Nodes.getNode(end).nodeType == "in":
-            print("end 1")
+        if Nodes.getNode(begin).nodeType == "out":
             return False
-
-        if Nodes.getNode(begin).nodeType == "out" and Nodes.getNode(end).nodeType == "out":
-            print("end 2")
+        
+        if Nodes.getNode(begin).nodeType == "in" and Nodes.getNode(end).nodeType == "in":
             return False
 
         if end in matrix[begin].keys():
-            print("end 3")
             return False
 
         #retrieve from edges
