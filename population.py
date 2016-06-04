@@ -57,6 +57,11 @@ class Population():
             #update numberOfNetwork
             self.numberOfNetwork -= outNumber
 
+    def cleanSpecies(self):
+        for k in self.species.keys():
+            self.species[k] = []
+        self.numberOfNetwork = 0
+        
     def numberOfAugmentation(self):
         res = []
         
