@@ -43,7 +43,7 @@ class Population():
         #case "do nothing because, nothing to do"
         if self.numberOfNetwork <= self.popMax:
             return
-
+2
         #calcul reduce ratio
         reduceRatio = (self.numberOfNetwork - self.popMax) / self.numberOfNetwork
 
