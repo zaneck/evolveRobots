@@ -58,8 +58,13 @@ class Population():
             self.numberOfNetwork -= outNumber
 
     def cleanSpecies(self):
+        newSpecies = {}
+        #randomize key
         for k in self.species.keys():
-            self.species[k] = []
+            newKey = random.choice(self.species[k])
+            newSpecies[newKey] = []
+        
+        self.species = newSpecies
         self.numberOfNetwork = 0
         
     def numberOfAugmentation(self):
