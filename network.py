@@ -17,13 +17,30 @@ class Network():
         self.fitness = None
         self.fitnessAdjust = None
         self.behavior = None
+        self.fitnessReal = None
 
+    def copy(self):
+        res = Network(self.inputNodes, self.outputNodes)
+
+        #hidden
+        for h in self.hiddenNodes:
+            res.hiddenNodes.append(h)
+
+        #edges
+        for e in self.edges:
+            res.edges.append(Edge(e.begin, e.end, idEdge=e.idEdge, weight=e.weight))
+        res.nbActiveEdge = self.nbActiveEdge
+
+        res.matrixAdj = self.matrixAdj
+        res.calculPath = self.calculPath
+        
+        return res
+        
     def linkInputOutput(self):
         for i in self.inputNodes:
             for o in self.outputNodes:
 
                 test = Edges.get(i.idNode, o.idNode,)
-                print(test)
                 if test != None:
                     newEdge = Edge(i.idNode, o.idNode, test.idEdge)
                     self.edges.append(newEdge)
@@ -158,7 +175,7 @@ class Network():
             done.append(t)
 
         self.calculPath = done
-        print(tmp)
+        
         result = []
         for n in self.outputNodes:
             result.append(tmp[n.idNode])
@@ -192,7 +209,7 @@ class Network():
             indexBegin = self.calculPath.index(Nodes.getNode(begin))
             indexEnd = self.calculPath.index(Nodes.getNode(end))
             
-            if indexEnd< indexBegin:
+            if indexEnd < indexBegin:
                 print("end 4")
                 return False
 
@@ -260,7 +277,7 @@ class Network():
                 cptA +=1
                 cptB +=1
 
-            elif netA[cptA].inov < netB[cptB].inov: #dismatch
+            elif netA[cptA].idEdge < netB[cptB].idEdge: #dismatch
                 d += 1
                 cptA += 1
 
@@ -291,7 +308,6 @@ class Network():
         lenC = len(complement.edges)
         
         while cptB < lenB and cptC < lenC:
-            print([cptB, cptC, lenB, lenC])
             edgeB = best.edges[cptB]
             edgeC = complement.edges[cptC]
             
