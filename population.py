@@ -43,7 +43,7 @@ class Population():
         #case "do nothing because, nothing to do"
         if self.numberOfNetwork <= self.popMax:
             return
-2
+
         #calcul reduce ratio
         reduceRatio = (self.numberOfNetwork - self.popMax) / self.numberOfNetwork
 
@@ -79,6 +79,9 @@ class Population():
             res.append(sumFitness)
             sumTotal += sumFitness
 
-        res = list(map(lambda x : math.floor((x*self.popAugmentation)/sumTotal), res))
+        if sumTotal == 0:
+            return 0
+        else:
+            res = list(map(lambda x : math.floor((x*self.popAugmentation)/sumTotal), res))
 
-        return res
+            return res

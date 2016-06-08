@@ -4,7 +4,7 @@ import random
 class Edge():
     idEdgeCpt = 0
 
-    def __init__(self, begin, end, idEdge=None, weight=None):
+    def __init__(self, begin, end, idEdge=None, weight=None, disable=None):
         self.begin = begin
         self.end = end
 
@@ -13,7 +13,11 @@ class Edge():
         else:
             self.weight = weight
 
-        self.disable = False
+        if disable == None:
+            self.disable = False
+        else:
+            self.disable = disable
+            
 
         if idEdge == None:
             self.idEdge = Edge.idEdgeCpt

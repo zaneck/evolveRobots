@@ -12,7 +12,7 @@ class Neat():
 
         self.nbCycle = 0
 
-        self.nodeEdgeRate = 0.25
+        self.nodeEdgeRate = 0.20
         self.addNodeRate = 0.35
         self.addEdgeRate = 0.65
 
@@ -20,6 +20,8 @@ class Neat():
         
     #do not generate the first gen
     def evolve(self):
+        self.nbCycle += 1
+        
         #Select the best
         self.population.reducePopulation()
         
@@ -27,7 +29,6 @@ class Neat():
         nbAugmentation = self.population.numberOfAugmentation()
         
         #gen new network
-
         #addNode addEdge
         newNetwork = []
         cpt = 0
@@ -43,6 +44,8 @@ class Neat():
                 child = self.newChildWeight(n)
                 if child != None:
                     newNetwork.append(child)
+
+        #CrossOver
                     
         #clean old Population
         self.population.cleanSpecies()
@@ -109,17 +112,11 @@ class Neat():
             for _ in range(self.retry):
                 t = child.addNode((random.choice(nodes)).idNode, (random.choice(nodes)).idNode)
                 if t == True:
-                    flag = True
-                    break
+                    return child
+                
         else:
             #addEdge
             for _ in range(self.retry):
                 t = child.addEdge((random.choice(nodes)).idNode, (random.choice(nodes)).idNode)
                 if t == True:
-                    flag = True
-                    break
-            
-        if flag == True:
-            return child
-        else:
-            return None
+                    return child

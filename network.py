@@ -28,11 +28,11 @@ class Network():
 
         #edges
         for e in self.edges:
-            res.edges.append(Edge(e.begin, e.end, idEdge=e.idEdge, weight=e.weight))
+            res.edges.append(Edge(e.begin, e.end, idEdge=e.idEdge, weight=e.weight, disable=e.disable))
         res.nbActiveEdge = self.nbActiveEdge
 
-        res.matrixAdj = self.matrixAdj
-        res.calculPath = self.calculPath
+        # res.matrixAdj = self.matrixAdj
+        # res.calculPath = self.calculPath
         
         return res
         
@@ -155,7 +155,7 @@ class Network():
         for t in toDo:
             flag = True
             for x in nodesToCheck:
-                if t in matrix[x.idNode].keys() and x not in done:
+                if t.idNode in matrix[x.idNode].keys() and x not in done:
                     flag = False
                     toDo.append(t)
                     break
@@ -185,34 +185,63 @@ class Network():
     #need to compute a value before evolving
     def addEdge(self, begin, end):
         matrix = self.toAdj()
-
+    
         #test on current graph
+        if begin == end:
+            return False
+
         if Nodes.getNode(begin).nodeType == "out":
             return False
         
-        if Nodes.getNode(begin).nodeType == "in" and Nodes.getNode(end).nodeType == "in":
+        if Nodes.getNode(end).nodeType == "in":
             return False
 
         if end in matrix[begin].keys():
             return False
 
-        #retrieve from edges
+        if begin in matrix[end].keys():
+            return False
+
+        #do not create cycle
+        matrix[begin][end] = 1
+
+        toDo = []
+        done = []
+
+        nodesToCheck = list(set(self.inputNodes) | set(self.hiddenNodes))
+
+        for n in self.inputNodes:
+            toDo.append(n)
+
+        maxTries = 70
+        tries = 0
+        for t in toDo :
+            if tries > maxTries:
+                return False
+            tries +=1
+            flag = True
+            for x in nodesToCheck:
+                if t.idNode in matrix[x.idNode].keys() and x not in done:
+                    flag = False
+                    toDo.append(t)
+                    break
+
+            if flag == True:
+                #sending
+                for d in matrix[t.idNode].keys():
+                    if matrix[t.idNode][d] != None:
+                        if Nodes.getNode(d).nodeType != "out":
+                            toDo.append(Nodes.getNode(d))
+
+            done.append(t)
+
+            #retrieve from edges
         test = Edges.get(begin, end)
         if test != None:
             newEdge = Edge(begin, end, test.idEdge)
             self.edges.append(newEdge)
             self.edges=sorted(self.edges, key= lambda x : x.idEdge)
-        
         else:
-            #do not create cycle
-            #by order, the end must be compute after the begin            
-            indexBegin = self.calculPath.index(Nodes.getNode(begin))
-            indexEnd = self.calculPath.index(Nodes.getNode(end))
-            
-            if indexEnd < indexBegin:
-                print("end 4")
-                return False
-
             newEdge = Edge(begin, end)
             self.edges.append(newEdge)
 
@@ -220,9 +249,10 @@ class Network():
         self.matrixAdj = None
         self.calculPath = None
         self.nbActiveEdge += 1
+        
         return True
 
-    #add edge on the begin end edge
+    
     def addNode(self, begin, end):
         #look if the edge exist and is active
         matrix = self.toAdj()
@@ -312,25 +342,19 @@ class Network():
             edgeC = complement.edges[cptC]
             
             if edgeB.idEdge == edgeC.idEdge:
-                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
-                if edgeB.disable == True or edgeC.disable == True:
-                    newEdge.disable = True
+                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight, disable= edgeB.disable)
 
                 cptB += 1
                 cptC += 1
             
             elif edgeB.idEdge < edgeC.idEdge:
-                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
-                if edgeB.disable == True :
-                    newEdge.disable = True
-                
+                newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight, disable= edgeB.disable)
+                 
                 cptB += 1
 
             else:
-                newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight)
-                if edgeC.disable == True:
-                    newEdge.disable = True
-
+                newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight, disable= edgeC.disable)
+                
                 cptC += 1
 
             child.edges.append(newEdge)
@@ -342,7 +366,7 @@ class Network():
         while cptB < lenB:
             edgeB = best.edges[cptB]
             
-            newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight)
+            newEdge = Edge(edgeB.begin, edgeB.end, idEdge= edgeB.idEdge, weight= edgeB.weight, disable=edgeB.disable)
             cptB += 1
             child.edges.append(newEdge)
 
@@ -352,7 +376,7 @@ class Network():
         while cptC < lenC-1:
             edgeC = best.edges[cptC]
             
-            newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight)
+            newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight, disable=edgeB.disable)
             cptC += 1
             child.edges.append(newEdge)
 

@@ -3,7 +3,17 @@ from population import *
 from neat import *
 from noveltySearch import *
 
+def resXor(n):
+        cptOk = 0
+        testSuite = [[0,0],[0,1],[1,0],[1,1]]
+        
 
+        for t in testSuite:        
+            test = (t[0] != t[1])
+            val = n.computeNetwork([t[0],t[1],1])[0]
+
+            print([t, test,val])
+            
 def createNeat(nbIn, nbOut):
     inNodes = []
     outNodes = []
@@ -18,7 +28,7 @@ def createNeat(nbIn, nbOut):
         outNodes.append(Node(inout="out"))
 
     firstGen = []
-    for _ in range(150):
+    for _ in range(100):
         n = Network(inNodes, outNodes)
         n.linkInputOutput()
         f.computeValue(n)
@@ -32,8 +42,11 @@ def createNeat(nbIn, nbOut):
 n, f = createNeat(2,1)
 
 
-for _ in range(200):
+for _ in range(100):
     n.evolve()
 
-
 print([f.bestOverAll.behavior,f.bestOverAll.fitness, f.bestOverAll.fitnessReal])
+
+(f.bestOverAll).printNetwork()
+
+resXor(f.bestOverAll)
