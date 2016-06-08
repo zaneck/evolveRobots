@@ -33,7 +33,8 @@ class NoveltySearch(Fitness):
         #save the best
         if self.bestOverAll.fitnessReal < n.fitnessReal:
             self.bestOverAll = n
-
+            print("New record {0}".format(self.bestOverAll.fitnessReal))
+            
         s = self.sparness(n)
         
         #si s > seuil add to archive
@@ -53,8 +54,8 @@ class NoveltySearch(Fitness):
                 self.cptInsert = 0
                 self.cptReject = 0
                 self.rho /= 1.05
-        n.fitness = s
-
+                
+        n.fitness = s+1
 #        return s
 
     def sparness(self, n):
@@ -98,5 +99,5 @@ class NoveltyFitnessXor(NoveltySearch):
                 b.append(1)
             else:
                 b.append(0)
-
+                
         return (b,cptOk)

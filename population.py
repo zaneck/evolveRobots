@@ -38,7 +38,7 @@ class Population():
         for k in self.species.keys():
             for n in self.species[k]:
                 n.fitnessAdjust = n.fitness / len(self.species[k])
-            
+                
     def reducePopulation(self):
         #case "do nothing because, nothing to do"
         if self.numberOfNetwork <= self.popMax:
@@ -78,9 +78,9 @@ class Population():
 
             res.append(sumFitness)
             sumTotal += sumFitness
-
+            
         if sumTotal == 0:
-            return 0
+            return [0]
         else:
             res = list(map(lambda x : math.floor((x*self.popAugmentation)/sumTotal), res))
 

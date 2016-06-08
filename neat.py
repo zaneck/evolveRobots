@@ -46,7 +46,18 @@ class Neat():
                     newNetwork.append(child)
 
         #CrossOver
-                    
+        for _ in range(10):
+            s1 = random.choice(list(self.population.species.keys()))
+            s2 = random.choice(list(self.population.species.keys()))
+
+            n1 = random.choice(list(self.population.species[s1]))
+            n2 = random.choice(list(self.population.species[s2]))
+
+            child = n1.crossover(n2)
+            
+            if child != None:
+                newNetwork.append(child)
+            
         #clean old Population
         self.population.cleanSpecies()
 

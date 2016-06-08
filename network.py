@@ -102,6 +102,40 @@ class Network():
         else:
             return self.calculHard(inputVal)
 
+    def isCycleLess(self):
+        matrix = self.toAdj()
+        
+        toDo = []
+        done = []
+
+        nodesToCheck = list(set(self.inputNodes) | set(self.hiddenNodes))
+
+        for n in self.inputNodes:
+            toDo.append(n)
+
+        maxTries = 70
+        tries = 0
+        for t in toDo :
+            if tries > maxTries:
+                return False
+            tries +=1
+            flag = True
+            for x in nodesToCheck:
+                if t.idNode in matrix[x.idNode].keys() and x not in done:
+                    flag = False
+                    toDo.append(t)
+                    break
+
+            if flag == True:
+                #sending
+                for d in matrix[t.idNode].keys():
+                    if matrix[t.idNode][d] != None:
+                        if Nodes.getNode(d).nodeType != "out":
+                            toDo.append(Nodes.getNode(d))
+
+            done.append(t)
+        return True
+            
     def calcul(self, inputVal):
         matrix = self.toAdj()
         tmp = {}
@@ -205,36 +239,9 @@ class Network():
         #do not create cycle
         matrix[begin][end] = 1
 
-        toDo = []
-        done = []
-
-        nodesToCheck = list(set(self.inputNodes) | set(self.hiddenNodes))
-
-        for n in self.inputNodes:
-            toDo.append(n)
-
-        maxTries = 70
-        tries = 0
-        for t in toDo :
-            if tries > maxTries:
-                return False
-            tries +=1
-            flag = True
-            for x in nodesToCheck:
-                if t.idNode in matrix[x.idNode].keys() and x not in done:
-                    flag = False
-                    toDo.append(t)
-                    break
-
-            if flag == True:
-                #sending
-                for d in matrix[t.idNode].keys():
-                    if matrix[t.idNode][d] != None:
-                        if Nodes.getNode(d).nodeType != "out":
-                            toDo.append(Nodes.getNode(d))
-
-            done.append(t)
-
+        if self.isCycleLess() == False:
+            return False
+        
             #retrieve from edges
         test = Edges.get(begin, end)
         if test != None:
@@ -251,7 +258,6 @@ class Network():
         self.nbActiveEdge += 1
         
         return True
-
     
     def addNode(self, begin, end):
         #look if the edge exist and is active
@@ -362,7 +368,7 @@ class Network():
                 child.nbActiveEdge += 1
 
         #Tail
-        print("tail")
+ #       print("tail")
         while cptB < lenB:
             edgeB = best.edges[cptB]
             
@@ -372,9 +378,9 @@ class Network():
 
             if newEdge.disable == False:
                 child.nbActiveEdge += 1
-        print("complement")
+#        print("complement")
         while cptC < lenC-1:
-            edgeC = best.edges[cptC]
+            edgeC = complement.edges[cptC]
             
             newEdge = Edge(edgeC.begin, edgeC.end, idEdge= edgeC.idEdge, weight= edgeC.weight, disable=edgeB.disable)
             cptC += 1
@@ -383,4 +389,7 @@ class Network():
             if newEdge.disable == False:
                 child.nbActiveEdge += 1
 
-        return child
+        if child.isCycleLess() == True:
+            return child
+        
+        return None

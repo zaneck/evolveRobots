@@ -1,0 +1,18 @@
+scale sur forme simple
+      -memoire
+      -temps
+
+
+reseau apprentissage -> sur differente discretisation
+
+zoom
+
+forme simples -> (fitness, impacte discretisation, taille du reseau)
+      	      	 circle square, multi square, snow, moon
+		 arrete tranchante
+
+
+iterpo polynomial
+
+
+
