@@ -1,3 +1,5 @@
+from PIL import Image, ImageDraw
+
 def makeImg(n,x,y):
     img = [[0 for _ in range(x)] for _ in range(y)] 
     xMiddle = int(x / 2)
@@ -10,15 +12,102 @@ def makeImg(n,x,y):
                 img[i][j]=1
     return img
 
+def matriceToImage(m, x, y, nameFile):
+    img = Image.new("RGB", (x, y))
+    draw = ImageDraw.Draw(img)
+
+    color=[]
+
+    for i in range(x):
+        for j in range(y):
+            if m[i][j] == 1:
+                color.append((i,j))
+                
+    draw.point(color, fill=(255,255,255))
+    img.save(nameFile)
+
+def cross(x, y, centX, centY, color=1, Cradius=None, imgChange=None):
+    if imgChange == None:
+        img = [[0 for _ in range(x)] for _ in range(y)]
+    else:
+        img = imgChange
+
+    if Cradius == None:
+        radius = int(1/4 * x)
+    else:
+        radius = Cradius
+
+    for i in range(centX-radius, centX+radius):
+        for j in range(0,y):
+            img[i][j] = color
+
+    for i in range(0,x):
+        for j in range(centY-radius, centY+radius):
+            img[i][j] = color
+
+    return img
+
+def fourSquare(x, y, color=1, Rradius=None, imgChange=None):
+    if imgChange == None:
+        img = [[0 for _ in range(x)] for _ in range(y)]
+    else:
+        img = imgChange
+        
+    if Rradius == None:
+        radius = int(1/4 * x)
+    else:
+        radius = Rradius
+
+    square(x,y, int(x/2)-(2*radius), int(y/2)-(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)+(2*radius), int(y/2)-(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)-(2*radius), int(y/2)+(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)+(2*radius), int(y/2)+(2*radius), Rradius=15, imgChange=img)
+
+    return img    
     
-def circle(x,y, color=1):
+def square(x, y, centX, centY, color=1, Rradius=None, imgChange=None):
+    if imgChange == None:
+        img = [[0 for _ in range(x)] for _ in range(y)]
+    else:
+        img = imgChange
+        
+    x0 = centX
+    y0 = centY
+
+    if Rradius == None:
+        radius = int(1/4 * x)
+    else:
+        radius = Rradius
+        
+    tlx = x0 - radius
+    tly = y0 - radius
+
+    brx = x0 + radius
+    bry = y0 + radius
+    
+    for i in range(tlx,brx):
+        for j in range(tly,bry):
+            img[i][j] = color
+
+    return img
+            
+def circle(x,y, color=1, Cradius=None, imgChange=None):
+    if imgChange == None:
+        img = [[0 for _ in range(x)] for _ in range(y)]
+    else:
+        img = imgChange
+
+
     img = [[0 for _ in range(x)] for _ in range(y)] 
     
     x0 = int(x / 2)
     y0 = int(y / 2)
 
-    radius = int(1/3 * x) +2
-
+    if Cradius == None:
+        radius = int(1/3 * x) +2
+    else:
+        radius = Cradius
+        
     f = 1 - radius
     ddf_x = 1
     ddf_y = -2 * radius
@@ -54,13 +143,14 @@ def printPict(p, x, y):
         print(p[i])
 
 def colorFill(p, x, y, color=1):
-    if p[x][y] != color:
-        p[x][y] = color
-        colorFill(p,x+1,y)
-        colorFill(p,x-1,y)
-        colorFill(p,x,y+1)
-        colorFill(p,x,y-1)
-
+    toDo=[(x,y)]
+    for t in toDo:
+        if p[t[0]][t[1]] != color:
+            p[t[0]][t[1]] = color
+            toDo.append((t[0]+1,t[1]))
+            toDo.append((t[0]-1,t[1]))
+            toDo.append((t[0],t[1]+1))
+            toDo.append((t[0],t[1]-1))
 
 def fitnessP(n, img, x, y):
     cpt=0
@@ -86,3 +176,5 @@ def fitnessP(n, img, x, y):
                 cpt -= 30
 
     return cpt
+
+
