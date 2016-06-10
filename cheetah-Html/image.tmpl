@@ -10,17 +10,18 @@
 	<TABLE>
 	#for $n in range(0, $nbImage/3)
 	<TR>
-	<TD> $entries[3 * $n] </TD>
-	<TD> $entries[3* $n+1] </TD>
-	<TD> $entries[3* $n+2] </TD>
+	<TD><img src=$entries[3 * $n] ></TD>
+	<TD><img src= $entries[3* $n+1] ></TD>
+	<TD><img src= $entries[3* $n+2] ></TD>
 	</TR>
 	#end for
 
 	<TR>
 	#for $n in range($nbImage - ($nbImage % 3), $nbImage)
-	<TD> $entries[$n] </TD>
+	<TD><img src= $entries[$n] ></TD>
 	#end for
 	</TR>	
 	</TABLE>
+	<A href="index.html">retour</A>
 </BODY>
 </HTML>
