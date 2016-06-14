@@ -1,3 +1,4 @@
+from imgTools import *
 from fitnessFun import Fitness
 from scipy.spatial import distance
 
@@ -16,6 +17,8 @@ class NoveltySearch(Fitness):
         self.k = k # k nearest neighbor
         self.rho = rho # initial archive threshold
 
+        self.bestNumber = 0
+        
     #load value into behavior var, use simulation
     def computeValue(self, n):
         #compute fitness and behavior
@@ -34,6 +37,11 @@ class NoveltySearch(Fitness):
         if self.bestOverAll.fitnessReal < n.fitnessReal:
             self.bestOverAll = n
             print("New record {0}".format(self.bestOverAll.fitnessReal))
+
+            img = makeImg(n, self.x, self.y)
+            fileName = "{0}{1}.png".format(self.name,self.bestNumber)
+            matriceToImage(img, self.x, self.y, fileName)
+            self.bestNumber +=1
             
         s = self.sparness(n)
         
@@ -101,3 +109,91 @@ class NoveltyFitnessXor(NoveltySearch):
                 b.append(0)
                 
         return (b,cptOk)
+
+class NoveltyFitnessCross(NoveltySearch):
+    def __init__(self):
+        NoveltySearch.__init__(self)
+        self.name="images/cross/"
+
+        self.x = 128
+        self.y = 128
+        
+        self.img = cross(self.x, self.y, int(self.x/2),int(self.y/2))
+        printPict(self.img, self.x, self.y)
+        
+        
+    def simulate(self, n):
+        imgTest = makeImg(n, self.x, self.y)
+
+        cptOk = fitnessP(imgTest, self.img, self.x, self.y)
+
+        behavior = blockBehavior(imgTest, self.img, self.x, self.y)
+        
+        return (behavior, cptOk)
+
+
+class NoveltyFitnessCircle(NoveltySearch):
+    def __init__(self):
+        NoveltySearch.__init__(self)
+        self.name="images/circle/"
+
+        self.x = 128
+        self.y = 128
+
+        self.img = circle(self.x, self.y, color=1)
+        printPict(self.img, self.x, self.y)
+        
+        
+    def simulate(self, n):
+        imgTest = makeImg(n, self.x, self.y)
+
+        cptOk = fitnessP(imgTest, self.img, self.x, self.y)
+
+        behavior = blockBehavior(imgTest, self.img, self.x, self.y)
+        
+        return (behavior, cptOk)
+
+
+class NoveltyFitnessSquare(NoveltySearch):
+    def __init__(self):
+        NoveltySearch.__init__(self)
+        self.name="images/square/"
+
+        self.x = 128
+        self.y = 128
+
+        self.img = square(self.x, self.y, int(self.x/2),int(self.y/2))
+        printPict(self.img, self.x, self.y)
+        
+        
+    def simulate(self, n):
+        imgTest = makeImg(n, self.x, self.y)
+
+        cptOk = fitnessP(imgTest, self.img, self.x, self.y)
+
+        behavior = blockBehavior(imgTest, self.img, self.x, self.y)
+        
+        return (behavior, cptOk)
+
+
+class NoveltyFitnessFourSquare(NoveltySearch):
+    def __init__(self):
+        NoveltySearch.__init__(self)
+        self.name="images/foursquare/"
+
+        self.x = 128
+        self.y = 128
+        
+        self.img = fourSquare(self.x, self.y, color=1, Rradius=15)
+        printPict(self.img, self.x, self.y)
+        
+        
+    def simulate(self, n):
+        imgTest = makeImg(n, self.x, self.y)
+
+        cptOk = fitnessP(imgTest, self.img, self.x, self.y)
+
+        behavior = blockBehavior(imgTest, self.img, self.x, self.y)
+        
+        return (behavior, cptOk)
+    

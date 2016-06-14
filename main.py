@@ -4,7 +4,7 @@ from population import *
 from neat import *
 from noveltySearch import *
 
-from circleFitness import *
+import sys
 
 def resXor(n):
         cptOk = 0
@@ -43,18 +43,28 @@ def createNeat(nbIn, nbOut, fun):
     
 #n, f = createNeat(2,1, NoveltyFitnessXor)
 
-n, f = createNeat(2,1, NoveltyFitnessCircle)
+if __name__ == '__main__':
+        fitnessDict ={
+                1:NoveltyFitnessCircle,
+                2:NoveltyFitnessCross,
+                3:NoveltyFitnessSquare,
+                4:NoveltyFitnessFourSquare,
+
+                }
+        
+        n, f = createNeat(2,1, fitnessDict[int(sys.argv[1])])
 
 
-for ticks in range(25):
-        print("evolve {0}".format(ticks))
-        n.evolve()
+        for ticks in range(100):
+                print("evolve {0}".format(ticks))
+                n.evolve()
 
-#print([f.bestOverAll.behavior,f.bestOverAll.fitness, f.bestOverAll.fitnessReal])
+        #print([f.bestOverAll.behavior,f.bestOverAll.fitness, f.bestOverAll.fitnessReal])
 
-(f.bestOverAll).printNetwork()
+        (f.bestOverAll).printNetwork()
 
-#resXor(f.bestOverAll)
+        #resXor(f.bestOverAll)
 
-img = makeImg(f.bestOverAll, 32,32)
-printPict(img, 32, 32)
+        img = makeImg(f.bestOverAll, 32,32)
+        matriceToImage(img, 32,32, "testOne.png")
+        printPict(img, 32, 32)

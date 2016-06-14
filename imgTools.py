@@ -152,7 +152,7 @@ def colorFill(p, x, y, color=1):
             toDo.append((t[0],t[1]+1))
             toDo.append((t[0],t[1]-1))
 
-def fitnessP(n, img, x, y):
+def fitnessP(imgTest, img, x, y):
     cpt=0
 
     xMiddle = int(x / 2)
@@ -160,21 +160,29 @@ def fitnessP(n, img, x, y):
 
     
     for i in range(x):
-        for j in range(y):
-            res = n.computeNetwork([(xMiddle - i) / x, (yMiddle -j) / y])[0]
-
-            if res >= 0:
-                test = 1
-            else:
-                test = 0
-                
-            if img[i][j] == 1 and img[i][j] == test:
+        for j in range(y):                
+            if img[i][j] == 1 and img[i][j] == imgTest[i][j]:
                 cpt += 10
-            elif img[i][j] == test:
+            elif img[i][j] == imgTest[i][j]:
                 cpt += 1
             else:
                 cpt -= 30
 
     return cpt
 
+def blockBehavior(imgTest, img, x, y, blockSize=8):
+    res =[]
 
+    for beginX in range(0,x,8):
+        for beginY in range(0,y,8):
+            tmp=0
+            for i in range(beginX, beginX + blockSize):
+                for j in range(beginY, beginY + blockSize):
+                    if img[i][j] == 1 and img[i][j] == imgTest[i][j]:
+                        tmp += 10
+                    elif img[i][j] == imgTest[i][j]:
+                        tmp += 1
+                    else:
+                        tmp -= 30
+            res.append(tmp)
+    return res
