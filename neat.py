@@ -2,11 +2,13 @@ import math
 
 from network import *
 from population import *
-
+from imgTools import *
 
 class Neat():
 
-    def __init__(self, population, fitnessFun):
+    def __init__(self, population, fitnessFun, name="neat"):
+        self.name = name
+
         self.population = population
         self.fitnessFun = fitnessFun
 
@@ -17,6 +19,8 @@ class Neat():
         self.addEdgeRate = 0.65
 
         self.retry = 10
+
+        os.mkdir(self.name)
         
     #do not generate the first gen
     def evolve(self):
@@ -24,7 +28,7 @@ class Neat():
         
         #Select the best
         self.population.reducePopulation()
-        
+
         #Calcul species ratio
         nbAugmentation = self.population.numberOfAugmentation()
         
@@ -33,10 +37,11 @@ class Neat():
         newNetwork = []
         cpt = 0
         for k in self.population.species.keys():
-            for n in range(math.ceil(nbAugmentation[cpt] * self.nodeEdgeRate)):
-                child = self.newChildAddNodeEdge(self.population.species[k])
-                if child != None:
-                    newNetwork.append(child)
+            if len(self.population.species[k]) > 0:
+                for n in range(math.ceil(nbAugmentation[cpt] * self.nodeEdgeRate)):
+                    child = self.newChildAddNodeEdge(self.population.species[k])
+                    if child != None:
+                        newNetwork.append(child)
 
         #weight mut
         for k in self.population.species.keys():
@@ -50,6 +55,9 @@ class Neat():
             s1 = random.choice(list(self.population.species.keys()))
             s2 = random.choice(list(self.population.species.keys()))
 
+            if len(self.population.species[s1]) <= 0 or len(self.population.species[s2]) <= 0:
+                break
+            
             n1 = random.choice(list(self.population.species[s1]))
             n2 = random.choice(list(self.population.species[s2]))
 
@@ -68,10 +76,21 @@ class Neat():
         #add new network to Population
         for n in newNetwork:
             self.population.addNetwork(n)
-        
+            
         #adjust Fitness
         self.population.setAdjustFitness()
 
+        #DUMP IMG ALL NETWORK
+        os.mkdir(self.name+"/{0}".format(self.nbCycle))
+
+        for sk in self.population.species.keys():
+            os.mkdir("{0}/{1}/{2}".format(self.name, self.nbCycle, sk.idNetwork))
+
+            for n in self.population.species[sk]:
+                img = makeImg(n, 64,64)
+                matriceToImage(img, 64,64,
+                               "{0}/{1}/{2}/{3}.png".format(self.name,self.nbCycle,sk.idNetwork,n.idNetwork))
+        
     def newChildWeight(self, n):
         test = random.random()
         if test <= 0.1 :

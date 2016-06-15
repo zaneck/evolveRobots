@@ -2,8 +2,11 @@ from edge import *
 from node import *
 
 class Network():
-
+    idNetwork = 0
+    
     def __init__(self, inputNode, outputNode):
+        self.idNetwork = Network.idNetwork
+        Network.idNetwork += 1
         self.inputNodes = inputNode
         self.outputNodes = outputNode
         self.hiddenNodes = []

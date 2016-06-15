@@ -16,7 +16,7 @@ def resXor(n):
 
             print([t, test,val])
             
-def createNeat(nbIn, nbOut, fun):
+def createNeat(nbIn, nbOut, fun, name):
     inNodes = []
     outNodes = []
 
@@ -38,7 +38,7 @@ def createNeat(nbIn, nbOut, fun):
 
     p.setAdjustFitness()
 
-    n = Neat(p,f)
+    n = Neat(p,f, name=name)
     return (n,f)
     
 #n, f = createNeat(2,1, NoveltyFitnessXor)
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
                 }
         
-        n, f = createNeat(2,1, fitnessDict[int(sys.argv[1])])
+        n, f = createNeat(2,1, fitnessDict[int(sys.argv[1])], name=sys.argv[2])
 
 
         for ticks in range(100):
@@ -65,6 +65,6 @@ if __name__ == '__main__':
 
         #resXor(f.bestOverAll)
 
-        img = makeImg(f.bestOverAll, 32,32)
-        matriceToImage(img, 32,32, "testOne.png")
-        printPict(img, 32, 32)
+        # img = makeImg(f.bestOverAll, 32,32)
+        # matriceToImage(img, 32,32, "testOne.png")
+        # printPict(img, 32, 32)

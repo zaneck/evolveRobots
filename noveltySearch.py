@@ -54,7 +54,7 @@ class NoveltySearch(Fitness):
                 self.cptInsert = 0
                 self.cptReject = 0
                 self.rho *= 1.20
-                print("rho {0}".format(self.rho))
+#                print("rho {0}".format(self.rho))
         else:
             self.cptReject += 1
 
@@ -115,8 +115,8 @@ class NoveltyFitnessCross(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/cross/"
 
-        self.x = 128
-        self.y = 128
+        self.x = 64
+        self.y = 64
         
         self.img = cross(self.x, self.y, int(self.x/2),int(self.y/2))
         printPict(self.img, self.x, self.y)
@@ -137,8 +137,8 @@ class NoveltyFitnessCircle(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/circle/"
 
-        self.x = 128
-        self.y = 128
+        self.x = 64
+        self.y = 64
 
         self.img = circle(self.x, self.y, color=1)
         printPict(self.img, self.x, self.y)
@@ -159,8 +159,8 @@ class NoveltyFitnessSquare(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/square/"
 
-        self.x = 128
-        self.y = 128
+        self.x = 64
+        self.y = 64
 
         self.img = square(self.x, self.y, int(self.x/2),int(self.y/2))
         printPict(self.img, self.x, self.y)
@@ -181,8 +181,8 @@ class NoveltyFitnessFourSquare(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/foursquare/"
 
-        self.x = 128
-        self.y = 128
+        self.x = 64
+        self.y = 64
         
         self.img = fourSquare(self.x, self.y, color=1, Rradius=15)
         printPict(self.img, self.x, self.y)

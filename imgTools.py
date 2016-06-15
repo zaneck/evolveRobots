@@ -155,20 +155,31 @@ def colorFill(p, x, y, color=1):
 def fitnessP(imgTest, img, x, y):
     cpt=0
 
-    xMiddle = int(x / 2)
-    yMiddle = int(y / 2)
-
-    
     for i in range(x):
         for j in range(y):                
-            if img[i][j] == 1 and img[i][j] == imgTest[i][j]:
-                cpt += 10
-            elif img[i][j] == imgTest[i][j]:
+            if img[i][j] == imgTest[i][j]:
                 cpt += 1
-            else:
-                cpt -= 30
+    return cpt /(x*y)
 
-    return cpt
+# def fitnessP(imgTest, img, x, y):
+#     cptWOK=0
+#     cptBOK=0
+#     cptWhite=0
+#     cptBlack=0
+    
+#     for i in range(x):
+#         for j in range(y):                
+#             if img[i][j] == 1:
+#                 cptWhite += 1
+#                 if img[i][j] == imgTest[i][j]:
+#                     cptWOK += 1
+#             else:
+#               cptBlack += 1
+#               if img[i][j] == imgTest[i][j]:
+#                     cptBOK += 1
+
+#     return (cptWOK/cptWhite) + (cptBOK/cptBlack)
+
 
 def blockBehavior(imgTest, img, x, y, blockSize=8):
     res =[]
@@ -186,3 +197,16 @@ def blockBehavior(imgTest, img, x, y, blockSize=8):
                         tmp -= 30
             res.append(tmp)
     return res
+
+# def blockBehavior(imgTest, img, x, y, blockSize=8):
+#     res =[]
+
+#     for beginX in range(0,x,8):
+#         for beginY in range(0,y,8):
+#             tmp=0
+#             for i in range(beginX, beginX + blockSize):
+#                 for j in range(beginY, beginY + blockSize):
+#                     if imgTest[i][j]==1:
+#                         tmp+=1
+#             res.append(tmp)
+#     return res
