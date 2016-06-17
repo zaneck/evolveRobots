@@ -181,32 +181,32 @@ def fitnessP(imgTest, img, x, y):
 #     return (cptWOK/cptWhite) + (cptBOK/cptBlack)
 
 
-def blockBehavior(imgTest, img, x, y, blockSize=8):
-    res =[]
-
-    for beginX in range(0,x,8):
-        for beginY in range(0,y,8):
-            tmp=0
-            for i in range(beginX, beginX + blockSize):
-                for j in range(beginY, beginY + blockSize):
-                    if img[i][j] == 1 and img[i][j] == imgTest[i][j]:
-                        tmp += 10
-                    elif img[i][j] == imgTest[i][j]:
-                        tmp += 1
-                    else:
-                        tmp -= 30
-            res.append(tmp)
-    return res
-
 # def blockBehavior(imgTest, img, x, y, blockSize=8):
 #     res =[]
 
-#     for beginX in range(0,x,8):
-#         for beginY in range(0,y,8):
+#     for beginX in range(0,x,4):
+#         for beginY in range(0,y,4):
 #             tmp=0
 #             for i in range(beginX, beginX + blockSize):
 #                 for j in range(beginY, beginY + blockSize):
-#                     if imgTest[i][j]==1:
-#                         tmp+=1
+#                     if img[i][j] == 1 and img[i][j] == imgTest[i][j]:
+#                         tmp += 10
+#                     elif img[i][j] == imgTest[i][j]:
+#                         tmp += 1
+#                     else:
+#                         tmp -= 30
 #             res.append(tmp)
 #     return res
+
+def blockBehavior(imgTest, img, x, y, blockSize=4):
+    res =[]
+
+    for beginX in range(0,x,blockSize):
+        for beginY in range(0,y,blockSize):
+            tmp=0
+            for i in range(beginX, beginX + blockSize):
+                for j in range(beginY, beginY + blockSize):
+                    if imgTest[i][j]==1:
+                        tmp+=1
+            res.append(tmp)
+    return res

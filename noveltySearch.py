@@ -39,7 +39,7 @@ class NoveltySearch(Fitness):
             print("New record {0}".format(self.bestOverAll.fitnessReal))
 
             img = makeImg(n, self.x, self.y)
-            fileName = "{0}{1}.png".format(self.name,self.bestNumber)
+            fileName = "{0}{1}-{2}.png".format(self.name,self.bestNumber, n.idNetwork)
             matriceToImage(img, self.x, self.y, fileName)
             self.bestNumber +=1
             

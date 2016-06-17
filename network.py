@@ -4,9 +4,15 @@ from node import *
 class Network():
     idNetwork = 0
     
-    def __init__(self, inputNode, outputNode):
-        self.idNetwork = Network.idNetwork
+    def __init__(self, inputNode, outputNode, philogenie=None):
+        self.idNetwork = "{0}".format(Network.idNetwork)
         Network.idNetwork += 1
+
+        if philogenie == None:
+            self.philogenie = "{0}".format(self.idNetwork)
+        else:
+            self.philogenie = philogenie
+            
         self.inputNodes = inputNode
         self.outputNodes = outputNode
         self.hiddenNodes = []
@@ -22,7 +28,7 @@ class Network():
         self.behavior = None
         self.fitnessReal = None
 
-    def copy(self):
+    def copy(self, sufixe):
         res = Network(self.inputNodes, self.outputNodes)
 
         #hidden
@@ -36,6 +42,8 @@ class Network():
 
         # res.matrixAdj = self.matrixAdj
         # res.calculPath = self.calculPath
+
+        res.philogenie = self.philogenie + sufixe
         
         return res
         
@@ -329,8 +337,8 @@ class Network():
         #return [e,d,w,m]
 
     def crossover(self, n):
-        child = Network(self.inputNodes, self.outputNodes)
-
+        child = Network(n.inputNodes, n.outputNodes, philogenie="{0}c({1})".format(self.idNetwork, n.idNetwork))
+        
         #node
         child.hiddenNodes = list(set(self.hiddenNodes) | set(n.hiddenNodes))
 

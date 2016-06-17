@@ -15,12 +15,10 @@ class Neat():
         self.nbCycle = 0
 
         self.nodeEdgeRate = 0.20
-        self.addNodeRate = 0.35
-        self.addEdgeRate = 0.65
+        self.addNodeRate = 0.30
+        self.addEdgeRate = 0.70
 
         self.retry = 10
-
-        os.mkdir(self.name)
         
     #do not generate the first gen
     def evolve(self):
@@ -61,8 +59,10 @@ class Neat():
             n1 = random.choice(list(self.population.species[s1]))
             n2 = random.choice(list(self.population.species[s2]))
 
-            child = n1.crossover(n2)
-            
+            if n1 !=n2:
+                child = n1.crossover(n2)
+            else:
+                break
             if child != None:
                 newNetwork.append(child)
             
@@ -80,23 +80,23 @@ class Neat():
         #adjust Fitness
         self.population.setAdjustFitness()
 
-        #DUMP IMG ALL NETWORK
-        os.mkdir(self.name+"/{0}".format(self.nbCycle))
+        # #DUMP IMG ALL NETWORK
+        # os.mkdir(self.name+"/{0}".format(self.nbCycle))
 
-        for sk in self.population.species.keys():
-            os.mkdir("{0}/{1}/{2}".format(self.name, self.nbCycle, sk.idNetwork))
+        # for sk in self.population.species.keys():
+        #     os.mkdir("{0}/{1}/{2}".format(self.name, self.nbCycle, sk.idNetwork))
 
-            for n in self.population.species[sk]:
-                img = makeImg(n, 64,64)
-                matriceToImage(img, 64,64,
-                               "{0}/{1}/{2}/{3}.png".format(self.name,self.nbCycle,sk.idNetwork,n.idNetwork))
+        #     for n in self.population.species[sk]:
+        #         img = makeImg(n, 64,64)
+        #         matriceToImage(img, 64,64,
+        #                        "{0}/{1}/{2}/{3}.png".format(self.name,self.nbCycle,sk.idNetwork,n.idNetwork))
         
     def newChildWeight(self, n):
         test = random.random()
         if test <= 0.1 :
             return None
 
-        child = n.copy()
+        child = n.copy("w")
         uniformPerturb = random.random()
 
         for e in child.edges:
@@ -131,22 +131,25 @@ class Neat():
             best = bestC3C4
 
         #clone
-        child = best.copy()
+        #child = best.copy()
         #add Edge or node
         choice = random.random()
-        nodes = list(set(child.inputNodes) | set(child.hiddenNodes) | set(child.outputNodes))
         flag = False
         
         if choice <= self.addNodeRate:
+            child = best.copy("n")
             #addNode
             for _ in range(self.retry):
+                nodes = list(set(child.inputNodes) | set(child.hiddenNodes) | set(child.outputNodes))
                 t = child.addNode((random.choice(nodes)).idNode, (random.choice(nodes)).idNode)
                 if t == True:
                     return child
                 
         else:
             #addEdge
+            child = best.copy("e")
             for _ in range(self.retry):
+                nodes = list(set(child.inputNodes) | set(child.hiddenNodes) | set(child.outputNodes))
                 t = child.addEdge((random.choice(nodes)).idNode, (random.choice(nodes)).idNode)
                 if t == True:
                     return child
