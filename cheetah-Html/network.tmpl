@@ -1,0 +1,52 @@
+<!-- pic fitness philo nbChild child -->
+
+<style type="text/css">
+  td { border: 1px black solid;}
+</style>  
+
+#set $picName = $pic.split("/")[-1]
+<H1>Indi $picName</H1>
+
+<TABLE>
+  <TR>
+    <TD><img src=$pic></TD>
+  </TR>	
+  <TR>
+    <TD>fitness $fitness </TD>
+  </TR>
+  <TR>
+    <TD>philogenie $philo</TD>
+  </TR>
+</TABLE>
+
+<TABLE>
+  #for $n in range(0, $nbChild/10)
+  <TR>
+    #for $i in range(0,10)
+    #set $picInfo = $child[10 * $n+$i].split("/")[-1].split(".")[0].split("-") 
+    #set $pic = $picInfo[0]
+    #set $picName =$picPath + pic +".png"
+    <h6>$pic</h6>
+    <h6>$picName</h6>
+    <TD><A href="$pic-pic.html" ><img src=$picName></A>
+	<H6>$picInfo[1]</H6>
+    </TD>
+
+    #end for
+  </TR>
+  #end for
+
+  <TR>
+    #for $n in range($nbChild - ($nbChild % 10), $nbChild)
+    #set $picInfo =$child[$n].split("/")[-1].split(".")[0].split("-") 
+    #set $pic = $picInfo[0]
+    #set $picName =$picPath + pic +".png"
+    <TD>
+      <A href="$pic-pic.html" ><img src=$picName></A>
+	<H6>$picInfo[1]</H6>
+    </TD>
+    #end for
+  </TR>	
+</TABLE>
+
+<A href="index.html">retour</A>
