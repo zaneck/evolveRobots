@@ -1,4 +1,4 @@
-# todo(damien): ajouter un shebang et passer en exécutable
+#!/usr/bin/python3 -O
 #############################################################################
 # Contributors:
 #	- created by Valentin Oczwarek
