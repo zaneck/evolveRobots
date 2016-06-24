@@ -6,9 +6,16 @@ class Indi():
     idIndi = 0
     
     def __init__(self, x, y):
+        #test params
+        if not isinstance(x, int) or not isinstance(y, int):
+            raise TypeError
+
+        if x >= 1024 or y > 1024:
+            raise MemoryError
+        
         self.idIndi = Indi.idIndi
         Indi.idIndi +=1
-
+        
         self.x =x
         self.y =y
 
