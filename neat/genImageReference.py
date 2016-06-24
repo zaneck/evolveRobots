@@ -6,8 +6,8 @@ from imgTools import *
 
 wd = "cheetah-Html/html-site/images/Reference/"
 
-x=128
-y=128
+x=64
+y=64
 
 #circle
 mat = circle(x,y)

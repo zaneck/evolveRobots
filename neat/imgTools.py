@@ -11,7 +11,7 @@ def makeImg(n,x,y):
     for i in range(x):
         for j in range(y):
             test = n.computeNetwork([(xMiddle - i) / x, (yMiddle -j) / y])[0]
-            if test > 0:
+            if test < 0:
                 img[i][j]=1
     return img
 
@@ -57,14 +57,14 @@ def fourSquare(x, y, color=1, Rradius=None, imgChange=None):
         img = imgChange
         
     if Rradius == None:
-        radius = int(1/8 * x)
+        radius = int(1/4 * x)
     else:
         radius = Rradius
 
-    square(x,y, int(x/2)-(2*radius), int(y/2)-(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)+(2*radius), int(y/2)-(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)-(2*radius), int(y/2)+(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)+(2*radius), int(y/2)+(2*radius), Rradius=10, imgChange=img)
+    square(x,y, int(x/2)-(2*radius), int(y/2)-(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)+(2*radius), int(y/2)-(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)-(2*radius), int(y/2)+(2*radius), Rradius=15, imgChange=img)
+    square(x,y, int(x/2)+(2*radius), int(y/2)+(2*radius), Rradius=15, imgChange=img)
 
     return img    
     
@@ -90,8 +90,7 @@ def square(x, y, centX, centY, color=1, Rradius=None, imgChange=None):
     
     for i in range(tlx,brx):
         for j in range(tly,bry):
-            if i>=0 and i<x and j>=0 and j<y:
-                img[i][j] = color
+            img[i][j] = color
 
     return img
             
@@ -102,7 +101,7 @@ def circle(x,y, color=1, Cradius=None, imgChange=None):
         img = imgChange
 
 
-#    img = [[0 for _ in range(x)] for _ in range(y)] 
+    img = [[0 for _ in range(x)] for _ in range(y)] 
     
     x0 = int(x / 2)
     y0 = int(y / 2)
@@ -165,6 +164,37 @@ def colorFill(p, x, y, color=1):
 #                 cpt += 1
 #     return cpt /(x*y)
 
+def dist(a,b):
+        return math.sqrt(math.pow((a[0]-b[0]) ,2)+pow((a[1]-b[1]) ,2))
+
+        
+def hausdorff(A,B):
+    try:
+        h1 = max(min(dist(a, b) for b in B) for a in A)
+        h2 = max(min(dist(a, b) for a in A) for b in B)
+    except:
+        return sys.maxsize
+        
+    return max(h1,h2)
+
+
+def matriceTocouple(m, x, y):
+        res = []
+        cpt = 0
+        for i in range(x):
+                for j in range(y):
+                        if m[i][j] == 1:
+                                res.append((i,j))
+                                cpt += 1
+        if cpt ==  x*y:
+            return []
+        return res
+
+# def fitnessP(imgTest, img, x, y):
+#     mtest = matriceTocouple(imgTest, x, y)
+#     mimg = matriceTocouple(img, x, y)
+
+#     return -hausdorff(mtest,mimg)
 
     
 # def fitnessP(imgTest, img, x, y):
@@ -203,3 +233,52 @@ def colorFill(p, x, y, color=1):
 #                         tmp -= 30
 #             res.append(tmp)
 #     return res
+
+def blockBehavior(imgTest, img, x, y, blockSize=4):
+    res =[]
+
+    for beginX in range(0,x,blockSize):
+        for beginY in range(0,y,blockSize):
+            tmp=0
+            for i in range(beginX, beginX + blockSize):
+                for j in range(beginY, beginY + blockSize):
+                    if imgTest[i][j]==1:
+                        tmp+=1
+            res.append(tmp)
+    return res
+
+def fitnessP(imgTest, mimg, x, y):
+    mtest = matriceTocouple(imgTest, x, y)
+
+    return hausdorffAverage(mtest,mimg)    
+
+def hausdorffAverage(A,B):
+    h1, h2 = 0, 0
+    try:
+        cpt = 0
+        for a in A:
+            h1 += min(dist(a, b) for b in B)
+            cpt += 1
+        h1 /= cpt
+
+        cpt = 0
+        for b in B:
+            h2 += min(dist(a, b) for a in A)
+            cpt += 1
+        h2 /= cpt
+    except:
+        return -sys.maxsize
+        
+    return -max(h1,h2)
+
+def matriceTocouple(m, x, y):
+        res = []
+        cpt = 0
+        for i in range(x):
+                for j in range(y):
+                        if m[i][j] == 1:
+                                res.append((i,j))
+                                cpt += 1
+        if cpt ==  x*y:
+            return []
+        return res

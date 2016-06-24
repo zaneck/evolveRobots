@@ -54,10 +54,10 @@ class Population():
             #sort using fitness
             self.species[k] = sorted(self.species[k], key = lambda x : x.fitnessAdjust, reverse=True)
             #numberOfOut
-            outNumber = math.floor(len(self.species[k]) * reduceRatio)
+            outNumber = len(self.species[k]) -math.floor(len(self.species[k]) * reduceRatio)
             #print("number out {0}".format(outNumber))
-            self.species[k] = self.species[k][outNumber:]
-            print("len spec {0}".format(len(self.species[k])))
+            self.species[k] = self.species[k][:outNumber]
+            #print("len spec {0}".format(len(self.species[k])))
             #update numberOfNetwork
             self.numberOfNetwork -= outNumber
 

@@ -14,9 +14,9 @@ class Neat():
 
         self.nbCycle = 0
 
-        self.nodeEdgeRate = 0.20
-        self.addNodeRate = 0.30
-        self.addEdgeRate = 0.70
+        self.nodeEdgeRate = 0.30
+        self.addNodeRate = 0.35
+        self.addEdgeRate = 0.65
 
         self.retry = 10
         
@@ -49,15 +49,28 @@ class Neat():
                     newNetwork.append(child)
 
         #CrossOver
-        for _ in range(10):
+        for _ in range(30):
             s1 = random.choice(list(self.population.species.keys()))
             s2 = random.choice(list(self.population.species.keys()))
 
             if len(self.population.species[s1]) <= 0 or len(self.population.species[s2]) <= 0:
                 break
-            
-            n1 = random.choice(list(self.population.species[s1]))
-            n2 = random.choice(list(self.population.species[s2]))
+
+            n1a = random.choice(list(self.population.species[s1]))
+            n1b = random.choice(list(self.population.species[s1]))
+
+            if n1a.fitness < n1a.fitness:
+                n1 = n1a
+            else:
+                n1 = n1b
+
+            n2a = random.choice(list(self.population.species[s2]))
+            n2b = random.choice(list(self.population.species[s2]))
+
+            if n2a.fitness < n2a.fitness:
+                n2 = n2a
+            else:
+                n2 = n2b
 
             if n1 !=n2:
                 child = n1.crossover(n2)

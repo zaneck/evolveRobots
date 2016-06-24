@@ -53,6 +53,13 @@ if __name__ == '__main__':
     
     #resXor(f.bestOverAll)
 
-    # img = makeImg(f.bestOverAll, 32,32)
-    # matriceToImage(img, 32,32, "testOne.png")
-    # printPict(img, 32, 32)
+    img = makeImg(f.bestOverAll, 16,16)
+    matriceToImage(img, 16,16, "best1616.png")
+    
+
+    img = makeImg(f.bestOverAll, 32,32)
+    matriceToImage(img, 32,32, "best3232.png")
+
+    
+    img = makeImg(f.bestOverAll, 64,64)
+    matriceToImage(img, 64,64, "best6464.png")

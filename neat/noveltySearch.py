@@ -115,8 +115,8 @@ class NoveltyFitnessCross(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/cross/"
 
-        self.x = 64
-        self.y = 64
+        self.x = 32
+        self.y = 32
         
         self.img = cross(self.x, self.y, int(self.x/2),int(self.y/2))
         printPict(self.img, self.x, self.y)
@@ -137,8 +137,8 @@ class NoveltyFitnessCircle(NoveltySearch):
         NoveltySearch.__init__(self)
         self.name="images/circle/"
 
-        self.x = 64
-        self.y = 64
+        self.x = 32
+        self.y = 32
 
         self.img = circle(self.x, self.y, color=1)
         printPict(self.img, self.x, self.y)

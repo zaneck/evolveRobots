@@ -23,6 +23,11 @@ class Fitness:
         
         if self.bestOverAll == None:
             self.bestOverAll = n
+            print("New record {0}".format(self.bestOverAll.fitness))
+
+            fileName = "{0}/best/{1}-{2}-{3}.png".format(self.name,self.bestNumber, n.idNetwork, n.fitness)
+            matriceToImage(img, self.x, self.y, fileName)
+            self.bestNumber +=1
             return
         
         #save the best
@@ -34,7 +39,7 @@ class Fitness:
             fileName = "{0}/best/{1}-{2}-{3}.png".format(self.name,self.bestNumber, n.idNetwork, n.fitness)
             matriceToImage(img, self.x, self.y, fileName)
             self.bestNumber +=1
-            
+
         return fit
 
     def simulate(self, n):
@@ -67,18 +72,22 @@ class FitnessCircle(Fitness):
 
         self.networkSet = open(self.name+"networkSet.txt", "w")
         
-        self.x = 64
-        self.y = 64
+        self.x = 16
+        self.y = 16
 
         self.img = circle(self.x, self.y, color=1)
         printPict(self.img, self.x, self.y)
-        
-        
+        self.imgCouple = matriceTocouple(self.img, self.x, self.y)
+
     def simulate(self, n):
         imgTest = makeImg(n, self.x, self.y)
-        cptOk = fitnessP(imgTest, self.img, self.x, self.y)
-        
+
+        cptOk = fitnessP(imgTest, self.imgCouple, self.x, self.y)
         return cptOk
+    # def simulate(self, n):
+    #     imgTest = makeImg(n, self.x, self.y)
+    #     cptOk = fitnessP(imgTest, self.img, self.x, self.y)
 
-    
-
+    #     print(cptOk)
+        
+    #     return cptOk
