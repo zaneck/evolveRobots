@@ -2,7 +2,7 @@ from imgTools import *
 import random
 
 
-class Indi():
+class Indi(object):
     idIndi = 0
     
     def __init__(self, x, y):

@@ -1,6 +1,6 @@
 from indi import *
 
-class Population():
+class Population(object):
     def __init__(self, popMax=100, popAugmentation=100):
         self.numberOfIndi = 0
         self.popMax = popMax
@@ -20,7 +20,7 @@ class Population():
         self.numberOfIndi = 0
 
 
-class GeneticAlgo():
+class GeneticAlgo(object):
 
     def __init__(self, fitnessFun, population):
         self.pop = population
