@@ -1,6 +1,6 @@
 from indi import *
 
-class Fitness:
+class Fitness(object):
     def __init__(self):
         self.name="Abstract fitness fun"
         self.bestOverAll = None
