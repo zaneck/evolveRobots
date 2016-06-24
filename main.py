@@ -1,3 +1,8 @@
+# todo(damien): ajouter un shebang et passer en exécutable
+#############################################################################
+# Contributors:
+#	- created by Valentin Oczwarek
+#############################################################################
 import sys
 
 from indi import *
@@ -15,7 +20,7 @@ fitness = {
     "4":FitnessFourSquare,
 }
 
-
+# todo(damien): Il faut une vrai gestion des arguments et des messages d'erreurs. 
 f = fitness[sys.argv[1]]()
 
 for _ in range(100):

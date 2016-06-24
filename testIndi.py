@@ -1,3 +1,8 @@
+# todo(damien): ajouter un shebang 
+#############################################################################
+# Contributors:
+#	- created by Valentin Oczwarek
+#############################################################################
 from fitness import *
 from indi import *
 from imgTools import *
