@@ -1,12 +1,46 @@
-# todo(damien): ajouter un shebang 
+#!/usr/bin/python3 -O
 #############################################################################
+#
+# 
+# 
 # Contributors:
 #	- created by Valentin Oczwarek
 #############################################################################
+import unittest
+
 from fitness import *
 from indi import *
 from imgTools import *
 
+
+class TestIndie(unittest.TestCase):
+    def setUp(self):
+        pass
+ 
+    def test_basic_constructor_behavior(self):
+        # Should work 
+        a = Indi(16, 16)
+
+        # Should work 
+        a = Indi(0, 0)
+        
+        # Should throw an exception        
+        with self.assertRaises(TypeError):
+                a = Indi(-1, -1)
+                a = Indi("toto", 10)
+                a = Indi(10, "tata")
+        
+        # Should throw an exception        
+        with self.assertRaises(MemoryError):
+               a = Indi(100000000, 1000000000) 
+                
+        
+if __name__ == '__main__':
+    unittest.main()
+    
+import sys
+sys.exit(0)
+    
 def fakeIndiCircle(x,y):
     a = Indi(16,16)
 

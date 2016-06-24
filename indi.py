@@ -1,6 +1,7 @@
 from imgTools import *
 import random
 
+
 class Indi():
     idIndi = 0
     

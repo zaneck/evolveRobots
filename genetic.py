@@ -1,7 +1,6 @@
 from indi import *
 
 class Population():
-
     def __init__(self, popMax=100, popAugmentation=100):
         self.numberOfIndi = 0
         self.popMax = popMax
