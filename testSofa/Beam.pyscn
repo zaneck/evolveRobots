@@ -1,0 +1,61 @@
+from tools import *
+import Sofa
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.findData("gravity").value = "0 -9810 0"
+
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+                # rootNode.createObject('OglGrid', nbSubdiv="10")
+
+                ##########################################
+                # FEM Model                              #
+                ##########################################
+
+                sizeX, sizeY, sizeZ = 50, 50, 10
+                x , y , z = 11, 11, 2
+
+                finger = rootNode.createChild('finger')
+                finger.createObject('EulerImplicit', name='odesolver', firstOrder='0')
+                finger.createObject('ShewchukPCGLinearSolver', iterations='15', name='linearsolver', tolerance='1e-5', preconditioners='preconditioner', use_precond='true', use_first_precond='false', update_step='1')
+
+                grid = finger.createObject('RegularGridTopology', name= 'grid', n="{0} {1} {2}".format(x, y, z), max="{0} {1} {2}".format(sizeX, sizeY, sizeZ), min="0 0 0")
+
+
+                hexa = grid.findData('hexahedra').value
+
+                finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                finger.createObject('UniformMass', totalmass='0.02')
+
+                finger.createObject('PartialFixedConstraint', fixedDirections='0 0 1', fixAll=True)
+
+                finger.createObject('BoxROI', name='ROI1', box='0 0 0 10 5 10', drawBoxes='true')
+                finger.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
+
+                finger.createObject('BoxROI', name='ROI2', box='40 0 0 50 5 10', drawBoxes='true')
+                finger.createObject('RestShapeSpringsForceField', points='@ROI2.indices', stiffness='1e12')
+
+                finger.createObject('BoxROI', name='ROI3', box='20 45 0 30 50 10', drawBoxes='true')
+                finger.createObject('ConstantForceField', force='0 -100 0', points='@ROI3.indices')
+
+                finger.createObject('SparseLDLSolver', name='preconditioner', useWarping='true')
+                finger.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+
+                subTopo = finger.createChild('subTopo')
+                hexaReal = circleShape(hexa)
+                subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaReal)
+
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+
+
+                #adding controller
+                finger.createObject('PythonScriptController', filename="controller.py", classname="controller")
+                
+                return rootNode
+
