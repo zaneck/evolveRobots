@@ -14,3 +14,8 @@ class Config(object):
     genticRatioCross = 0.33
     genticRatioClean = 0.33
     
+
+    #evolve
+    evolveFirstGen = 100
+    evolveNbCycle = 50
+    
