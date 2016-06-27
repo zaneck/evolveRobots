@@ -1,3 +1,5 @@
+from config import Config
+
 from imgTools import *
 import random
 
@@ -10,7 +12,7 @@ class Indi(object):
         if not isinstance(x, int) or not isinstance(y, int):
             raise TypeError
 
-        if x >= 1024 or y > 1024:
+        if x >= Config.indiSizeMax or y > Config.indiSizeMax:
             raise MemoryError
         
         self.idIndi = Indi.idIndi

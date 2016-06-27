@@ -35,7 +35,7 @@ metric = sys.argv[2]
 
 f = FitnessImage(shapeName, shapeMatrix, metric, sizex, sizey)
 
-#todo(valentin): Gerer tous les parametres de l'algo, population, cycleMax... 
+
 p = Population()
 
 for _ in range(100):

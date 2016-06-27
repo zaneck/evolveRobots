@@ -10,10 +10,7 @@ class Fitness(object):
         fit = self.simulate(n)
 
         n.fitness = fit
-        
-        #Save the man
-        #end save
-        
+                
         if self.bestOverAll == None:
             self.bestOverAll = n
 #            print("New record {0}".format(self.bestOverAll.fitness))

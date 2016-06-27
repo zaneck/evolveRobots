@@ -1,9 +1,10 @@
+from config import Config
 from indi import *
 
 class Population(object):
-    def __init__(self, popMax=100, popAugmentation=100):
+    def __init__(self):
         self.numberOfIndi = 0
-        self.popMax = popMax
+        self.popMax = Config.PopulationPopMax
         self.pop =[]
 
     def addIndi(self, i):
@@ -28,12 +29,12 @@ class GeneticAlgo(object):
 
         self.nbCycle = 0
 
-        self.best = 25
+        self.best = Config.geneticBest
         
-        self.nbAugmentation = 200
-        self.ratioAdd = 0.33
-        self.ratioCross = 0.33
-        self.ratioClean = 0.33
+        self.nbAugmentation = Config.genticNbAugmentation
+        self.ratioAdd = Config.genticRatioAdd
+        self.ratioCross = Config.genticRatioCross
+        self.ratioClean = Config.genticRatioClean
 
         self.nbAdd = int(self.nbAugmentation * self.ratioAdd) 
         self.nbCross = int(self.nbAugmentation * self.ratioCross) 
