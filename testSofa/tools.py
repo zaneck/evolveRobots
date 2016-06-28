@@ -73,9 +73,27 @@ def colorFill(p, x, y, color=1):
             toDo.append((t[0]-1,t[1]))
             toDo.append((t[0],t[1]+1))
             toDo.append((t[0],t[1]-1))
-
+            
 def circleShape(tab):
     img = circle(10,10)
     mask = matrixImageToMask(img, 10,10) 
     return tabToString(tab, mask)
 
+def crossShape(tab):
+    centX, centY, x, y, radius = 2, 2, 5, 5, 1
+    
+    img = [[0 for _ in range(x)] for _ in range(y)]
+
+    for i in range(centX-radius, centX+radius):
+        for j in range(0,y):
+            img[i][j] = 1
+
+    for i in range(0,x):
+        for j in range(centY-radius, centY+radius):
+            img[i][j] = 1
+
+    for i in range(0,x):
+        img[x-1][i] = 1
+            
+    mask = matrixImageToMask(img, 5,5) 
+    return tabToString(tab, mask)

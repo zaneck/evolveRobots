@@ -1,6 +1,9 @@
 from tools import *
 import Sofa
 
+from topo import topology
+from tools import *
+
 def createScene(rootNode):
 
                 rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
@@ -49,7 +52,8 @@ def createScene(rootNode):
 
                 subTopo = finger.createChild('subTopo')
 
-                hexaReal = circleShape(hexa)
+		mask = matrixImageToMask(topology, x-1, y-1)
+                hexaReal = tabToString(hexa, mask)
 
                 subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaReal)
                 
