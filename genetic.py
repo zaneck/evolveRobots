@@ -45,9 +45,11 @@ class GeneticAlgo(object):
 
         self.pop.reducePopulation()
         newIndi = []
+        newBest = []
+        
 
         for i in range(self.best):
-            newIndi.append(self.pop.pop[i])
+            newBest.append(self.pop.pop[i])
         
         for alpha in range(self.nbAdd):
 #            print("add {0}".format(alpha))
@@ -75,6 +77,7 @@ class GeneticAlgo(object):
             child.addRandomSquare()
             newIndi.append(child)
 
+        #TODO(Valentin) Do not make an empty shape
         for alpha in range(self.nbAdd):
 #            print("add {0}".format(alpha))
             s1 = random.choice(self.pop.pop)
@@ -109,4 +112,7 @@ class GeneticAlgo(object):
         
         for i in newIndi:
             self.fitnessFun.computeValue(i)
+            self.pop.addIndi(i)
+
+        for i in newBest:
             self.pop.addIndi(i)
