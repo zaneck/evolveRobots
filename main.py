@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -O
 #############################################################################
 # Contributors:
-#	- created by Valentin Oczwarek
+#	- created by Valentin Owczarek
 #############################################################################
 import sys
 import argparse
