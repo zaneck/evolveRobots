@@ -18,4 +18,4 @@ class controller(Sofa.PythonScriptController):
         
         print("animation")
         for i in self.pos:
-            print(self.tetras[i][1] - tetras[i][1])
+            print("{0},".format(tetras[i][1]))
