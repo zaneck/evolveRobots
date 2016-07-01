@@ -46,7 +46,7 @@ class Indi(object):
         self.lenDraw +=1
 
     def removeRandomSquare(self):
-        if self.lenDraw >=1:
+        if self.lenDraw >=2:
             s = random.choice(self.draw)
             self.draw.remove(s)
             self.lenDraw -= 1
@@ -89,4 +89,4 @@ class Indi(object):
 
 def printMatrix(m, x, y):
     for i in range(x):
-        print(m[i])
+        print("{0},".format(m[i]))
