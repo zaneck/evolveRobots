@@ -3,7 +3,7 @@ class controller(Sofa.PythonScriptController):
         self.node = node
 
         self.pos =[]
-        #20 45 0 30 50 10
+        #20 45 0 30 50 20
         #find the box
         self.tetras=node.getObject('tetras').position
 
@@ -16,6 +16,7 @@ class controller(Sofa.PythonScriptController):
     def onEndAnimationStep(self,deltaTime):
         tetras = self.node.getObject('tetras').position
         
-        print("animation")
+        print("animation"),
         for i in self.pos:
-            print("{0},".format(tetras[i][1]))
+            #vrai dist en x, y 
+            print("{0},".format(self.tetras[i][1] - tetras[i][1])),

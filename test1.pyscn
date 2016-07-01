@@ -21,7 +21,7 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
 
-                sizeX, sizeY, sizeZ = 50, 50, 10
+                sizeX, sizeY, sizeZ = 50, 50, 5
                 x , y , z = 11, 11, 2
 
                 finger = rootNode.createChild('finger')
@@ -35,30 +35,30 @@ def createScene(rootNode):
                 hexa = grid.findData('hexahedra').value
 
                 finger.createObject('UniformMass', totalmass='0.02')
-
-                finger.createObject('PartialFixedConstraint', fixedDirections='0 0 1', fixAll=True)
-
-                finger.createObject('BoxROI', name='ROI1', box='0 0 0 10 5 10', drawBoxes='true')
+                
+                finger.createObject('BoxROI', name='ROI1', box='0 0 0 10 5 5', drawBoxes='true')
                 finger.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
-
-                finger.createObject('BoxROI', name='ROI2', box='40 0 0 50 5 10', drawBoxes='true')
+                #finger.createObject('FixedConstraint', indices='@ROI1.indices')
+                
+                finger.createObject('BoxROI', name='ROI2', box='40 0 0 50 5 5', drawBoxes='true')
                 finger.createObject('RestShapeSpringsForceField', points='@ROI2.indices', stiffness='1e12')
-
-                finger.createObject('BoxROI', name='ROI3', box='20 45 0 30 50 10', drawBoxes='true')
+                #finger.createObject('FixedConstraint', indices='@ROI2.indices')
+                
+                finger.createObject('BoxROI', name='ROI3', box='20 45 0 30 50 5', drawBoxes='true')
                 finger.createObject('ConstantForceField', force='0 -100 0', points='@ROI3.indices')
 
-                finger.createObject('SparseLDLSolver', name='preconditioner', useWarping='true')
-                finger.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+                #finger.createObject('SparseLDLSolver', name='preconditioner', useWarping='true')
+		finger.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
 
                 subTopo = finger.createChild('subTopo')
 
 		mask = matrixImageToMask(topo.topology, x-1, y-1)
                 hexaReal = tabToString(hexa, mask)
 
+                subTopo.createObject('BoxROI', name='ROI4', box='0 0 0 50 50 5', drawBoxes='true')
+                subTopo.createObject('PartialFixedConstraint', fixedDirections='0 0 1', indices='@ROI4.indices')
                 subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaReal)
-                
                 subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
-
 
                 #adding controller
                 finger.createObject('PythonScriptController', filename="controller.py", classname="controller")
