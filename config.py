@@ -2,12 +2,9 @@ class Config(object):
     #general
     generalX, generalY = 16, 16 #size of the grid
 
-    #indi
-    indiSquareMaxSize = 1#int(max(generalX, generalX) / 5)
-    
-    
     #Indi
     indiSizeMax = 1024
+    indiSquareMaxSize = 1#int(max(generalX, generalX) / 5)
     
     #Population
     PopulationPopMax = 100
