@@ -1,4 +1,5 @@
-from subprocess import Popen, PIPE
+import numpy as np
+from subprocess import Popen, PIPE, call
 
 from fitness import Fitness
 from indi import *
@@ -19,33 +20,55 @@ class FitnessSofa(Fitness):
     def simulate(self, n):
         imgTest = n.toMatrice()
 
+        cptVoxel = 0
         for i in range(self.x):
             for j in range(self.y):
+                if imgTest[i][j] == 1:
+                    cptVoxel += 1
                 if self.topologyMin[i][j] == 1:
                     imgTest[i][j] = 1
-        
-        #write the topo
-        topo = open("topo.py","w")
 
+        #clean up
+        rm = Popen(["rm","topo.pyc"])
+        rm.wait()
+
+        #write the new topo
+        topo = open("topo.py","w")
         topo.write("topology = [")
 
         for i in range(self.x):
-            if i != self.x - 1:
-                topo.write("{0},".format(imgTest[i]))
-            else:
-                topo.write("{0}".format(imgTest[i]))
-                
+            topo.write("{0},".format(imgTest[i]))
+    
         topo.write("]")
-
         topo.close()
-        
-        #Popen
-        a = Popen(["runSofa", "-g", "batch", "-n", "50", "test1.pyscn"], stdout=PIPE)
-        a.wait()
+
+        #Popen sofa
+        a = Popen(["runSofa", "-g", "batch", "-n", "10", "test1.pyscn"], stdout=PIPE, universal_newlines=True)
+        astdout, _ = a.communicate()
+
+        a.stdout.close()
         
         #Parse
-        print(a.stdout)
+        temp = astdout.split("animation")
+        temp = temp[2:]
+        temp = temp[:len(temp)-1] 
         
-        #return
+        pos = []
+        for t in temp: #for all step
+            tSplit = t.split(",")
+            
+            for i in tSplit:#for all value
+                try:
+                    posUnit = float(i)
                     
-        return 1#cptOk
+                    if posUnit >= 40:
+                        return sys.maxsize
+                    pos.append(posUnit)
+                except ValueError:
+                    pass
+                    
+        
+        res = max(pos)
+        #TODO valentin : moyenne des carré
+        
+        return res + (cptVoxel * 0.1)
