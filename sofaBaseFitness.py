@@ -14,6 +14,8 @@ class FitnessSofa(Fitness):
 
         self.sofaScene = sofaScene
 
+        sys.path.insert(0,"sofaScene")
+        
         exec("import {0}".format(topologyMinFile)) 
         self.topologyMin = sys.modules[topologyMinFile].topology
         
@@ -29,11 +31,11 @@ class FitnessSofa(Fitness):
                     imgTest[i][j] = 1
 
         #clean up
-        rm = Popen(["rm","topo.pyc"])
+        rm = Popen(["rm","sofaScene/topo.pyc"])
         rm.wait()
 
         #write the new topo
-        topo = open("topo.py","w")
+        topo = open("sofaScene/topo.py","w")
         topo.write("topology = [")
 
         for i in range(self.x):
@@ -43,7 +45,7 @@ class FitnessSofa(Fitness):
         topo.close()
 
         #Popen sofa
-        a = Popen(["runSofa", "-g", "batch", "-n", "10", "test1.pyscn"], stdout=PIPE, universal_newlines=True)
+        a = Popen(["runSofa", "-g", "batch", "-n", "20", "sofaScene/"+self.sofaScene], stdout=PIPE, universal_newlines=True)
         astdout, _ = a.communicate()
 
         a.stdout.close()
