@@ -39,8 +39,7 @@ class Indi(object):
     def addRandomSquare(self):
         centX = random.randint(0,self.x-1)
         centY = random.randint(0,self.y-1)
-        radius = random.randint(1, max(math.floor(self.x/5), math.floor(self.y/5)))
-        #radius = random.randint(0, 1)
+        radius = random.randint(1, Config.indiSquareMaxSize)
         
         self.draw.append((centX,centY,radius))
         self.lenDraw +=1

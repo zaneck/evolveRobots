@@ -20,7 +20,7 @@ parser.add_argument('shape', metavar='S', type=int, nargs='+',
 
 args = parser.parse_args()
 
-sizex, sizey = 16, 16
+sizex, sizey = Config.generalX, Config.generalY
 
 imageDict = {
     1:("circle", circle(sizex, sizey)),
