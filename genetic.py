@@ -32,13 +32,13 @@ class GeneticAlgo(object):
         self.best = Config.geneticBest
         
         self.nbAugmentation = Config.genticNbAugmentation
-        self.ratioAdd = Config.genticRatioAdd
-        self.ratioCross = Config.genticRatioCross
-        self.ratioClean = Config.genticRatioClean
+        self.addRate = Config.genticAddRate
+        self.crossRate = Config.genticCrossRate
+        self.cleanRate = Config.genticCleanRate
 
-        self.nbAdd = int(self.nbAugmentation * self.ratioAdd) 
-        self.nbCross = int(self.nbAugmentation * self.ratioCross) 
-        self.nbClean = int(self.nbAugmentation * self.ratioClean) 
+        self.nbAdd = int(self.nbAugmentation * self.addRate) 
+        self.nbCross = int(self.nbAugmentation * self.crossRate) 
+        self.nbClean = int(self.nbAugmentation * self.cleanRate) 
         
     def evolve(self):
         self.nbCycle += 1
