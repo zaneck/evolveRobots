@@ -78,12 +78,13 @@ class GeneticAlgo(object):
             newIndi.append(child)
 
             
-        for alpha in range(self.nbAdd):
+        for alpha in range(self.nbClean):
 #            print("add {0}".format(alpha))
             s1 = random.choice(self.pop.pop)
             child = best.copy()
-            child.removeRandomSquare()
-            newIndi.append(child)
+            res = child.removeRandomSquare()
+            if res == 1:
+                newIndi.append(child)
             
         for alpha in range(self.nbCross):
 #            print("cross {0}".format(alpha))

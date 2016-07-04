@@ -12,7 +12,7 @@ class Indi(object):
         if not isinstance(x, int) or not isinstance(y, int):
             raise TypeError
 
-        if x >= Config.indiSizeMax or y > Config.indiSizeMax:
+        if x > Config.indiSizeMax or y > Config.indiSizeMax:
             raise MemoryError
         
         self.idIndi = Indi.idIndi
@@ -39,7 +39,7 @@ class Indi(object):
     def addRandomSquare(self):
         centX = random.randint(0,self.x-1)
         centY = random.randint(0,self.y-1)
-        radius = random.randint(1, Config.indiSquareMaxSize)
+        radius = random.randint(0, Config.indiSquareMaxSize)
         
         self.draw.append((centX,centY,radius))
         self.lenDraw +=1
@@ -49,7 +49,11 @@ class Indi(object):
             s = random.choice(self.draw)
             self.draw.remove(s)
             self.lenDraw -= 1
-        
+            return 1
+        else:
+            return 0
+            
+            
     def crossOver(self, i):
         res1 = Indi(self.x, self.y)
         res2 = Indi(self.x, self.y)
