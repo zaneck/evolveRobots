@@ -47,11 +47,16 @@ f = FitnessImage(shapeName, shapeMatrix, metric, sizex, sizey)
 
 p = Population()
 
+firstIndi = []
 for _ in range(Config.evolveFirstGen):
     a = Indi(sizex, sizey)
     a.addRandomSquare()
-    f.computeValue(a)
-    p.addIndi(a)
+    firstIndi.append(a)
+    
+f.computeValues(firstIndi)
+
+for i in firstIndi:
+    p.addIndi(i)
 
 g = GeneticAlgo(f, p)
 

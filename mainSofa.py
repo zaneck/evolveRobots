@@ -27,15 +27,20 @@ args = parser.parse_args()
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
 
-f = FitnessSofa("sofa")
+f = FitnessSofa("sofa", x=sizex, y=sizey)
 p = Population()
 
 #### Randomly creates an initial population composed of 'Config.evolveFirstGen' candidates. 
+firstIndi = []
 for alpha in range(Config.evolveFirstGen):
     print("init {0}/{1}\r".format(alpha+1, Config.evolveFirstGen), end="")
     a = Indi(sizex, sizey)
     a.addRandomSquare()
-    f.computeValue(a)
+    firstIndi.append(a)
+    
+f.computeValues(firstIndi)
+
+for a in firstIndi:
     p.addIndi(a)
 
 #### Create the algorithm and do the iterations 

@@ -1,3 +1,5 @@
+import threading
+
 import numpy as np
 from subprocess import Popen, PIPE, call
 
@@ -18,10 +20,20 @@ class FitnessSofa(Fitness):
         
         exec("import {0}".format(topologyMinFile)) 
         self.topologyMin = sys.modules[topologyMinFile].topology
-        
-    def simulate(self, n):
-        imgTest = n.toMatrice()
 
+        #building working directory for the threads
+        allThread = threading.enumerate()
+        mainThread = threading.main_thread()
+
+        for t in allThread:
+            if t != mainThread:
+                Popen(["mkdir", "-p", "/tmp/evolveRobots/{0}".format(t.ident)])
+                Popen(["cp", "sofaScene/controller.py", "sofaScene/"+sofaScene, "sofaScene/tools.py", "/tmp/evolveRobots/{0}".format(t.ident)]) #copy object
+            
+    def simulate(self, n):
+        idThread = threading.get_ident()
+
+        imgTest = n.toMatrice()
         cptVoxel = 0
         for i in range(self.x):
             for j in range(self.y):
@@ -29,13 +41,13 @@ class FitnessSofa(Fitness):
                     cptVoxel += 1
                 if self.topologyMin[i][j] == 1:
                     imgTest[i][j] = 1
-
+        
         #clean up
-        rm = Popen(["rm","sofaScene/topo.pyc"])
+        rm = Popen(["rm","/tmp/evolveRobots/{0}/topo.pyc".format(idThread)]) #add /tmp/thread.ident
         rm.wait()
 
         #write the new topo
-        topo = open("sofaScene/topo.py","w")
+        topo = open("/tmp/evolveRobots/{0}/topo.py".format(idThread),"w") #add /tmp/thread.ident
         topo.write("topology = [")
 
         for i in range(self.x):
@@ -45,7 +57,7 @@ class FitnessSofa(Fitness):
         topo.close()
 
         #Popen sofa
-        a = Popen(["runSofa", "-g", "batch", "-n", "20", "sofaScene/"+self.sofaScene], stdout=PIPE, universal_newlines=True)
+        a = Popen(["runSofa", "-g", "batch", "-n", "20", "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
         astdout, _ = a.communicate()
 
         a.stdout.close()

@@ -108,9 +108,10 @@ class GeneticAlgo(object):
             newIndi.append(child2)
 
         self.pop.cleanPop()
+
+        self.fitnessFun.computeValues(newIndi)
         
         for i in newIndi:
-            self.fitnessFun.computeValue(i)
             self.pop.addIndi(i)
 
         for i in newBest:
