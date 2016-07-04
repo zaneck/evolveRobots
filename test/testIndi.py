@@ -8,6 +8,10 @@
 #############################################################################
 import unittest
 
+import sys
+
+sys.path.insert(0,"..")
+
 from fitness import *
 from indi import *
 from imgTools import *
@@ -35,26 +39,43 @@ class TestIndie(unittest.TestCase):
                a = Indi(100000000, 1000000000) 
                 
     def test_basic_behavior(self):
-                a = Indi(16, 16)
-                b = Indi(16, 16)
+        a = Indi(16, 16)
+        b = Indi(16, 16)
 
-                a.addRandomSquare()
-                a.addRandomSquare()
+        a.addRandomSquare()
+        a.addRandomSquare()
 
-                b.addRandomSquare()
-                b.addRandomSquare()
-                b.addRandomSquare()
+        b.addRandomSquare()
+        b.addRandomSquare()
+        b.addRandomSquare()
 
-                print(a.__dict__)
-                print(b.__dict__)
+        print(a.__dict__)
+        print(b.__dict__)
 
-                c, d = a.crossOver(b)
+        c, d = a.crossOver(b)
 
-                print(c.__dict__)
-                print(d.__dict__)
+        print(c.__dict__)
+        print(d.__dict__)
 
-                mat = a.toMatrice()
-              
+        mat = a.toMatrice()
+
+    def test_atLeastOneSquareKO(self):
+        a = Indi(16, 16)
+        res = a.removeRandomSquare()
+        self.assertEqual(res, 0)
+
+        a = Indi(16, 16)
+        a.addRandomSquare()
+        res = a.removeRandomSquare()
+        self.assertEqual(res, 0)
+        
+    def test_atLeastOneSquareOK(self):
+        a = Indi(16, 16)
+        a.addRandomSquare()
+        a.addRandomSquare()
+        res = a.removeRandomSquare()
+        self.assertEqual(res, 1)
+   
         
 if __name__ == '__main__':
     unittest.main()
