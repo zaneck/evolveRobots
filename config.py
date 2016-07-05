@@ -8,18 +8,16 @@ class Config(object):
     indiSquareMaxSize = 1 #maximum distance between the center of a square and his side
     
     #Population
-    PopulationPopMax = 50
+    PopulationPopMax = 100
 
     #Genetic Algo
     geneticBest = 10 #number of champions which survive to the new generation 
-
-    genticNbAugmentation = 50
+    genticNbAugmentation = 100
     genticAddRate = 0.25
     genticCrossRate = 0.50
     genticCleanRate = 0.25
     
-
     #evolve
-    evolveFirstGen = 50
+    evolveFirstGen = 100
     evolveNbCycle = 20
     
