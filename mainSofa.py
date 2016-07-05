@@ -1,4 +1,4 @@
-#!/bin/python3 -O
+#!/usr/bin/python3 -O
 #############################################################################
 #
 # This application creates soft-robot designs that match a given specification. 
