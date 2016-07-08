@@ -85,6 +85,11 @@ class Indi(object):
         return self.canvas.toMatrice()
 
 
-def printMatrix(m, x, y):
-    for i in range(x):
-        print("{0},".format(m[i]))
+def printMatrix(m, w, h):
+        for j in range(h):
+            for i in range(w):
+                if m[i][j] == 1:
+                        print("X", end="")
+                else:
+                        print("-", end="")
+            print("")

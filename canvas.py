@@ -39,8 +39,9 @@ class CanvasReflectionSymetry(Canvas):
                     if i >=0 and i< self.x and j >=0 and j< self.y:
                         res[i][j]=1
 
-            for i in range(centX - radius, centX + radius+1):
-                for j in range((self.y - centY) - radius, (self.y - centY) + radius+1):
+            for i in range((self.x-centX) - radius, (self.x-centX) + radius+1):
+                for j in range(centY - radius, centY + radius+1):
+                #for j in range((self.y - centY) - radius, (self.y - centY) + radius+1):
                     if i >=0 and i< self.x and j >=0 and j< self.y:
                         res[i][j]=1
 

@@ -27,6 +27,7 @@ def matriceToImage(m, w, h, destinationPath):
 
     color=[]
 
+    # Draw a gray border line around the real image data to improve clarity. 
     for i in range(1,w+1):
         draw.point((i,0), fill=(127,127,127)) 
         draw.point((i,h+1), fill=(127,127,127)) 
@@ -41,6 +42,7 @@ def matriceToImage(m, w, h, destinationPath):
     #draw.point((w+1,h+1), fill=(255,255,255))
     #draw.point((w+1,0), fill=(255,255,255))
    
+    # Draw the candidate data into the image
     for i in range(1,w+1):
         for j in range(1,h+1):
             if m[i-1][j-1] == 1:
