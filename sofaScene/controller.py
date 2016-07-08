@@ -1,3 +1,5 @@
+import math
+
 class controller(Sofa.PythonScriptController):
     def initGraph(self, node):
         self.node = node
@@ -18,5 +20,7 @@ class controller(Sofa.PythonScriptController):
         
         print("animation"),
         for i in self.pos:
-            #vrai dist en x, y 
+            #issue with fall over the map
+            #dist = math.sqrt(math.pow(self.tetras[i][0]-tetras[i][0],2) + math.pow(self.tetras[i][1]-tetras[i][1],2)) 
+            #print("{0},".format(dist)),
             print("{0},".format(self.tetras[i][1] - tetras[i][1])),

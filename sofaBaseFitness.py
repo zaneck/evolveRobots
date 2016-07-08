@@ -6,6 +6,8 @@ from subprocess import Popen, PIPE, call
 from fitness import Fitness
 from indi import *
 
+from config import Config
+
 class FitnessSofa(Fitness):
     def __init__(self, name, sofaScene="test1.pyscn", topologyMinFile="minTopoTest1", x=10, y=10):
         Fitness.__init__(self)
@@ -57,7 +59,7 @@ class FitnessSofa(Fitness):
         topo.close()
 
         #Popen sofa
-        a = Popen(["runSofa", "-g", "batch", "-n", "20", "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
+        a = Popen(["runSofa", "-g", "batch", "-n", "50", "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
         astdout, _ = a.communicate()
 
         a.stdout.close()
@@ -85,4 +87,4 @@ class FitnessSofa(Fitness):
         res = max(pos)
         #TODO valentin : moyenne des carré
         
-        return res + (cptVoxel * 0.1)
+        return (res * Config.fitnessRateScore) + (cptVoxel * Config.fitnessRateVoxel)

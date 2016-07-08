@@ -1,6 +1,7 @@
 from config import Config
 
 from imgTools import *
+from canvas import CanvasReflectionSymetry
 import random
 
 
@@ -26,6 +27,8 @@ class Indi(object):
         
         self.fitness = 0
 
+        self.canvas = CanvasReflectionSymetry(self, x, y)
+
     def copy(self):
         res = Indi(self.x, self.y)
 
@@ -37,6 +40,7 @@ class Indi(object):
         return res
             
     def addRandomSquare(self):
+        x, y = self.canvas.getMaxXY()
         centX = random.randint(0,self.x-1)
         centY = random.randint(0,self.y-1)
         radius = random.randint(0, Config.indiSquareMaxSize)
@@ -78,16 +82,7 @@ class Indi(object):
         return (res1,res2)
 
     def toMatrice(self):
-        res =[[0 for _ in range(self.y)] for _ in range(self.x)]
-
-        for d in self.draw:
-            centX, centY, radius = d
-            for i in range(centX - radius, centX + radius+1):
-                for j in range(centY - radius, centY + radius+1):
-                    if i >=0 and i< self.x and j >=0 and j< self.y:
-                        res[i][j]=1
-                    
-        return res
+        return self.canvas.toMatrice()
 
 
 def printMatrix(m, x, y):
