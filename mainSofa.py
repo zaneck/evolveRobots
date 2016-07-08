@@ -10,11 +10,13 @@
 #############################################################################
 import sys
 import argparse
+import dump
 
 from config import Config
 from indi import *
 from genetic import *
 from sofaBaseFitness import *
+from fakeFitness import *
 
 parser = argparse.ArgumentParser(description="""
 This application creates soft-robot designs that match a given specification. To generates the designs a genetic algorithm
@@ -27,7 +29,7 @@ args = parser.parse_args()
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
 
-f = FitnessSofa("sofa", x=sizex, y=sizey)
+f = FitnessFake("fake", x=sizex, y=sizey) #FitnessSofa("sofa", x=sizex, y=sizey)
 p = Population()
 
 #### Randomly creates an initial population composed of 'Config.evolveFirstGen' candidates. 
@@ -43,6 +45,9 @@ f.computeValues(firstIndi)
 for a in firstIndi:
     p.addIndi(a)
 
+if dump.activated():
+        dump.newExperiment("log/", f, p) 
+
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)
 print("")
@@ -57,3 +62,6 @@ best = f.bestOverAll
 print("")
 imgTest = best.toMatrice()
 printMatrix(imgTest, sizex, sizey)
+
+if dump.activated():
+        dump.endExperiment()

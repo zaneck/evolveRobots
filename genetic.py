@@ -1,5 +1,6 @@
 from config import Config
 from indi import *
+import dump 
 
 class Population(object):
     def __init__(self):
@@ -22,7 +23,6 @@ class Population(object):
 
 
 class GeneticAlgo(object):
-
     def __init__(self, fitnessFun, population):
         self.pop = population
         self.fitnessFun = fitnessFun
@@ -44,7 +44,7 @@ class GeneticAlgo(object):
         self.nbCycle += 1
 
         self.pop.reducePopulation()
-        newIndi = []
+        newCandidates = []
         newBest = []
         
 
@@ -75,7 +75,7 @@ class GeneticAlgo(object):
 
             child = best.copy()
             child.addRandomSquare()
-            newIndi.append(child)
+            newCandidates.append(child)
 
             
         for alpha in range(self.nbClean):
@@ -84,7 +84,7 @@ class GeneticAlgo(object):
             child = best.copy()
             res = child.removeRandomSquare()
             if res == 1:
-                newIndi.append(child)
+                newCandidates.append(child)
             
         for alpha in range(self.nbCross):
 #            print("cross {0}".format(alpha))
@@ -104,15 +104,19 @@ class GeneticAlgo(object):
                 best2 = s4
 
             child1, child2 = best1.crossOver(best2)
-            newIndi.append(child1)
-            newIndi.append(child2)
+            newCandidates.append(child1)
+            newCandidates.append(child2)
 
         self.pop.cleanPop()
 
-        self.fitnessFun.computeValues(newIndi)
+        # Evaluates all the candidates. 
+        self.fitnessFun.computeValues(newCandidates)
         
-        for i in newIndi:
+        for i in newCandidates:
             self.pop.addIndi(i)
 
         for i in newBest:
             self.pop.addIndi(i)
+            
+        if dump.activated():
+                dump.addGeneration(newCandidates) 
