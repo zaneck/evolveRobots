@@ -1,7 +1,16 @@
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot. 
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#       - damien.marchal@univ.lille1.fr
+#############################################################################
 from config import Config
 
 from imgTools import *
-from canvas import CanvasReflectionSymetry
+from canvas import CanvasReflectionSymetry, Canvas
 import random
 
 
@@ -27,7 +36,8 @@ class Indi(object):
         
         self.fitness = 0
 
-        self.canvas = CanvasReflectionSymetry(self, x, y)
+        #self.canvas = CanvasReflectionSymetry(self, x, y)
+        self.canvas = Canvas(self,x,y)
 
     def copy(self):
         res = Indi(self.x, self.y)
@@ -80,6 +90,10 @@ class Indi(object):
             res1.lenDraw +=1
             
         return (res1,res2)
+
+    @property
+    def myId(self):
+        return self.idIndi
 
     def toMatrice(self):
         return self.canvas.toMatrice()

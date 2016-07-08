@@ -2,3 +2,4 @@ Il faut un setup.py voir un truc qui gère les dépendence genre PIP
 
 Il faut restaurer les tests pour qu'ils marchent à nouveau. 
 
+Faire une vrai class de dump.py 

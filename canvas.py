@@ -1,4 +1,12 @@
-
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot.
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#       - damien.marchal@univ.lille1.fr
+#############################################################################
 
 class Canvas(object):
     def __init__(self, indi, x, y):
@@ -9,7 +17,7 @@ class Canvas(object):
     def toMatrice(self):
         res =[[0 for _ in range(self.y)] for _ in range(self.x)]
 
-        for d in self.draw:
+        for d in self.indi.draw:
             centX, centY, radius = d
             for i in range(centX - radius, centX + radius+1):
                 for j in range(centY - radius, centY + radius+1):
@@ -19,7 +27,7 @@ class Canvas(object):
         return res
 
     def getMaxXY(self):
-        return (x,y)
+        return (self.x,self.y)
     
 
 class CanvasReflectionSymetry(Canvas):
@@ -41,7 +49,6 @@ class CanvasReflectionSymetry(Canvas):
 
             for i in range((self.x-centX) - radius, (self.x-centX) + radius+1):
                 for j in range(centY - radius, centY + radius+1):
-                #for j in range((self.y - centY) - radius, (self.y - centY) + radius+1):
                     if i >=0 and i< self.x and j >=0 and j< self.y:
                         res[i][j]=1
 

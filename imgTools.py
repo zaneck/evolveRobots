@@ -1,19 +1,16 @@
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot. 
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#       - damien.marchal@univ.lille1.fr
+#############################################################################
 from PIL import Image, ImageDraw
 
 import math
 import sys
-
-def makeImg(n,x,y):
-    img = [[0 for _ in range(x)] for _ in range(y)] 
-    xMiddle = int(x / 2)
-    yMiddle = int(y / 2)
-    
-    for i in range(x):
-        for j in range(y):
-            test = n.computeNetwork([(xMiddle - i) / x, (yMiddle -j) / y])[0]
-            if test > 0:
-                img[i][j]=1
-    return img
 
 def matriceToImage(m, w, h, destinationPath):
     """ Save a matrix into an RGB image of size w,h with a given name 
@@ -50,130 +47,3 @@ def matriceToImage(m, w, h, destinationPath):
                 
     draw.point(color, fill=(255,0,0))
     img.save(destinationPath)
-
-def cross(x, y, centX, centY, color=1, Cradius=None, imgChange=None):
-    if imgChange == None:
-        img = [[0 for _ in range(x)] for _ in range(y)]
-    else:
-        img = imgChange
-
-    if Cradius == None:
-        radius = int(1/4 * x)
-    else:
-        radius = Cradius
-
-    for i in range(centX-radius, centX+radius):
-        for j in range(0,y):
-            img[i][j] = color
-
-    for i in range(0,x):
-        for j in range(centY-radius, centY+radius):
-            img[i][j] = color
-
-    return img
-
-def fourSquare(x, y, color=1, Rradius=None, imgChange=None):
-    if imgChange == None:
-        img = [[0 for _ in range(x)] for _ in range(y)]
-    else:
-        img = imgChange
-        
-    if Rradius == None:
-        radius = int(1/8 * x)
-    else:
-        radius = Rradius
-
-    square(x,y, int(x/2)-(2*radius), int(y/2)-(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)+(2*radius), int(y/2)-(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)-(2*radius), int(y/2)+(2*radius), Rradius=10, imgChange=img)
-    square(x,y, int(x/2)+(2*radius), int(y/2)+(2*radius), Rradius=10, imgChange=img)
-
-    return img    
-    
-def square(x, y, centX, centY, color=1, Rradius=None, imgChange=None):
-    if imgChange == None:
-        img = [[0 for _ in range(x)] for _ in range(y)]
-    else:
-        img = imgChange
-        
-    x0 = centX
-    y0 = centY
-
-    if Rradius == None:
-        radius = int(1/4 * x)
-    else:
-        radius = Rradius
-        
-    tlx = x0 - radius
-    tly = y0 - radius
-
-    brx = x0 + radius
-    bry = y0 + radius
-    
-    for i in range(tlx,brx):
-        for j in range(tly,bry):
-            if i>=0 and i<x and j>=0 and j<y:
-                img[i][j] = color
-
-    return img
-            
-def circle(x,y, color=1, Cradius=None, imgChange=None):
-    if imgChange == None:
-        img = [[0 for _ in range(x)] for _ in range(y)]
-    else:
-        img = imgChange
-
-
-#    img = [[0 for _ in range(x)] for _ in range(y)] 
-    
-    x0 = int(x / 2)
-    y0 = int(y / 2)
-
-    if Cradius == None:
-        radius = int(1/3 * x) +2
-    else:
-        radius = Cradius
-        
-    f = 1 - radius
-    ddf_x = 1
-    ddf_y = -2 * radius
-    x = 0
-    y = radius
-    img[x0][ y0 + radius] = color
-    img[x0][ y0 - radius] = color
-    img[x0 + radius][ y0] = color
-    img[x0 - radius][ y0] = color
- 
-    while x < y:
-        if f >= 0: 
-            y -= 1
-            ddf_y += 2
-            f += ddf_y
-        x += 1
-        ddf_x += 2
-        f += ddf_x    
-        img[x0 + x][ y0 + y] = color
-        img[x0 - x][ y0 + y] = color
-        img[x0 + x][ y0 - y] = color
-        img[x0 - x][ y0 - y] = color
-        img[x0 + y][ y0 + x] = color
-        img[x0 - y][ y0 + x] = color
-        img[x0 + y][ y0 - x] = color
-        img[x0 - y][ y0 - x] = color
-
-    colorFill(img, x0, y0)
-    return img
-
-def printPict(p, x, y):
-    for i in range(x):
-        print(p[i])
-
-def colorFill(p, x, y, color=1):
-    toDo=[(x,y)]
-    for t in toDo:
-        if p[t[0]][t[1]] != color:
-            p[t[0]][t[1]] = color
-            toDo.append((t[0]+1,t[1]))
-            toDo.append((t[0]-1,t[1]))
-            toDo.append((t[0],t[1]+1))
-            toDo.append((t[0],t[1]-1))

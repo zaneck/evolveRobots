@@ -1,3 +1,11 @@
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot. 
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#############################################################################
 from config import Config
 from indi import *
 import dump 

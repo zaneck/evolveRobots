@@ -46,7 +46,7 @@ for a in firstIndi:
     p.addIndi(a)
 
 if dump.activated():
-        dump.newExperiment("log/", f, p) 
+        dump.newExperiment("log/", f, p, Config.evolveNbCycle) 
 
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)
@@ -64,4 +64,6 @@ imgTest = best.toMatrice()
 printMatrix(imgTest, sizex, sizey)
 
 if dump.activated():
+        #dump.saveHistories(candidates) 
         dump.endExperiment()
+        
