@@ -17,6 +17,7 @@ from indi import *
 from genetic import *
 from sofaBaseFitness import *
 from fakeFitness import *
+from history import History
 
 parser = argparse.ArgumentParser(description="""
 This application creates soft-robot designs that match a given specification. To generates the designs a genetic algorithm
@@ -31,6 +32,7 @@ sizex, sizey = Config.generalX, Config.generalY
 
 f = FitnessFake("fake", x=sizex, y=sizey) #FitnessSofa("sofa", x=sizex, y=sizey)
 p = Population()
+historyLog = History() 
 
 #### Randomly creates an initial population composed of 'Config.evolveFirstGen' candidates. 
 firstIndi = []
@@ -38,6 +40,8 @@ for alpha in range(Config.evolveFirstGen):
     print("init {0}/{1}\r".format(alpha+1, Config.evolveFirstGen), end="")
     a = Indi(sizex, sizey)
     a.addRandomSquare()
+    if historyLog:
+        historyLog.addEvent(a, ["N", None, None], 0)
     firstIndi.append(a)
     
 f.computeValues(firstIndi)
@@ -53,7 +57,7 @@ g = GeneticAlgo(f, p)
 print("")
 for alpha in range(Config.evolveNbCycle):
     print("evolve {0}/{1}\r".format(alpha+1, Config.evolveNbCycle), end="")
-    g.evolve()
+    g.evolve(historyLog)
 print("")
 
 #### Dup the results.
@@ -66,4 +70,5 @@ printMatrix(imgTest, sizex, sizey)
 if dump.activated():
         #dump.saveHistories(candidates) 
         dump.endExperiment()
+        historyLog.saveToCSV("log/history/history.csv")
         

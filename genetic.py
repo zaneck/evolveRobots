@@ -22,6 +22,8 @@ class Population(object):
         self.pop.append(i)
 
     def reducePopulation(self):
+        """Reduce the population to keep it below self.popMax. The Candidates that are 
+           removed are the one with the highest fitness function """
         self.pop = sorted(self.pop, key = lambda x : x.fitness)
         self.pop = self.pop[:self.popMax]
 
@@ -48,19 +50,19 @@ class GeneticAlgo(object):
         self.nbCross = int(self.nbAugmentation * self.crossRate) 
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
         
-    def evolve(self):
+    def evolve(self, historyLog=False):
         self.nbCycle += 1
 
         self.pop.reducePopulation()
         newCandidates = []
         newBest = []
         
-
         for i in range(self.best):
             newBest.append(self.pop.pop[i])
         
         for alpha in range(self.nbAdd):
-#            print("add {0}".format(alpha))
+            # Among 4 random choice select the one with the smallest fitness score and select it 
+            # as a parent for candidate that will be generated.
             s1 = random.choice(self.pop.pop)
             s2 = random.choice(self.pop.pop)
             s3 = random.choice(self.pop.pop)
@@ -84,18 +86,21 @@ class GeneticAlgo(object):
             child = best.copy()
             child.addRandomSquare()
             newCandidates.append(child)
-
-            
+            if historyLog:
+                historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
+        
         for alpha in range(self.nbClean):
-#            print("add {0}".format(alpha))
+            # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
             s1 = random.choice(self.pop.pop)
             child = best.copy()
             res = child.removeRandomSquare()
             if res == 1:
                 newCandidates.append(child)
             
+            if historyLog:
+                historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
+            
         for alpha in range(self.nbCross):
-#            print("cross {0}".format(alpha))
             s1 = random.choice(self.pop.pop)
             s2 = random.choice(self.pop.pop)
             s3 = random.choice(self.pop.pop)
@@ -114,6 +119,11 @@ class GeneticAlgo(object):
             child1, child2 = best1.crossOver(best2)
             newCandidates.append(child1)
             newCandidates.append(child2)
+
+            if historyLog:
+                historyLog.addEvent(child1, ["X", best1, best2], self.nbCycle)    
+                historyLog.addEvent(child2, ["X", best1, best2], self.nbCycle)    
+
 
         self.pop.cleanPop()
 

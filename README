@@ -8,6 +8,7 @@ Authors:
 To run the application you need to have the following libraries...
         matplotlib (http://matplotlib.org/users/installing.html)
         PIL (http://pythonware.com/products/pil/)
+        https://github.com/d3/d3/
         
 You also need to install sofa and the softRobot plugin following these docs:
         https://project.inria.fr/softrobot/

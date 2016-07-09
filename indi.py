@@ -36,8 +36,8 @@ class Indi(object):
         
         self.fitness = 0
 
-        #self.canvas = CanvasReflectionSymetry(self, x, y)
-        self.canvas = Canvas(self,x,y)
+        self.canvas = CanvasReflectionSymetry(self, x, y)
+        #self.canvas = Canvas(self,x,y)
 
     def copy(self):
         res = Indi(self.x, self.y)
