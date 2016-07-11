@@ -30,7 +30,10 @@ args = parser.parse_args()
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
 
-f = FitnessFake("fake", x=sizex, y=sizey) #FitnessSofa("sofa", x=sizex, y=sizey)
+if Config.fitnessFunction == "fake":
+        f = FitnessFake("fake", x=sizex, y=sizey) #FitnessSofa("sofa", x=sizex, y=sizey)
+else:
+        f = FitnessSofa("sofa", x=sizex, y=sizey) 
 p = Population()
 historyLog = History() 
 

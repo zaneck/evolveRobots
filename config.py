@@ -29,9 +29,10 @@ class Config(object):
     
     #evolve
     evolveFirstGen = 100
-    evolveNbCycle = 30
+    evolveNbCycle = 10
     
-
     #fitness
+    # use this to select the fitness function between ["fake", "sofa"]
+    fitnessFunction = "fake"   
     fitnessRateScore = 1
     fitnessRateVoxel = 0.1
