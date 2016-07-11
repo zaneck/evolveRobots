@@ -69,7 +69,7 @@ def addGeneration(theGeneration):
                 if num % 20 == 0 and num != 0:
                         theGenerationIndexFile.write("</tr><tr>")
                 #fixme {toMatrix instead of toMatrice}
-                imageName = "candidate{0}.png".format(num)
+                imageName = "candidate{0}.png".format(candidate.myId)
                 imagePath = generationPath+"/"+imageName
                 matriceToImage(candidate.toMatrice(), candidate.x, candidate.y, imagePath)        
                 theGenerationIndexFile.write("""

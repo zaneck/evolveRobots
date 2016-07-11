@@ -37,7 +37,7 @@ div.candidate {
 .link {
   fill: none;
   stroke: #555;
-  stroke-opacity: 0.5;
+  stroke-opacity: 0.1;
   stroke-width: 1.5px;
 }
 
@@ -45,6 +45,8 @@ div.candidate {
   stroke-width: 4.0px;
   stroke-opacity: 1.0;
   fill: #900;
+  background-color: teal;
+  fill: teal; 
 }
 
 .title
@@ -107,33 +109,98 @@ return hslToRgb(h, 0.5, 0.60);
 })();
 
 d3.csv("history.csv", function(dataset) {
+        var posdatax={}
+        var posdatay={}
         var colorset = {}
+        var gensize = {}
+        var genbegin = {}
+        var genarray = []
         dataset.forEach(function(d) {
                 colorset[d.gen] = randomColor() 
+                genbegin[d.gen] = 1000000000
+                if(d.gen in gensize){
+                        gensize[d.gen] = 0
+                        genarray[d.gen] += 1 
+                }else{
+                        gensize[d.gen] = 0
+                        genarray.push(1) 
+                }
         })
-        
+       
         var boxw = 50;
         var boxh = 20;
         var h = 500;
+        
+        var svgleft = d3.select("body")
+                        .append("svg")
+                        //.attr("width", 60)
+                        .attr("height", 2048)
+                        .attr("style", "float: left; width: 5%; margin-right: 1%; margin-bottom: 0.5em;")
 
+        var genrects = svgleft.selectAll("rect")
+                              .data(genarray)
+                              .enter()
+                              .append("rect");
+
+        var lastpath = []
+                              
         var svg = d3.select("body")
                     .append("svg")
-                    .attr("width", 1600)
-                    .attr("height", 2048);
+                    .attr("height", 2048)
+                    .attr("style", "float: left; width: 93%; margin-right: 1%; margin-bottom: 0.5em;")
+                    
+        d3.select("body")
+                .append("p")
+                .attr("style", "clear: both;")
 
         var rects = svg.selectAll("rect")
                 .data(dataset)
                 .enter()
                 .append("rect");
     
-        rects.attr("x",    function(d,i){ return (i%30)*(boxw+1) })
-                .attr("y", function(d,i){ return Math.floor((i/30))*(boxh+10) })
+        rects.attr("x",    function(d,i){ 
+                        var val = (i%30)*(boxw+1)
+                        posdatax[d.id] = val 
+                        return val }
+                    )
+                .attr("y", function(d,i){ 
+                        var val = Math.floor((i/30))*(boxh+10)
+                        if(val>gensize[d.gen]){
+                                gensize[d.gen]=val
+                        }
+                        if(val<genbegin[d.gen]){
+                                genbegin[d.gen]=val
+                        }
+                        posdatay[d.id] = val 
+                        return val })
                 .attr("width", boxw)
                 .attr("height", boxh)
                 .attr("fill", function(d,i){return colorset[d.gen] }) 
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout)
+                .on("mouseenter", mouseover)
+                .on("mouseleave", mouseout)
+                .on("click", mouseclick)
                 .attr("id", function(d){return d.id;} )
+
+          genrects.attr("x",    function(d,i){ return 0 })
+                .attr("y",      function(d,i){ return genbegin[i]+30 })
+                .attr("width", 60)
+                .attr("height", function(d,i){ return gensize[i]-genbegin[i]})
+                .attr("fill", function(d,i){return colorset[i] }) 
+                
+          svgleft.selectAll("text")
+                .data(genarray)
+                .enter()
+                .append("text")
+                .text(function(d,i) { return i })
+                .attr("x", function(d, i) { return 25 ;})
+                .attr("y", function(d,i){ return 0.5*(gensize[i]+genbegin[i]+60) })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "15px")
+                .attr("fill", "white")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "middle")
+               
+                
 
         svg.selectAll("text")
                 .data(dataset)
@@ -149,8 +216,9 @@ d3.csv("history.csv", function(dataset) {
                 .attr("fill", "white")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "middle")
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout)
+                .on("mouseenter", mouseover)
+                .on("mouseleave", mouseout)
+                .on("click", mouseclick)
                 
        var link = svg.selectAll(".link")
         .data(dataset)
@@ -169,31 +237,66 @@ d3.csv("history.csv", function(dataset) {
                         + "L" + [tx,ty];
         });
         
-        function changeParent(id,state){
-                svg.selectAll("#node-" + id)
-                              .classed("source", state);
-                if( dataset[id].a == 'None')
-                        return;
-                              
-                changeParent(dataset[id].a, state)
+        function makimg(datapath){
+                 var img = svg.selectAll("image")
+                                    .data(lastpath)
+                                    .enter()
+                                    .append("image")
+                                    .attr("width", 64)
+                                    .attr("height", 64)
+                                    .attr("xlink:href", function(d,i){ return "../generation"+dataset[d].gen+"/candidate"+d+".png"})
+                                    .attr("x", function(d,i){ 
+                                                if(i>0)
+                                                                return posdatax[d]
+                                                              return posdatax[d]-60 
+                                                               })
+                                    .attr("y", function(d,i){ 
+                                        return posdatay[d] }
+                                        )
         }
         
-        function displayCandidate(id, state){
-                var link = svg.selectAll(".link")
+        function changeParent(id,state){
+                lastpath.push(id)           
+                
+                if(state){
+                        svg.select("#node-" + id)
+                              .transition()
+                              .duration(0)
+                              .style("stroke-opacity", "1")
+                              .style("stroke-width", "4px")
+                }else{
+                        svg.select("#node-" + id)
+                              .transition()
+                              .duration(0)
+                              .style("stroke-opacity", "0.1")
+                              .style("stroke-width", "1px")
+                }
+                   
+                if( dataset[id].a == 'None'){
+                        makimg(lastpath)
+                        lastpath=[]
+                        return ;
+                }
+                changeParent(dataset[id].a, state)
+        }
+       
+        function mouseclick(d){
+                window.open( "../generation"+d.gen+"/index.html", "_self")
         }
        
         function mouseover(d) {
-                changeParent(d.id, true) 
-                displayCandidate(d.id)
+               changeParent(d.id, true) 
+               console.log("ADDED IMAGE")
         }       
 
         function mouseout(d) {
+                svg.selectAll("image").remove()
+                console.log("REMOVE IMAGE")
                 changeParent(d.id, false)
         }
         
 });
 
-//var dataset = [ [1,'N','None', 'None', 0], [2,'N','None', 'None', 0], [3, 'A', 1, 'None', 1], [4, 'X', 1, 2, 1]   ];
 </script>
 
 </body>
