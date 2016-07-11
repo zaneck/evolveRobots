@@ -53,7 +53,7 @@ for a in firstIndi:
     p.addIndi(a)
 
 if dump.activated():
-        dump.newExperiment("log/", f, p, Config.evolveNbCycle) 
+        dump.newExperiment("log", f, p, Config.evolveNbCycle) 
 
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)

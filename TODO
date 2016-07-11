@@ -3,3 +3,7 @@ Il faut un setup.py voir un truc qui gère les dépendence genre PIP
 Il faut restaurer les tests pour qu'ils marchent à nouveau. 
 
 Faire une vrai class de dump.py 
+
+Faire un fichier de config qu'on peut charger en passant le nom du fichier en ligne de commande. 
+
+Continuer la partie 

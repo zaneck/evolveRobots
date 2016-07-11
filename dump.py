@@ -35,7 +35,7 @@ def saveHistories(theCandidates):
                         
 def addGeneration(theGeneration):
         global generationCount
-        
+        theHistoryIndexFileName = "../../"+theBasePath+"/history/index.html"  
         generationPath = theBasePath+"/generation{0}".format(generationCount)                
         if not os.path.exists(generationPath): 
                 os.mkdir(generationPath)
@@ -43,12 +43,12 @@ def addGeneration(theGeneration):
         if generationCount > 0:
                 prevGenerationPath = "../generation{0}/index.html".format(generationCount-1)                
         else:
-                prevGenerationPath = "../../../"+theIndexFileName 
+                prevGenerationPath = "../../"+theIndexFileName 
              
         if generationCount+1 < maxgeneration:       
                 nextGenerationPath = "../generation{0}/index.html".format(generationCount+1)                
         else:
-                nextGenerationPath = "../../../"+theIndexFileName                
+                nextGenerationPath = "../../"+theIndexFileName                
         
         theGenerationIndexFileName = generationPath+"/index.html"
         theGenerationIndexFile = open(theGenerationIndexFileName, "w+t")
@@ -58,12 +58,12 @@ def addGeneration(theGeneration):
         <header>
         </header>
         <body>
-        <center><h1>Generation: {0}</h1> <a href='{2}'>[prev]</a><a href='{3}'>[next]</a></center>
+        <center><h1>Generation: {0}</h1> <a href='{2}'>[prev]</a><a href='{4}'>history</a><a href='{3}'>[next]</a></center>
         <hr>
         Number of candidates: {1} <br> 
         <hr>
         <table width='100%'><tr= width='100%'>
-        """.format(generationCount, len(theGeneration), prevGenerationPath, nextGenerationPath))
+        """.format(generationCount, len(theGeneration), prevGenerationPath, nextGenerationPath, theHistoryIndexFileName))
         num=0
         for candidate in theGeneration:
                 if num % 20 == 0 and num != 0:
@@ -83,7 +83,7 @@ def addGeneration(theGeneration):
                 
         theGenerationIndexFile.write("""</tr></table></body></html>""")
        
-        theIndexFile.write("""<a href='../../{0}'>Generation {1}</a><br> """.format(theGenerationIndexFileName, generationCount))
+        theIndexFile.write("""<a href='../{0}'>Generation {1}</a><br> """.format(theGenerationIndexFileName, generationCount))
        
         generationCount+=1
         
@@ -96,6 +96,7 @@ def newExperiment(theDestPath, theFitnessFunction, theInitialPopulation, numGene
         maxgeneration = numGenerations
         theBasePath = theDestPath 
         theIndexFileName=theDestPath+"/index.html"
+        historyIndexFileName = "../"+theBasePath+"/history/index.html"  
         theIndexFile=open(theIndexFileName, "w+t")
         theIndexFile.write("""
         <html>
@@ -106,9 +107,12 @@ def newExperiment(theDestPath, theFitnessFunction, theInitialPopulation, numGene
         <h1>Experiment {1} </h1>
         <hr>
         </center>
-        Fitness function: {0}
+        Fitness function: {0} <br>
+        Initial Population: {2} <br>
+        Number of generations: {3} <br>
+        History: <a href='{4}'>View</a>
         <hr>
-        """.format(theFitnessFunction.name, str(datetime.now())))
+        """.format(theFitnessFunction.name, str(datetime.now()), len(theInitialPopulation), numGenerations, historyIndexFileName))
                 
 def endExperiment():
         global theIndexFile 

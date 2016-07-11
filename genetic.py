@@ -16,6 +16,9 @@ class Population(object):
         self.popMax = Config.PopulationPopMax
         self.pop =[]
 
+    def __len__(self):
+        return len(self.pop)
+
     def addIndi(self, i):
         #incr numberOfNetwork
         self.numberOfIndi += 1

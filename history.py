@@ -13,9 +13,6 @@ class History(object):
             of our population
             Example:
                 h = History()
-                h.addCandidate(aCandidate, [None, None, None], 123) # To add a new candidate without parent at generation 123
-                h.addCandidate(aCandidate, ["X", parentIdA, parentIdB], 125) # To add a new candidate from parent at generation 123             
-                h.addCandidate(aCandidate, ["A", parentIdA, aRect], 125) # To add a new candidate from parent at generation 123             
         """ 
         def __init__(self):
                 self.events = []

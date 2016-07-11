@@ -37,7 +37,7 @@ div.candidate {
 .link {
   fill: none;
   stroke: #555;
-  stroke-opacity: 0.2;
+  stroke-opacity: 0.5;
   stroke-width: 1.5px;
 }
 
@@ -46,8 +46,31 @@ div.candidate {
   stroke-opacity: 1.0;
   fill: #900;
 }
+
+.title
+{
+        font: 40px sans-serif;
+}
+
+.desc
+{
+        font: 15px sans-serif;
+}
+
 </style>
 <body>
+
+<div class='title'>History view</div>
+<br>
+<hr>
+<div class='desc'>
+In a single view we display all the candidates that appears during a run of the algorithm. <br>
+They are ordered according to their "birthdate". <br>
+The color is representing the generation. It is possible to visualize the parent of a candidate by 
+putting the mouse over. <br>
+</div>
+<hr>
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 // This function randomColor has been cut&pasted from somewhere...forgot its author. 
@@ -85,9 +108,7 @@ return hslToRgb(h, 0.5, 0.60);
 
 d3.csv("history.csv", function(dataset) {
         var colorset = {}
-        console.log("entries: "+dataset.length)
         dataset.forEach(function(d) {
-                console.log("d: "+d)
                 colorset[d.gen] = randomColor() 
         })
         
@@ -128,6 +149,8 @@ d3.csv("history.csv", function(dataset) {
                 .attr("fill", "white")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "middle")
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout)
                 
        var link = svg.selectAll(".link")
         .data(dataset)
@@ -135,7 +158,6 @@ d3.csv("history.csv", function(dataset) {
         .attr("class", "link")
         .attr("id",function(d, i){ return "node-"+d.id;}) 
         .attr("d", function(d, i) {
-                console.log("N"+d.a)
                 if(d.a == 'None')
                         return "";
                 
@@ -150,23 +172,19 @@ d3.csv("history.csv", function(dataset) {
         function changeParent(id,state){
                 svg.selectAll("#node-" + id)
                               .classed("source", state);
-        
-                console.log("DSA: "+id)
-                console.log("DS: "+dataset[id])
                 if( dataset[id].a == 'None')
                         return;
                               
                 changeParent(dataset[id].a, state)
-        
-                //if( dataset[id].b == 'None')
-                //        return;
-                        
-                //changeParent(dataset[id].b, state)
-
         }
         
+        function displayCandidate(id, state){
+                var link = svg.selectAll(".link")
+        }
+       
         function mouseover(d) {
                 changeParent(d.id, true) 
+                displayCandidate(d.id)
         }       
 
         function mouseout(d) {
