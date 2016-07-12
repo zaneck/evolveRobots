@@ -1,9 +1,8 @@
 #############################################################################
-#
 # A fake fitness function to test the algorithm without actually running sofa. 
 # 
 # Contributors:
-#	- created by Valentin Owczarek
+#	- created by damien.marchal@univ-lille1.fr
 #############################################################################
 import random
 
@@ -13,8 +12,9 @@ from indi import *
 
 from config import Config
 
-
 def binarybin(values):
+        """This binning function is using the first value at [0]. If < 0 it return 1.0 (there is matter at
+           this location. Otherwise it return 0 (no matter)"""
         if values[0] < 0:
                 return 1.0
         return 0.0
@@ -32,7 +32,8 @@ class FitnessFake(Fitness):
             
     def simulate(self, candidate):
         imgTest = self.toMatrice(candidate)
-        #printMatrix(imgTest)
+        print("")
+        printMatrix(imgTest)
         cptVoxel = 0
         for i in range(self.width):
             for j in range(self.height):

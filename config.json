@@ -14,6 +14,7 @@
   "genticNbAugmentation": 100,
   "indiSizeMax": 1024,
   "indiSquareMaxSize": 0.2,
+  "indiSquareMinSize": 0.1,
   "centerMinValue": -0.4,
   "centerMaxValue": 0.4,
   "nbThread": 1

@@ -10,15 +10,10 @@
 import math
 from config import Config
 
+from geometry import * 
 from imgTools import *
 from canvas import Canvas
 import random
-
-def circledistance(center, radius, pos):
-        dx=pos[0]-center[0] 
-        dy=pos[1]-center[1] 
-        return math.sqrt(dx*dx + dy*dy)-radius
-
 
 class Indi(object):
     idIndi = 0
@@ -50,22 +45,17 @@ class Indi(object):
         res.lenDraw = self.lenDraw
         return res
     
-    def addSquare(self):
-        centX = 0.2
-        centY = 0.3
-        radiusW = 0.2
-        radiusH = 0.2
-        
-        self.draw.append((centX,centY,radiusW, radiusH))
+    def addShape(self, shape):
+        self.draw.append(shape)
         self.lenDraw += 1
-
+    
     def addRandomSquare(self):
         centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)
         centY = random.uniform(Config.centerMinValue, Config.centerMaxValue)
-        halfW = random.uniform(0.1, Config.indiSquareMaxSize)
-        halfH = random.uniform(0.1, Config.indiSquareMaxSize)
+        halfW = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
+        halfH = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         
-        self.draw.append((centX,centY,halfW,halfH))
+        self.draw.append(Rectangle(centX,centY,halfW,halfH))
         self.lenDraw += 1
 
     def removeRandomSquare(self):
@@ -101,13 +91,18 @@ class Indi(object):
         return (res1,res2)
 
     def getValueAt(self, pos):
-        """ Returns a list of float value between  indicating the data content """
-        res=[]
+        """ Returns a list of float value indicating the data content 
+            first value is the distance to the border of the object
+            second value is the primitive that emit this distance
+        """
+        res=[1.0, 1]
+        minv=float("inf")
         for f in self.draw:
-                if pos[0] >= f[0]-f[2] and pos[0] <= f[0]+f[2] and pos[1] >= f[1]-f[3] and pos[1] <= f[1]+f[3]:
-                        return [-1.0]
-        return [1.0]         
-        #return [circledistance((0,0), 0.4, pos)]
+                v = f.getValueAt(pos)
+                if(v[0]<minv):
+                        minv = v[0]
+                        res = v 
+        return res
 
     @property
     def myId(self):

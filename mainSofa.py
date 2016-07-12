@@ -73,7 +73,7 @@ print("")
 #### Dump the results.
 best = f.bestOverAll
 
-print("")
+print("======= RESULT =======")
 imgTest = f.toMatrice(best)
 printMatrix(imgTest)
 
