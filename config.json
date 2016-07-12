@@ -1,0 +1,18 @@
+{
+  "PopulationPopMax": 100,
+  "evolveFirstGen": 100,
+  "evolveNbCycle": 10,
+  "fitnessFunction": "fake",
+  "fitnessRateScore": 1,
+  "fitnessRateVoxel": 0.1,
+  "generalX": 20,
+  "generalY": 20,
+  "geneticBest": 10,
+  "genticAddRate": 0.3,
+  "genticCleanRate": 0.2,
+  "genticCrossRate": 0.5,
+  "genticNbAugmentation": 100,
+  "indiSizeMax": 1024,
+  "indiSquareMaxSize": 4,
+  "nbThread": 1
+}

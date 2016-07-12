@@ -8,6 +8,33 @@
 #	- created by Valentin Owczarek
 #       - damien.marchal@univ.lille1.fr
 #############################################################################
+import json
+
+import json
+import inspect
+
+class ObjectEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, "to_json"):
+            return self.default(obj.to_json())
+        elif hasattr(obj, "__dict__"):
+            d = dict(
+                (key, value)
+                for key, value in inspect.getmembers(obj)
+                if not key.startswith("__")
+                and not inspect.isabstract(value)
+                and not inspect.isbuiltin(value)
+                and not inspect.isfunction(value)
+                and not inspect.isgenerator(value)
+                and not inspect.isgeneratorfunction(value)
+                and not inspect.ismethod(value)
+                and not inspect.ismethoddescriptor(value)
+                and not inspect.isroutine(value)
+            )
+            return self.default(d)
+        return obj
+
+
 class Config(object):
     #general
     generalX, generalY = 20, 20 #size of the grid
@@ -36,3 +63,15 @@ class Config(object):
     fitnessFunction = "fake"   
     fitnessRateScore = 1
     fitnessRateVoxel = 0.1
+    
+    def save(filename):
+        f = open(filename, "w+t")
+        res = json.dump(Config, f, cls=ObjectEncoder, indent=2, sort_keys=True)
+        f.close()
+    
+    def load(filename):
+        fp = open(filename)
+        res = json.load(fp)
+        for entry in res:
+                setattr(Config, entry, res[entry])
+        fp.close()

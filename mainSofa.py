@@ -21,11 +21,17 @@ from history import History
 
 parser = argparse.ArgumentParser(description="""
 This application creates soft-robot designs that match a given specification. To generates the designs a genetic algorithm
-is implemented. To change the parameters of the genetic algorithm you need to edit the file [config.py]
+is implemented. To change the parameters of the genetic algorithm you need to edit the config file [config.json]
 """)
+
+parser.add_argument('--config', metavar='file', 
+                     default='config.json', type=argparse.FileType('r'),
+                     help='file to process (defaults to config.json)')
 
 #toDo(valentin) add scene and mintopo var
 args = parser.parse_args()
+
+Config.load(args.config.name)
 
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
