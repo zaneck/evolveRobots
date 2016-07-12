@@ -35,10 +35,10 @@ class TestFitnessFake(unittest.TestCase):
         
         candidate = Indi(32, 32)
         
-        candidate.addShape(Rectangle(0.2,0.3,0.2,0.2))       
+        candidate.addShape(Rectangle(0.2,0.3,0.1,0.2))       
         printMatrix( fitness.toMatrice(candidate) )
 
-        candidate.addShape(Circle(-0.2,-0.2,0.2))  
+        candidate.addShape(Circle(0.2,-0.2,0.2))  
         print("")     
         printMatrix( fitness.toMatrice(candidate) )
 
