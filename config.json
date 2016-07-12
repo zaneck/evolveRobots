@@ -13,6 +13,8 @@
   "genticCrossRate": 0.5,
   "genticNbAugmentation": 100,
   "indiSizeMax": 1024,
-  "indiSquareMaxSize": 4,
+  "indiSquareMaxSize": 0.2,
+  "centerMinValue": -0.4,
+  "centerMaxValue": 0.4,
   "nbThread": 1
 }

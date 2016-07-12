@@ -33,7 +33,7 @@ def saveHistories(theCandidates):
         for candidate in theCandidates:
                 saveCandidateHistory(candidate) 
                         
-def addGeneration(theGeneration):
+def addGeneration(theGeneration, theFitnessFunction):
         global generationCount
         theHistoryIndexFileName = "../../"+theBasePath+"/history/index.html"  
         generationPath = theBasePath+"/generation{0}".format(generationCount)                
@@ -71,14 +71,16 @@ def addGeneration(theGeneration):
                 #fixme {toMatrix instead of toMatrice}
                 imageName = "candidate{0}.png".format(candidate.myId)
                 imagePath = generationPath+"/"+imageName
-                matriceToImage(candidate.toMatrice(), candidate.x, candidate.y, imagePath)        
+                matriceToImage(theFitnessFunction.toMatrice(candidate), theFitnessFunction.canvas.res[0], 
+                                                                        theFitnessFunction.canvas.res[1], imagePath)        
                 theGenerationIndexFile.write("""
                         <td width='5%'><center>
                                 <img src='{0}' width='100%' ></img><br>
+                                {2}<br>
                                 Score: {1:.0f}
                                 </center>
                         </td>
-                """.format(imageName, 1.0/candidate.fitness))
+                """.format(imageName, 1.0/candidate.fitness, candidate.myId))
                 num+=1
                 
         theGenerationIndexFile.write("""</tr></table></body></html>""")

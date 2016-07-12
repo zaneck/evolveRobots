@@ -9,50 +9,41 @@
 #############################################################################
 
 class Canvas(object):
-    def __init__(self, indi, x, y):
-        self.indi = indi
-        self.x = x
-        self.y = y
-        
-    def toMatrice(self):
-        res =[[0 for _ in range(self.y)] for _ in range(self.x)]
+    """A Canvas is used to discreetize a candidate into a grid
+       The Canvas is always centered at 0,0 and of size -1,-1 to 1,1
+       Example:
+                c = Canvas( dim(1.0,1.0), res(16,16)) 
+    """
+    def __init__(self, dim, res):
+        self.dim = dim 
+        self.res = res  
 
-        for d in self.indi.draw:
-            centX, centY, radius = d
-            for i in range(centX - radius, centX + radius+1):
-                for j in range(centY - radius, centY + radius+1):
-                    if i >=0 and i< self.x and j >=0 and j< self.y:
-                        res[i][j]=1
+    def toMatrice(self, candidate, binfct):
+        """Converts a candidate into a matrix using a given binning function.
+           The function is evaluated in the middle of the grid voxels.
+        """ 
+        res =[[0 for _ in range(self.res[1])] for _ in range(self.res[0])]
+
+        for i in range(self.res[0]):
+                for j in range(self.res[1]):
+                    px = ( self.dim[0] * i / self.res[0] ) - 0.5 * self.dim[0] + 0.5 * self.dim[0] / self.res[0] 
+                    py = ( self.dim[1] * j / self.res[1] ) - 0.5 * self.dim[1] + 0.5 * self.dim[1] / self.res[1]
                     
+                    res[i][j] = binfct( candidate.getValueAt( (px,py) ))
         return res
-
-    def getMaxXY(self):
-        return (self.x,self.y)
-    
-
-class CanvasReflectionSymetry(Canvas):
-    def __init__(self, indi, x, y):
-        Canvas.__init__(self, indi, x, y)
-
-        self.xMin = int(self.x / 2) 
-        self.yMin = int(self.y / 2)
         
-    def toMatrice(self):
-        res =[[0 for _ in range(self.y)] for _ in range(self.x)]
+def printMatrix(m):
+        """ Prints a m = {
+               0_0, 1_0, 2_0, 3_0,
+               0_1, 1_1, 2_1, 3_1,
+               ...
+            }
             
-        for d in self.indi.draw:
-            centX, centY, radius = d
-            for i in range(centX - radius, centX + radius+1):
-                for j in range(centY - radius, centY + radius+1):
-                    if i >=0 and i< self.x and j >=0 and j< self.y:
-                        res[i][j]=1
-
-            for i in range((self.x-centX) - radius, (self.x-centX) + radius+1):
-                for j in range(centY - radius, centY + radius+1):
-                    if i >=0 and i< self.x and j >=0 and j< self.y:
-                        res[i][j]=1
-
-        return res
-
-    def getMaxXY(self):
-        return (self.xMin, self.yMin)
+         """
+        for j in range(len(m[0])):
+            for i in range(len(m)):
+                if m[i][j] == 1:
+                        print("X", end="")
+                else:
+                        print("-", end="")
+            print("")

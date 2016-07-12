@@ -28,18 +28,20 @@ parser.add_argument('--config', metavar='file',
                      default='config.json', type=argparse.FileType('r'),
                      help='file to process (defaults to config.json)')
 
-#toDo(valentin) add scene and mintopo var
 args = parser.parse_args()
 
 Config.load(args.config.name)
 
+print("TEST")
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
 
+canvas = Canvas(dim=(1.0,1.0),res=(Config.generalX, Config.generalY))
+
 if Config.fitnessFunction == "fake":
-        f = FitnessFake("fake", x=sizex, y=sizey) #FitnessSofa("sofa", x=sizex, y=sizey)
+        f = FitnessFake("fake", canvas)
 else:
-        f = FitnessSofa("sofa", x=sizex, y=sizey) 
+        f = FitnessSofa("sofa", canvas, x=sizex, y=sizey) 
 p = Population()
 historyLog = History() 
 
@@ -52,9 +54,8 @@ for alpha in range(Config.evolveFirstGen):
     if historyLog:
         historyLog.addEvent(a, ["N", None, None], 0)
     firstIndi.append(a)
-    
-f.computeValues(firstIndi)
 
+f.computeValues(firstIndi)
 for a in firstIndi:
     p.addIndi(a)
 
@@ -63,21 +64,20 @@ if dump.activated():
 
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)
-print("")
+print("======== START =======")
 for alpha in range(Config.evolveNbCycle):
-    print("evolve {0}/{1}\r".format(alpha+1, Config.evolveNbCycle), end="")
+    print("evolve {0}/{1}\r".format(alpha+1, Config.evolveNbCycle), end="\n")
     g.evolve(historyLog)
 print("")
 
-#### Dup the results.
+#### Dump the results.
 best = f.bestOverAll
 
 print("")
-imgTest = best.toMatrice()
-printMatrix(imgTest, sizex, sizey)
+imgTest = f.toMatrice(best)
+printMatrix(imgTest)
 
 if dump.activated():
-        #dump.saveHistories(candidates) 
         dump.endExperiment()
         historyLog.saveToCSV("log/history/history.csv")
         

@@ -4,7 +4,7 @@ from indi import *
 from config import Config
 
 class Fitness(object):
-    def __init__(self,):
+    def __init__(self):
         self.name="Abstract fitness fun"
         self.bestOverAll = None
         self.bestNumber = 0
@@ -24,10 +24,6 @@ class Fitness(object):
             item = self.queue.get()
             fit = self.simulate(item)
             item.fitness = fit
-
-            print("")
-            imgTest = item.toMatrice()
-            printMatrix(imgTest, self.x, self.y)
             
             #lock the best
             with self.bestOverAllLock:

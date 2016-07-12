@@ -57,8 +57,6 @@ class TestIndie(unittest.TestCase):
         print(c.__dict__)
         print(d.__dict__)
 
-        mat = a.toMatrice()
-
     def test_atLeastOneSquareKO(self):
         a = Indi(16, 16)
         res = a.removeRandomSquare()
@@ -74,8 +72,7 @@ class TestIndie(unittest.TestCase):
         a.addRandomSquare()
         a.addRandomSquare()
         res = a.removeRandomSquare()
-        self.assertEqual(res, 1)
-   
+        self.assertEqual(res, 1)   
         
 if __name__ == '__main__':
     unittest.main()

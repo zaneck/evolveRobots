@@ -7,56 +7,66 @@
 #	- created by Valentin Owczarek
 #       - damien.marchal@univ.lille1.fr
 #############################################################################
+import math
 from config import Config
 
 from imgTools import *
-from canvas import CanvasReflectionSymetry, Canvas
+from canvas import Canvas
 import random
+
+def circledistance(center, radius, pos):
+        dx=pos[0]-center[0] 
+        dy=pos[1]-center[1] 
+        return math.sqrt(dx*dx + dy*dy)-radius
 
 
 class Indi(object):
     idIndi = 0
     
-    def __init__(self, x, y):
+    def __init__(self, width, height):
         #test params
-        if not isinstance(x, int) or not isinstance(y, int):
+        if not isinstance(width, int) or not isinstance(height, int):
             raise TypeError
 
-        if x > Config.indiSizeMax or y > Config.indiSizeMax:
+        if width > Config.indiSizeMax or height> Config.indiSizeMax:
             raise MemoryError
         
         self.idIndi = Indi.idIndi
         Indi.idIndi +=1
         
-        self.x =x
-        self.y =y
+        self.width=width
+        self.height=height
 
-        self.draw = [] #(centX, centY, radius)
+        self.draw = [] 
         self.lenDraw = 0
-        
+       
         self.fitness = 0
 
-        self.canvas = CanvasReflectionSymetry(self, x, y)
-        #self.canvas = Canvas(self,x,y)
-
     def copy(self):
-        res = Indi(self.x, self.y)
-
+        res = Indi(self.width, self.height)
         for d in self.draw :
             res.draw.append(d)
 
         res.lenDraw = self.lenDraw
-        
         return res
-            
-    def addRandomSquare(self):
-        x, y = self.canvas.getMaxXY()
-        centX = random.randint(0,self.x-1)
-        centY = random.randint(0,self.y-1)
-        radius = random.randint(0, Config.indiSquareMaxSize)
+    
+    def addSquare(self):
+        centX = 0.2
+        centY = 0.3
+        radiusW = 0.2
+        radiusH = 0.2
         
-        self.draw.append((centX,centY,radius))
-        self.lenDraw +=1
+        self.draw.append((centX,centY,radiusW, radiusH))
+        self.lenDraw += 1
+
+    def addRandomSquare(self):
+        centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)
+        centY = random.uniform(Config.centerMinValue, Config.centerMaxValue)
+        halfW = random.uniform(0.1, Config.indiSquareMaxSize)
+        halfH = random.uniform(0.1, Config.indiSquareMaxSize)
+        
+        self.draw.append((centX,centY,halfW,halfH))
+        self.lenDraw += 1
 
     def removeRandomSquare(self):
         if self.lenDraw >=2:
@@ -67,10 +77,9 @@ class Indi(object):
         else:
             return 0
             
-            
     def crossOver(self, i):
-        res1 = Indi(self.x, self.y)
-        res2 = Indi(self.x, self.y)
+        res1 = Indi(self.width, self.height)
+        res2 = Indi(self.width, self.height)
         
         borneMax = min(self.lenDraw, i.lenDraw)
         borne = random.randint(0,borneMax)
@@ -91,19 +100,16 @@ class Indi(object):
             
         return (res1,res2)
 
+    def getValueAt(self, pos):
+        """ Returns a list of float value between  indicating the data content """
+        res=[]
+        for f in self.draw:
+                if pos[0] >= f[0]-f[2] and pos[0] <= f[0]+f[2] and pos[1] >= f[1]-f[3] and pos[1] <= f[1]+f[3]:
+                        return [-1.0]
+        return [1.0]         
+        #return [circledistance((0,0), 0.4, pos)]
+
     @property
     def myId(self):
         return self.idIndi
 
-    def toMatrice(self):
-        return self.canvas.toMatrice()
-
-
-def printMatrix(m, w, h):
-        for j in range(h):
-            for i in range(w):
-                if m[i][j] == 1:
-                        print("X", end="")
-                else:
-                        print("-", end="")
-            print("")

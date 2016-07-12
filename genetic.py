@@ -54,8 +54,7 @@ class GeneticAlgo(object):
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
         
     def evolve(self, historyLog=False):
-        
-
+        print("========================= generation {0} ================================".format(self.nbCycle))
         self.pop.reducePopulation()
         newCandidates = []
         newBest = []
@@ -140,5 +139,5 @@ class GeneticAlgo(object):
             self.pop.addIndi(i)
             
         if dump.activated():
-                dump.addGeneration(newCandidates) 
+                dump.addGeneration(newCandidates, self.fitnessFun) 
         self.nbCycle += 1
