@@ -18,7 +18,7 @@ import random
 class Indi(object):
     idIndi = 0
     
-    def __init__(self, width, height):
+    def __init__(self, width, height, withSymmetry=True):
         #test params
         if not isinstance(width, int) or not isinstance(height, int):
             raise TypeError
@@ -38,17 +38,30 @@ class Indi(object):
         self.fitness = 0
         
         self.rootunion = Union()
-        self.symmetry = Symmetry(self.rootunion, axis="x") 
+        self.symmetry = self.rootunion 
+        if withSymmetry:
+                self.symmetry = Symmetry(self.rootunion, axis="x")
 
     def copy(self):
         res = Indi(self.width, self.height)
         for s in self.rootunion.children :
             res.rootunion.addShape(s)
-        #res.lenDraw = self.lenDraw
         return res
     
     def addShape(self, shape):
         self.rootunion.addShape(shape)
+        
+    def addRandomCircle(self):
+        centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)
+        centY = random.uniform(Config.centerMinValue, Config.centerMaxValue)
+        w = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
+        self.addShape(Circle(centX, centY, w))    
+        
+    def addRandomShape(self):
+        if random.random() < 0.1:
+                self.addRandomSquare()
+        else:
+                self.addRandomCircle()    
         
     def addRandomSquare(self):
         centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)
@@ -56,7 +69,7 @@ class Indi(object):
         halfW = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         halfH = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         
-        self.rootunion.addShape(Rectangle(centX,centY,halfW,halfH))
+        self.addShape(Rectangle(centX,centY,halfW,halfH))
         
     def removeRandomSquare(self):
         if len(self.rootunion) >=2:

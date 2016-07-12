@@ -27,6 +27,16 @@ class Rectangle(Shape):
                         return [-1.0]
                 return [1.0]         
 
+class Inverse(ShapeOperator):
+        """ Returns the inverse of the children """
+        def __init__(self, aShape):
+                self.child = aShape
+                
+        def getValueAt(self, pos):
+                res = self.child.getValueAt(pos)
+                res[0] = -res[0]                
+                return res
+                
 class Union(ShapeOperator):
         """ Returns the unions of all the children shapes"""
         def __init__(self):
@@ -72,6 +82,16 @@ class Symmetry(ShapeOperator):
                         if pos[1] < 0:
                                 ny = -pos[1] 
                 return self.child.getValueAt((nx,ny))
+
+class Offset(ShapeOperator):
+        def __init__(self, aChild, offset=0.1):
+                self.child = aChild
+                self.offset = offset
+        
+        def getValueAt(self, pos):
+                res = self.child.getValueAt(pos)
+                res[0] = res[0]-self.offset
+                return res 
                                 
                                 
 class Circle(Shape):

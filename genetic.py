@@ -86,7 +86,8 @@ class GeneticAlgo(object):
                 best = best2
 
             child = best.copy()
-            child.addRandomSquare()
+            #child.addRandomSquare()
+            child.addRandomShape()
             newCandidates.append(child)
             if historyLog:
                 historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
