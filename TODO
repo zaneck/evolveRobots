@@ -1,9 +1,17 @@
-Il faut un setup.py voir un truc qui gère les dépendence genre PIP
+ToDos:
+        - il faut un setup.py voir un truc qui gère les dépendence genre PIP
+        - il faut restaurer les tests pour qu'ils marchent à nouveau. 
+        - il faut pouvoir changer la "scene" sofa facilement:
+                - générer la scène, les contraintes et la actuateurs à partir d'un modèle simplifié
+                - éditeur graphique
+        - améliorer la représentation géométrique des objets:
+                - autoriser d'autres primitives que des rectangles
+        - envisager une approche par mutation qui découperait les zones en zones plus petites.
 
-Il faut restaurer les tests pour qu'ils marchent à nouveau. 
+Dones:
+        - 12/07/2016: faire un fichier de config qu'on peut charger en passant le nom du fichier en ligne de commande. 
+        - 12/07/2016: faire une vrai class de dump.py 
 
-Faire une vrai class de dump.py 
+        
 
-Faire un fichier de config qu'on peut charger en passant le nom du fichier en ligne de commande. 
 
-Continuer la partie 
