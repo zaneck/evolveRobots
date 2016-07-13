@@ -48,18 +48,27 @@ def matriceTocouple(m, x, y):
             return []
         return res
 
-def sorensenDice(img, mimg, x, y):
+def sorensenDice(img, mimg):
+    """Compute the difference between two images using the sorensendDice metric;
+       The function returns a value between 0 and 1.  Zero stands for totally similar images while One 
+       is for totally different content. 
+       Have a look at https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient for more information
+       """
+    # We check that the two images have the same dimmensions 
+    assert(len(img) == len(mimg))
+    assert(len(img[0]) == len(mimg[0]))
+    
     cpt = 0
     cptA = 0
     cptB = 0
     
-    for i in range(x):
-        for j in range(y):                
-            if img[i][j] == 1:
-                cptA += 1
-            if mimg[i][j] == 1:
-                cptB += 1
-            if img[i][j] == mimg[i][j] and img[i][j] == 1:
+    for i in range(len(img)):
+        for j in range(len(img[0])):                
+            #if img[i][j] == 1:
+            cptA += 1
+            #if mimg[i][j] == 1:
+            cptB += 1
+            if img[i][j] == mimg[i][j] :
                 cpt += 1
 
     return 1- ((2*cpt) / (cptA + cptB))
