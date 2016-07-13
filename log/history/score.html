@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.node circle {
+  fill: #999;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.node--internal circle {
+  fill: #555;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+div.candidate {
+    display: inline-block;
+    width: 50px;
+    height: 20px;   /* We'll override this later */
+    background-color: teal;
+    margin-right: 2px;
+    text-align: center;
+}
+
+.image {
+  opacity: 0.0;
+}
+
+.link {
+  fill: none;
+  stroke: #F00;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
+
+.link.source {
+  stroke-width: 0.0px;
+  stroke-opacity: 1.0;
+  stroke: #F00;
+}
+
+.hoverlinks {
+  fill: none;
+  stroke: #F00;
+  stroke-opacity: 0.0;
+  stroke-width: 5px;
+}
+
+.title
+{
+        font: 40px sans-serif;
+}
+
+.desc
+{
+        font: 15px sans-serif;
+}
+
+</style>
+<body>
+
+<div class='title'>History view</div>
+<br>
+<hr>
+<div class='desc'>
+In a single view we display all the candidates that appears during a run of the algorithm. <br>
+They are ordered according to their "birthdate". <br>
+The color is representing the generation. It is possible to visualize the parent of a candidate by 
+putting the mouse over. <br>
+</div>
+<hr>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+// This function randomColor has been cut&pasted from somewhere...forgot its author. 
+// If you know him please contact me to add proper credits here. 
+var randomColor = (function(){
+var golden_ratio_conjugate = 0.618033988749895;
+var h = 1; //Math.random();
+var hslToRgb = function (h, s, l){
+var r, g, b;
+if(s == 0){
+r = g = b = l; // achromatic
+}else{
+function hue2rgb(p, q, t){
+if(t < 0) t += 1;
+if(t > 1) t -= 1;
+if(t < 1/6) return p + (q - p) * 6 * t;
+if(t < 1/2) return q;
+if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+return p;
+}
+var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+var p = 2 * l - q;
+r = hue2rgb(p, q, h + 1/3);
+g = hue2rgb(p, q, h);
+b = hue2rgb(p, q, h - 1/3);
+}
+return '#'+Math.round(r * 255).toString(16)+Math.round(g * 255).toString(16)+Math.round(b * 255).toString(16);
+};
+return function(){
+h += golden_ratio_conjugate;
+h %= 1;
+return hslToRgb(h, 0.5, 0.60);
+};
+})();
+
+d3.csv("history.csv", function(dataset) {
+        var posdatax={}
+        var posdatay={}
+        var colorset = {}
+        var gensize = {}
+        var genbegin = {}
+        var genarray = []
+        var links = []
+        var maxscore = 400
+        dataset.forEach(function(d) {
+                colorset[d.gen] = randomColor() 
+                genbegin[d.gen] = 1000000000
+                if(d.gen in gensize){
+                        gensize[d.gen] = 0
+                        genarray[d.gen] += 1 
+                }else{
+                        gensize[d.gen] = 0
+                        genarray.push(1) 
+                }
+                if(maxscore<d.score)
+                        maxscore=d.score
+                
+                if(d.a!='None'){
+                        console.log("PUSH: "+d.id+"->"+d.a)
+                        links.push({"src":d.id, "tgt":d.a, "type":d.type})
+                        if(d.b!='None')
+                                links.push({"src":d.id, "tgt":d.b, "type":d.type})
+                }
+        })
+        var boxw = 2048.0/dataset.length;
+        var boxh = 400;
+        var h = 500;
+      
+        var selectedCandidates = []
+                              
+        var svg = d3.select("body")
+                    .append("svg")
+                    .attr("height", 500)
+                    .attr("width", 2048)
+                    .attr("style", "float: left; margin-right: 1%; margin-bottom: 0.5em;")
+                    
+        d3.select("body")
+                .append("p")
+                .attr("style", "clear: both;")
+
+        var rects = svg.selectAll("rect")
+                .data(dataset)
+                .enter()
+                .append("rect");
+    
+        rects.attr("x",    function(d,i){ 
+                        var val = i*(boxw) 
+                        posdatax[d.id] = val 
+                        return val }
+                    )
+                .attr("y", function(d,i){ 
+                        return 400-(d.score/maxscore)*boxh})
+                .attr("width", boxw)
+                .attr("height", function(d,i){return d.score/maxscore*boxh; })
+                .attr("fill", function(d,i){return colorset[d.gen] }) 
+                .on("mouseenter", mouseover)
+                .on("mouseleave", mouseout)
+                .on("click", mouseclick)
+                .attr("id", function(d){return d.id;} )
+
+         var rects = svg.selectAll("rect2")
+                .data(dataset)
+                .enter()
+                .append("rect");
+                rects.attr("x",    function(d,i){ 
+                        var val = i*(boxw) 
+                        posdatax[d.id] = val 
+                        return val }
+                    )
+                .attr("y", function(d,i){ 
+                        return 410})
+                .attr("width", boxw)
+                .attr("height", function(d,i){return 50; })
+                .attr("fill", function(d,i){
+                        if(d.type=="D")
+                                return "#F00"
+                        if(d.type=="X")
+                                return "#FF0"
+                        if(d.type=="A")
+                                return "#00F"
+                        if(d.type=="N")
+                                return "#0F0"
+                        return "#000"
+                 }
+                 ) 
+                
+       
+        function mouseclick(d){
+                window.open( "../generation"+d.gen+"/index.html", "_self")
+        }
+       
+        function mouseover(d) {
+        }       
+
+        function mouseout(d) {
+        }
+        
+});
+
+</script>
+
+</body>
+
+

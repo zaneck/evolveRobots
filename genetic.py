@@ -9,6 +9,7 @@
 from config import Config
 from indi import *
 import dump 
+from distancefct import sorensenDice
 
 class Population(object):
     def __init__(self):
@@ -58,6 +59,7 @@ class GeneticAlgo(object):
         self.pop.reducePopulation()
         newCandidates = []
         newBest = []
+        events = {}
         
         for i in range(self.best):
             newBest.append(self.pop.pop[i])
@@ -89,7 +91,7 @@ class GeneticAlgo(object):
             child.addRandomShape()
             newCandidates.append(child)
             if historyLog:
-                historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
+                events[child] = [child, ["A", best, None], self.nbCycle, -1]
         
         for alpha in range(self.nbClean):
             # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
@@ -100,38 +102,32 @@ class GeneticAlgo(object):
                 newCandidates.append(child)
             
             if historyLog:
-                historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
+                #historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
+                events[child] = [child, ["D", best, None], self.nbCycle, -1]
             
         for alpha in range(self.nbCross):
-            s1 = random.choice(self.pop.pop)
-            s2 = random.choice(self.pop.pop)
-            s3 = random.choice(self.pop.pop)
-            s4 = random.choice(self.pop.pop)
-
-            if s1.fitness < s2.fitness:
-                best1 = s1
-            else:
-                best1 = s2
-
-            if s3.fitness < s4.fitness:
-                best2 = s3
-            else:
-                best2 = s4
-
-            child1, child2 = best1.crossOver(best2)
+            samples = random.sample(self.pop.pop, 2)
+                        
+            
+            child1, child2 = samples[0].crossOver(samples[1])
             newCandidates.append(child1)
             newCandidates.append(child2)
-
-            if historyLog:
-                historyLog.addEvent(child1, ["X", best1, best2], self.nbCycle)    
-                historyLog.addEvent(child2, ["X", best1, best2], self.nbCycle)    
-
+            
+            events[child1] = [child1, ["X", best1, best2], self.nbCycle, -1]
+            events[child2] = [child2, ["X", best1, best2], self.nbCycle, -1]
+            
 
         self.pop.cleanPop()
 
         # Evaluates all the candidates. 
         self.fitnessFun.computeValues(newCandidates)
-        
+        if historyLog:
+                for c in newCandidates:
+                        evt = events[c]
+                        evt[3] = c.fitness
+                        historyLog.addEvent(evt[0], evt[1], evt[2], 1.0/evt[3])    
+                        
+
         for i in newCandidates:
             self.pop.addIndi(i)
 
