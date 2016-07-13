@@ -75,17 +75,17 @@ class Indi(object):
         borneMax = min(self.lenDraw, i.lenDraw)
         borne = random.randint(0,borneMax)
 
-        for s in range(0,borneMax):
+        for s in range(0,borne):
             res1.draw.append(self.draw[s])
             res2.draw.append(i.draw[s])
             res1.lenDraw +=1
             res2.lenDraw +=1
             
-        for s in range(borneMax, self.lenDraw):
+        for s in range(borne, self.lenDraw):
             res2.draw.append(self.draw[s])
             res2.lenDraw +=1
             
-        for s in range(borneMax, i.lenDraw):
+        for s in range(borne, i.lenDraw):
             res1.draw.append(i.draw[s])
             res1.lenDraw +=1
             
