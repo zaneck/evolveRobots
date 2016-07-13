@@ -7,6 +7,9 @@
 #	- created by Valentin Owczarek
 #       - damien.marchal@univ.lille1.fr
 #############################################################################
+# an arbitrary value for the canvas.  
+g_maxresolution = 4096
+from indi import Indi
 
 class Canvas(object):
     """A Canvas is used to discreetize a candidate into a grid
@@ -18,6 +21,16 @@ class Canvas(object):
                 c = Canvas( dim(1.0,1.0), res(16,16)) 
     """
     def __init__(self, dim, res):
+        if dim[0] > dim[1]:
+                raise ValueError("dimmensions should be dim[0] < dim[1].")
+
+        if res[0] < 0 or res[1] < 0:
+                raise ValueError("resolution should be greater than zero.")
+
+        if res[0] > g_maxresolution or res[1] > g_maxresolution:
+                raise ValueError("resolution should be greater than zero.")
+
+    
         self.dim = dim 
         self.res = res  
 
@@ -29,6 +42,12 @@ class Canvas(object):
         """ 
         res =[[0 for _ in range(self.res[1])] for _ in range(self.res[0])]
 
+        if not isinstance(candidate, Indi):
+                raise TypeError("The 'candidate' parameter must be of class 'Indi'")
+
+        if not callable(binfct):
+                raise TypeError("The 'binfct' must be a callable object")
+                
         # For each line and column of the resulting matrix. 
         for i in range(self.res[0]):
                 for j in range(self.res[1]):

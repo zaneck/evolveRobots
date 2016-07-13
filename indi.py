@@ -12,7 +12,6 @@ from config import Config
 
 from geometry import * 
 from imgTools import *
-from canvas import Canvas
 import random
 
 class Indi(object):
