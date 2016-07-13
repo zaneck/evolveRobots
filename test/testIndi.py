@@ -1,13 +1,9 @@
 #!/usr/bin/python3 -O
 #############################################################################
-#
-# 
-# 
 # Contributors:
 #	- created by Valentin Oczwarek
 #############################################################################
 import unittest
-
 import sys
 
 sys.path.insert(0,"..")
@@ -23,24 +19,17 @@ class TestIndie(unittest.TestCase):
  
     def test_basic_constructor_behavior(self):
         # Should work 
-        a = Indi(16, 16)
-
-        # Should work 
-        a = Indi(0, 0)
+        a = Indi()
         
         # Should throw an exception        
         with self.assertRaises(TypeError):
-                a = Indi(-1, -1)
+                a = Indi()
                 a = Indi("toto", 10)
                 a = Indi(10, "tata")
-        
-        # Should throw an exception        
-        with self.assertRaises(MemoryError):
-               a = Indi(100000000, 1000000000) 
-                
+       
     def test_basic_behavior(self):
-        a = Indi(16, 16)
-        b = Indi(16, 16)
+        a = Indi()
+        b = Indi()
 
         a.addRandomSquare()
         a.addRandomSquare()
@@ -58,17 +47,17 @@ class TestIndie(unittest.TestCase):
         print(d.__dict__)
 
     def test_atLeastOneSquareKO(self):
-        a = Indi(16, 16)
+        a = Indi()
         res = a.removeRandomSquare()
         self.assertEqual(res, 0)
 
-        a = Indi(16, 16)
+        a = Indi()
         a.addRandomSquare()
         res = a.removeRandomSquare()
         self.assertEqual(res, 0)
         
     def test_atLeastOneSquareOK(self):
-        a = Indi(16, 16)
+        a = Indi()
         a.addRandomSquare()
         a.addRandomSquare()
         res = a.removeRandomSquare()

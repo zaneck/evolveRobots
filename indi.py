@@ -18,19 +18,12 @@ import random
 class Indi(object):
     idIndi = 0
     
-    def __init__(self, width, height, withSymmetry=True):
-        #test params
-        if not isinstance(width, int) or not isinstance(height, int):
-            raise TypeError
-
-        if width > Config.indiSizeMax or height> Config.indiSizeMax:
-            raise MemoryError
-        
+    def __init__(self, withSymmetry=True):       
         self.idIndi = Indi.idIndi
         Indi.idIndi +=1
         
-        self.width=width
-        self.height=height
+        #self.width=width
+        #self.height=height
 
         self.draw = [] 
         self.lenDraw = 0
@@ -43,7 +36,7 @@ class Indi(object):
                 self.symmetry = Symmetry(self.rootunion, axis="x")
 
     def copy(self):
-        res = Indi(self.width, self.height)
+        res = Indi()
         for s in self.rootunion.children :
             res.rootunion.addShape(s)
         return res
@@ -80,8 +73,8 @@ class Indi(object):
             return 0
             
     def crossOver(self, i):
-        res1 = Indi(self.width, self.height)
-        res2 = Indi(self.width, self.height)
+        res1 = Indi()
+        res2 = Indi()
         
         borneMax = min(len(self.rootunion), len(i.rootunion))
         borne = random.randint(0,borneMax)

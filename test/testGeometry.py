@@ -22,7 +22,7 @@ class TestFitnessFake(unittest.TestCase):
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)
         
-        candidate = Indi(32, 32)
+        candidate = Indi()
         candidate.addShape(Rectangle(0.2,0.3,0.1,0.2))       
         candidate.addShape(Circle(0.2,-0.2,0.2))  
         printMatrix( fitness.toMatrice(candidate) )
@@ -36,12 +36,12 @@ class TestFitnessFake(unittest.TestCase):
         union.addShape(Circle(0.2,-0.2,0.2))  
 
         print("\nUnion of two shapes")        
-        candidate = Indi(32, 32, withSymmetry=False)
+        candidate = Indi(withSymmetry=False)
         candidate.addShape(union)      
         printMatrix( fitness.toMatrice(candidate) )
 
         print("\nInverse of the Union of two shapes")        
-        candidate = Indi(32, 32, withSymmetry=False)
+        candidate = Indi(withSymmetry=False)
         candidate.addShape(Inverse(union))    
         printMatrix( fitness.toMatrice(candidate) )
 
@@ -55,7 +55,7 @@ class TestFitnessFake(unittest.TestCase):
         union.addShape(Circle(0.2,-0.2,0.2))  
       
         print("\nOffset of the Union of two shapes")        
-        candidate = Indi(32, 32, withSymmetry=False)
+        candidate = Indi(withSymmetry=False)
         candidate.addShape(Offset(union, offset=+0.1))    
         printMatrix( fitness.toMatrice(candidate) )
         self.assertEqual(1, 0)

@@ -49,7 +49,7 @@ historyLog = History()
 firstIndi = []
 for alpha in range(Config.evolveFirstGen):
     print("init {0}/{1}\r".format(alpha+1, Config.evolveFirstGen), end="")
-    a = Indi(sizex, sizey)
+    a = Indi()
     a.addRandomSquare()
     firstIndi.append(a)
 
