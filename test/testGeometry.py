@@ -46,6 +46,7 @@ class TestFitnessFake(unittest.TestCase):
         printMatrix( fitness.toMatrice(candidate) )
 
     def test_offset(self):
+        """The Offset if not working for rectangles shapes FIXME"""
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)
         
@@ -57,6 +58,7 @@ class TestFitnessFake(unittest.TestCase):
         candidate = Indi(32, 32, withSymmetry=False)
         candidate.addShape(Offset(union, offset=+0.1))    
         printMatrix( fitness.toMatrice(candidate) )
+        self.assertEqual(1, 0)
 
         
 if __name__ == '__main__':

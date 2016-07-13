@@ -18,13 +18,6 @@
   text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
 
-.link {
-  fill: none;
-  stroke: #555;
-  stroke-opacity: 0.4;
-  stroke-width: 1.5px;
-}
-
 div.candidate {
     display: inline-block;
     width: 50px;
@@ -34,19 +27,28 @@ div.candidate {
     text-align: center;
 }
 
+.image {
+  opacity: 0.0;
+}
+
 .link {
   fill: none;
-  stroke: #555;
-  stroke-opacity: 0.1;
+  stroke: #F00;
+  stroke-opacity: 0.4;
   stroke-width: 1.5px;
 }
 
 .link.source {
-  stroke-width: 4.0px;
+  stroke-width: 0.0px;
   stroke-opacity: 1.0;
-  fill: #900;
-  background-color: teal;
-  fill: teal; 
+  stroke: #F00;
+}
+
+.hoverlinks {
+  fill: none;
+  stroke: #F00;
+  stroke-opacity: 0.0;
+  stroke-width: 5px;
 }
 
 .title
@@ -79,7 +81,7 @@ putting the mouse over. <br>
 // If you know him please contact me to add proper credits here. 
 var randomColor = (function(){
 var golden_ratio_conjugate = 0.618033988749895;
-var h = Math.random();
+var h = 1; //Math.random();
 var hslToRgb = function (h, s, l){
 var r, g, b;
 if(s == 0){
@@ -115,6 +117,7 @@ d3.csv("history.csv", function(dataset) {
         var gensize = {}
         var genbegin = {}
         var genarray = []
+        var links = []
         dataset.forEach(function(d) {
                 colorset[d.gen] = randomColor() 
                 genbegin[d.gen] = 1000000000
@@ -125,8 +128,13 @@ d3.csv("history.csv", function(dataset) {
                         gensize[d.gen] = 0
                         genarray.push(1) 
                 }
+                if(d.a!='None'){
+                        console.log("PUSH: "+d.id+"->"+d.a)
+                        links.push({"src":d.id, "tgt":d.a, "type":d.type})
+                        if(d.b!='None')
+                                links.push({"src":d.id, "tgt":d.b, "type":d.type})
+                }
         })
-       
         var boxw = 50;
         var boxh = 20;
         var h = 500;
@@ -142,7 +150,7 @@ d3.csv("history.csv", function(dataset) {
                               .enter()
                               .append("rect");
 
-        var lastpath = []
+        var selectedCandidates = []
                               
         var svg = d3.select("body")
                     .append("svg")
@@ -220,30 +228,57 @@ d3.csv("history.csv", function(dataset) {
                 .on("mouseleave", mouseout)
                 .on("click", mouseclick)
                 
-       var link = svg.selectAll(".link")
-        .data(dataset)
+         /*var link = svg.selectAll(".link")
+        .data(links)
         .enter().append("path")
         .attr("class", "link")
-        .attr("id",function(d, i){ return "node-"+d.id;}) 
+        .attr("id",function(d){ return "node-"+d.src+"-"+d.tgt } ) 
         .attr("d", function(d, i) {
-                if(d.a == 'None')
-                        return "";
-                
-                var x = (i%30)*(boxw+1)+boxw/2
-                var y = Math.floor((i/30))*(boxh+10)
-                var tx = (d.a%30)*(boxw+1)+boxw/2
-                var ty = Math.floor((d.a/30))*(boxh+10)+boxh
+                src=d.src
+                tgt=d.tgt
+                var x = (src%30)*(boxw+1)+boxw/2
+                var y = Math.floor((src/30))*(boxh+10)
+                var tx = (tgt%30)*(boxw+1)+boxw/2-x
+                var ty = Math.floor((tgt/30))*(boxh+10)+boxh-y
+                var cx = 0.75*(tx)
+                var cy = 0.25*(ty)
+                //return "M" + [x,y]
+                //        + "L" + [tx,ty];
                 return "M" + [x,y]
-                        + "L" + [tx,ty];
-        });
-        
+                        + "q" + [cx, cy, tx,ty];
+                
+        });*/ 
+        var prevs = svg.selectAll("image")
         function makimg(datapath){
+                 pp = []
+                 prevs.each(function(d,i){
+                        pp.push({"x":posdatax[d]-60, "y":posdatay[d]})
+                 })
+                 
                  var img = svg.selectAll("image")
-                                    .data(lastpath)
+                                    .data(datapath)
                                     .enter()
                                     .append("image")
+                                    .attr("id", function(d){ return "image-"+d; })
                                     .attr("width", 64)
                                     .attr("height", 64)
+                                    .style("opacity", 0)
+                                    /*.attr("x", function(d,i){ 
+                                         //if(i<pp.length)
+                                         //       return pp[i].x
+                                         //if(i>0)
+                                                //return posdatax[d]
+                                         return 800 
+                                     } )
+                                    .attr("y", function(d,i){ 
+                                        //if(i<pp.length)
+                                        //        return pp[i].y
+                                        //if(i>0)
+                                        //        return posdatay[d]
+                                         return posdatay[d]-60 
+                                     } )*/
+                                    //.transition()
+                                    //.duration(100)
                                     .attr("xlink:href", function(d,i){ return "../generation"+dataset[d].gen+"/candidate"+d+".png"})
                                     .attr("x", function(d,i){ 
                                                 if(i>0)
@@ -253,31 +288,98 @@ d3.csv("history.csv", function(dataset) {
                                     .attr("y", function(d,i){ 
                                         return posdatay[d] }
                                         )
+                                    .style("opacity",1)
+                                    
+                      prevs = svg.selectAll("image")
         }
-        
-        function changeParent(id,state){
-                lastpath.push(id)           
-                
+        var selectedLinks = []
+        function setLinkState(src, tgt, state,type)
+        {
+                selectedLinks.push({"src":src, "tgt":tgt, "type":type})
+                /*var ids = "#node-" + src + "-" + tgt
                 if(state){
-                        svg.select("#node-" + id)
+                        
+                        svg.select(ids)
                               .transition()
                               .duration(0)
-                              .style("stroke-opacity", "1")
+                              .style("stroke-opacity", "0.8")
                               .style("stroke-width", "4px")
+                              .style("stroke", function(d){
+                                  if(type=="A")
+                                        return "#0F0";
+                                  if(type=="D") 
+                                        return "#F00";
+                                  if(type=="X")
+                                        return "#FF0";
+                                  return "#00F";
+                                }
+                              )
                 }else{
-                        svg.select("#node-" + id)
+                        svg.select(ids)
                               .transition()
                               .duration(0)
                               .style("stroke-opacity", "0.1")
                               .style("stroke-width", "1px")
-                }
-                   
+                              .style("stroke", "#F00")
+                }*/
+
+        }
+        
+        function makLinks(theLinks){
+          var link = svg.selectAll("hoverlinks")
+                .data(theLinks)
+                .enter().append("path")
+                .attr("class", "hoverlinks")
+                .attr("id",function(d){ return "hoverlinks-"+d.src+"-"+d.tgt } ) 
+                .transition()
+                .duration(100)
+                .style("stroke-opacity", "1.0")
+                .style("stroke", function(d){
+                                  if(d.type=="A")
+                                        return "#0F0";
+                                  if(d.type=="D") 
+                                        return "#F00";
+                                  if(d.type=="X")
+                                        return "#FF0";
+                                  return "#00F";
+                                })
+                .attr("d", function(d, i) {
+                src=d.src
+                tgt=d.tgt
+                var x = (src%30)*(boxw+1)+boxw/2
+                var y = Math.floor((src/30))*(boxh+10)
+                var tx = (tgt%30)*(boxw+1)+boxw/2-x
+                var ty = Math.floor((tgt/30))*(boxh+10)+boxh-y
+                var cx = 0.75*(tx)
+                var cy = 0.25*(ty)
+                //return "M" + [x,y]
+                //        + "L" + [tx,ty];
+                return "M" + [x,y]
+                        + "q" + [cx, cy, tx,ty];
+                
+                });
+        }
+        
+        function changeParent(id,state, path){
+                console.log(id+":changepath: ["+path+ "] => "+dataset[id].a+", "+dataset[id].b)
+                if( ! (id in selectedCandidates) )
+                        selectedCandidates.push(id)
+                        
                 if( dataset[id].a == 'None'){
-                        makimg(lastpath)
-                        lastpath=[]
                         return ;
                 }
-                changeParent(dataset[id].a, state)
+                console.log(id+": apath:  => "+dataset[id].a)
+                
+                setLinkState(id, dataset[id].a, state, dataset[id].type)
+                changeParent(dataset[id].a, state, path.concat([dataset[id].a]))
+                
+                if( dataset[id].b == 'None'){
+                        return ;
+                }
+                console.log(id+": bpath: "+dataset[id].b)
+                
+                setLinkState(id, dataset[id].b, state)    
+                changeParent(dataset[id].b, state, path.concat([dataset[id].b]), dataset[id].type)
         }
        
         function mouseclick(d){
@@ -285,14 +387,23 @@ d3.csv("history.csv", function(dataset) {
         }
        
         function mouseover(d) {
-               changeParent(d.id, true) 
-               console.log("ADDED IMAGE")
+               console.log("========================")
+               //changeParent(d.id, false,[d.id])
+               svg.selectAll("image").remove()
+               svg.selectAll(".hoverlinks").remove()
+                
+               selectedCandidates=[]
+               selectedLinks=[]
+               
+               changeParent(d.id, true,[d.id]) 
+               console.log("SELECTED CANDIDATES: ["+selectedCandidates+"]")
+               console.log("SELECTED LINKS: ["+selectedLinks+"]")
+               makLinks(selectedLinks)
+               makimg(selectedCandidates)
         }       
 
         function mouseout(d) {
-                svg.selectAll("image").remove()
-                console.log("REMOVE IMAGE")
-                changeParent(d.id, false)
+                
         }
         
 });

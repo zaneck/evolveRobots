@@ -58,7 +58,7 @@ class Indi(object):
         self.addShape(Circle(centX, centY, w))    
         
     def addRandomShape(self):
-        if random.random() < 0.1:
+        if random.random() < 0.0:
                 self.addRandomSquare()
         else:
                 self.addRandomCircle()    
