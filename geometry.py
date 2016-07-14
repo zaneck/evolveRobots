@@ -8,7 +8,26 @@
 import math
 
 class Shape(object):
+        """Base class for implicit shape description based on distance field. 
+        An implicit shape description consist in a field covering the R2 or R3
+        domain. The field can be queried using the method getValueAt(pos).
+        The object interior is then defined for each 'pos' that match a given
+        criteria as in:
+                if getValue(pos) < 0.0:
+                        print("Inside")
+                else:
+                        print("Outside"
+        """
         def getValueAt(self, pos):
+                """returns an array of values. The amount of values depends on 
+                   the amount of informations that needs to be encoded into 
+                   the field. 
+                   eg:
+                        [0] = float value encoding the signed distance to the border
+                        [1] = an index telling the primitive (cube, circle) that generated the distance
+                        [2] = a set of r,g,b values or colors or material stifness or young modulus. 
+                        [3] = any other value that need to be transported in the field        
+                """
                 return [0.0]
 
 class ShapeOperator(Shape):
@@ -72,6 +91,7 @@ class Union(ShapeOperator):
                 return res
 
 class Symmetry(ShapeOperator):
+        """Generate a symetric shape along the specified axis located at origin. """
         def __init__(self, aChild, axis="x"):
                 self.axis = axis
                 self.child = aChild

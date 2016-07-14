@@ -32,7 +32,6 @@ args = parser.parse_args()
 
 Config.load(args.config.name)
 
-print("TEST")
 ######################## Read the configuration file an initialize the algorithm ###########################
 sizex, sizey = Config.generalX, Config.generalY
 
