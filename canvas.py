@@ -34,6 +34,10 @@ class Canvas(object):
         self.dim = dim 
         self.res = res  
 
+    @property
+    def resolution(self):
+        return self.res
+
     def toMatrice(self, candidate, binfct):
         """Converts a candidate into a matrix using a given binning function.
            The binning function is use to convert from the -inf, +inf interval a 

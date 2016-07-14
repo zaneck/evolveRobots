@@ -40,7 +40,7 @@ canvas = Canvas(dim=(1.0,1.0),res=(Config.generalX, Config.generalY))
 if Config.fitnessFunction == "fake":
         f = FitnessFake("fake", canvas)
 else:
-        f = FitnessSofa("sofa", canvas, x=sizex, y=sizey) 
+        f = FitnessSofa("sofa", canvas) 
 p = Population()
 historyLog = History() 
 
