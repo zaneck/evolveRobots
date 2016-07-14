@@ -42,18 +42,18 @@ class Indi(object):
     
     def addShape(self, shape):
         self.rootunion.addShape(shape)
-        
+                
+    def addRandomShape(self):
+        if random.random() < 0.5:
+                self.addRandomSquare()
+        else:
+                self.addRandomCircle()    
+    
     def addRandomCircle(self):
         centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)
         centY = random.uniform(Config.centerMinValue, Config.centerMaxValue)
         w = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
-        self.addShape(Circle(centX, centY, w))    
-        
-    def addRandomShape(self):
-        if random.random() < 0.0:
-                self.addRandomSquare()
-        else:
-                self.addRandomCircle()    
+        self.addShape(Circle(centX, centY, w))   
         
     def addRandomSquare(self):
         centX = random.uniform(Config.centerMinValue, Config.centerMaxValue)

@@ -1,3 +1,4 @@
+# coding: utf8 
 #############################################################################
 # A fake fitness function to test the algorithm without actually running sofa. 
 # 

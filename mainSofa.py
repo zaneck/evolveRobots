@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -O
-#############################################################################
+########################################################################################################
 #
 # This application creates soft-robot designs that match a given specification. 
 # To generates the designs a genetic algorithm is implemented. You can change 
@@ -7,7 +7,7 @@
 #
 # Contributors:
 #	- created by Valentin Owczarek
-#############################################################################
+########################################################################################################
 import sys
 import argparse
 import dump
@@ -45,6 +45,7 @@ else:
 p = Population()
 historyLog = History() 
 
+
 #### Randomly creates an initial population composed of 'Config.evolveFirstGen' candidates. 
 firstIndi = []
 for alpha in range(Config.evolveFirstGen):
@@ -64,6 +65,7 @@ for a in firstIndi:
 if dump.activated():
         dump.newExperiment("log", f, p, Config.evolveNbCycle) 
 
+
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)
 print("======== START =======")
@@ -71,6 +73,7 @@ for alpha in range(Config.evolveNbCycle):
     print("evolve {0}/{1}\r".format(alpha+1, Config.evolveNbCycle), end="\n")
     g.evolve(historyLog)
 print("")
+
 
 #### Dump the results.
 best = f.bestOverAll

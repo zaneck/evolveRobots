@@ -14,31 +14,30 @@ from distancefct import sorensenDice
 class Population(object):
     def __init__(self):
         self.numberOfIndi = 0
-        self.popMax = Config.PopulationPopMax
-        self.pop =[]
+        self.populationMax = Config.PopulationPopMax
+        self.members =[]
 
     def __len__(self):
-        return len(self.pop)
+        return len(self.members)
 
     def addIndi(self, i):
-        #incr numberOfNetwork
         self.numberOfIndi += 1
-        self.pop.append(i)
+        self.members.append(i)
 
     def reducePopulation(self):
-        """Reduce the population to keep it below self.popMax. The Candidates that are 
+        """Reduce the population to keep it below self.populationMax. The Candidates that are 
            removed are the one with the highest fitness function """
-        self.pop = sorted(self.pop, key = lambda x : x.fitness)
-        self.pop = self.pop[:self.popMax]
+        self.members = sorted(self.members, key = lambda x : x.fitness)
+        self.members = self.members[:self.populationMax]
 
     def cleanPop(self):
-        self.pop = []
+        self.members = []
         self.numberOfIndi = 0
 
 
 class GeneticAlgo(object):
     def __init__(self, fitnessFun, population):
-        self.pop = population
+        self.population = population
         self.fitnessFun = fitnessFun
 
         self.nbCycle = 0
@@ -56,21 +55,21 @@ class GeneticAlgo(object):
         
     def evolve(self, historyLog=False):
         print("========================= generation {0} ================================".format(self.nbCycle))
-        self.pop.reducePopulation()
+        self.population.reducePopulation()
         newCandidates = []
         newBest = []
         events = {}
         
         for i in range(self.best):
-            newBest.append(self.pop.pop[i])
+            newBest.append(self.population.members[i])
         
         for alpha in range(self.nbAdd):
             # Among 4 random choice select the one with the smallest fitness score and select it 
             # as a parent for candidate that will be generated.
-            s1 = random.choice(self.pop.pop)
-            s2 = random.choice(self.pop.pop)
-            s3 = random.choice(self.pop.pop)
-            s4 = random.choice(self.pop.pop)
+            s1 = random.choice(self.population.members)
+            s2 = random.choice(self.population.members)
+            s3 = random.choice(self.population.members)
+            s4 = random.choice(self.population.members)
 
             if s1.fitness < s2.fitness:
                 best1 = s1
@@ -95,19 +94,17 @@ class GeneticAlgo(object):
         
         for alpha in range(self.nbClean):
             # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
-            s1 = random.choice(self.pop.pop)
+            s1 = random.choice(self.population.members)
             child = best.copy()
             res = child.removeRandomSquare()
             if res == 1:
                 newCandidates.append(child)
             
             if historyLog:
-                #historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
                 events[child] = [child, ["D", best, None], self.nbCycle, -1]
             
         for alpha in range(self.nbCross):
-            samples = random.sample(self.pop.pop, 2)
-                        
+            samples = random.sample(self.population.members, 2)
             
             child1, child2 = samples[0].crossOver(samples[1])
             newCandidates.append(child1)
@@ -117,7 +114,7 @@ class GeneticAlgo(object):
             events[child2] = [child2, ["X", best1, best2], self.nbCycle, -1]
             
 
-        self.pop.cleanPop()
+        self.population.cleanPop()
 
         # Evaluates all the candidates. 
         self.fitnessFun.computeValues(newCandidates)
@@ -129,10 +126,10 @@ class GeneticAlgo(object):
                         
 
         for i in newCandidates:
-            self.pop.addIndi(i)
+            self.population.addIndi(i)
 
         for i in newBest:
-            self.pop.addIndi(i)
+            self.population.addIndi(i)
             
         if dump.activated():
                 dump.addGeneration(newCandidates, self.fitnessFun) 
