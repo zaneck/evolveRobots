@@ -96,7 +96,7 @@ class GeneticAlgo(object):
             # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
             s1 = random.choice(self.population.members)
             child = best.copy()
-            res = child.removeRandomSquare()
+            res = child.removeShapeAtRandom()
             if res == 1:
                 newCandidates.append(child)
             

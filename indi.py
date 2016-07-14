@@ -41,9 +41,16 @@ class Indi(object):
         return res
     
     def addShape(self, shape):
+        """Add a new shape into the candidate primitive list
+           Example:
+                ind = Indi()
+                ind.addShape(Rectangle(1,1,4,2))
+        """
         self.rootunion.addShape(shape)
                 
     def addRandomShape(self):
+        # todo(dmarchal): use a configuration paramter to specify the percentage of 
+        # square/circle to generate. 
         if random.random() < 0.5:
                 self.addRandomSquare()
         else:
@@ -60,10 +67,9 @@ class Indi(object):
         centY = random.uniform(Config.centerMinValue, Config.centerMaxValue)
         halfW = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         halfH = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
-        
         self.addShape(Rectangle(centX,centY,halfW,halfH))
         
-    def removeRandomSquare(self):
+    def removeShapeAtRandom(self):
         if len(self.rootunion) >=2:
             s = random.choice(self.rootunion.children)
             self.rootunion.remove(s)

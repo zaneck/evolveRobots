@@ -48,19 +48,19 @@ class TestIndie(unittest.TestCase):
 
     def test_atLeastOneSquareKO(self):
         a = Indi()
-        res = a.removeRandomSquare()
+        res = a.removeShapeAtRandom()
         self.assertEqual(res, 0)
 
         a = Indi()
         a.addRandomSquare()
-        res = a.removeRandomSquare()
+        res = a.removeShapeAtRandom()
         self.assertEqual(res, 0)
         
     def test_atLeastOneSquareOK(self):
         a = Indi()
         a.addRandomSquare()
         a.addRandomSquare()
-        res = a.removeRandomSquare()
+        res = a.removeShapeAtRandom()
         self.assertEqual(res, 1)   
         
 if __name__ == '__main__':

@@ -16,6 +16,13 @@ class ShapeOperator(Shape):
                 return [0.0]
                 
 class Rectangle(Shape):
+        """A rectangular shape defined by it center cx,cy 
+           and its halfwidth/halfheight. 
+           Example:
+                r=Rectangle(1,1,2,3) 
+                defines a rectangle centerd at (1,1) with a 
+                width of length 4 and a height of length of length 6
+           """
         def __init__(self, cx, cy, halfwidth, halfheight):
                 self.left = cx-halfwidth
                 self.right = cx+halfwidth
