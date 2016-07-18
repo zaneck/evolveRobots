@@ -34,7 +34,16 @@ class Population(object):
         self.pop = []
         self.numberOfIndi = 0
 
+    def tournament(self, nbCandidate=4):
+        s = random.choice(self.pop) 
 
+        for _ in range(nbCandidate):
+            sCandidate = random.choice(self.pop)
+            if s.fitness > sCandidate.fitness:
+                s = sCandidate
+            
+        return s
+        
 class GeneticAlgo(object):
     def __init__(self, fitnessFun, population):
         self.pop = population
@@ -54,8 +63,6 @@ class GeneticAlgo(object):
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
         
     def evolve(self, historyLog=False):
-        
-
         self.pop.reducePopulation()
         newCandidates = []
         newBest = []
@@ -64,28 +71,8 @@ class GeneticAlgo(object):
             newBest.append(self.pop.pop[i])
         
         for alpha in range(self.nbAdd):
-            # Among 4 random choice select the one with the smallest fitness score and select it 
-            # as a parent for candidate that will be generated.
-            s1 = random.choice(self.pop.pop)
-            s2 = random.choice(self.pop.pop)
-            s3 = random.choice(self.pop.pop)
-            s4 = random.choice(self.pop.pop)
-
-            if s1.fitness < s2.fitness:
-                best1 = s1
-            else:
-                best1 = s2
-
-            if s3.fitness < s4.fitness:
-                best2 = s3
-            else:
-                best2 = s4
-
-            if best1.fitness < best2.fitness:
-                best = best1
-            else:
-                best = best2
-
+            best = self.pop.tournament()
+            
             child = best.copy()
             child.addRandomSquare()
             newCandidates.append(child)
@@ -93,32 +80,18 @@ class GeneticAlgo(object):
                 historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
         
         for alpha in range(self.nbClean):
-            # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
-            s1 = random.choice(self.pop.pop)
+            best = self.pop.tournament()
             child = best.copy()
             res = child.removeRandomSquare()
             if res == 1:
-                newCandidates.append(child)
-            
-            if historyLog:
-                historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
+                newCandidates.append(child)           
+                if historyLog:
+                    historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
             
         for alpha in range(self.nbCross):
-            s1 = random.choice(self.pop.pop)
-            s2 = random.choice(self.pop.pop)
-            s3 = random.choice(self.pop.pop)
-            s4 = random.choice(self.pop.pop)
-
-            if s1.fitness < s2.fitness:
-                best1 = s1
-            else:
-                best1 = s2
-
-            if s3.fitness < s4.fitness:
-                best2 = s3
-            else:
-                best2 = s4
-
+            best1 = self.pop.tournament()
+            best2 = self.pop.tournament()
+            
             child1, child2 = best1.crossOver(best2)
             newCandidates.append(child1)
             newCandidates.append(child2)
