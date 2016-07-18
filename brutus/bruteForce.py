@@ -6,13 +6,15 @@
 # Contributors:
 #	- created by Valentin Owczarek
 #############################################################################
-#import sys
 import argparse
 
 from indiBrutus import *
 
-from sofaBaseFitness import *
+import sys
+sys.path.insert(0,"..")
+
 from config import Config
+from sofaBaseFitness import *
 
 parser = argparse.ArgumentParser(description='Brute force way')
 

@@ -14,7 +14,7 @@ from config import Config
 from imgTools import *
 
 class IndiBrutus(object):
-    idIndi = 0
+    idIndi = 8192
     
     def __init__(self, x, y):        
         self.idIndi = IndiBrutus.idIndi

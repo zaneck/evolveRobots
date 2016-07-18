@@ -6,7 +6,11 @@
 # Contributors:
 #	- created by Valentin Owczarek
 #############################################################################
+
+import sys
+sys.path.insert(0,"..")
 from canvas import Canvas
+
 import math
 
 class CanvasReflectionSymetryBrutus(Canvas):
@@ -21,23 +25,11 @@ class CanvasReflectionSymetryBrutus(Canvas):
         res =[[0 for _ in range(self.y)] for _ in range(self.x)]
 
         cpt = 0
-        for a in self.indi.draw:
-            if a == '1':
-                res[math.floor(cpt/self.xMin)][cpt % self.yMin] = 1
-                res[math.floor(cpt/self.xMin)][self.y - (cpt % self.yMin) - 1] = 1
+        for i in range(len(self.indi.draw)-1, -1, -1):
+            if self.indi.draw[i] == '1':
+                res[math.floor(cpt/self.x)][cpt % self.y] = 1
+                res[self.x - math.floor(cpt/self.x)-1][cpt % self.y] = 1
             cpt += 1
-
-                # for d in self.indi.draw:
-                #     centX, centY, radius = d
-                #     for i in range(centX - radius, centX + radius+1):
-                #         for j in range(centY - radius, centY + radius+1):
-                #             if i >=0 and i< self.x and j >=0 and j< self.y:
-                #                 res[i][j]=1
-
-                #     for i in range((self.x-centX) - radius, (self.x-centX) + radius+1):
-                #         for j in range(centY - radius, centY + radius+1):
-                #             if i >=0 and i< self.x and j >=0 and j< self.y:
-                #                 res[i][j]=1
 
         return res
 
