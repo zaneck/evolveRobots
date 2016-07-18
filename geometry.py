@@ -68,6 +68,44 @@ class Inverse(ShapeOperator):
                 res = self.child.getValueAt(pos)
                 res[0] = -res[0]                
                 return res
+
+class Difference(ShapeOperator):
+        """ Returns the difference of the first child minus the others shapes"""
+        def __init__(self):
+                self.children = []
+        
+        def __getitem__(self, idx):
+                return self.children[idx]
+        
+        def __len__(self):
+                return len(self.children)
+        
+        def remove(self, aShape):
+                self.children.remove(aShape)
+        
+        def addShape(self, aShape):
+                self.children.append(aShape)
+                
+        def getValueAt(self, pos):
+                assert(len(self.children)>0)
+                res=[1.0, 1]
+                
+                # Left part
+                ares=(self.children[0].getValueAt(pos))
+                amax=ares[0]
+                 
+                # Union of the shape that will be subtracted
+                minv=float("inf")
+                for f in self.children[1:]:
+                        v = f.getValueAt(pos)
+                        if(v[0]<minv):
+                                minv = v[0]
+                                res = v 
+                
+                if amax > -(minv):
+                        return ares
+                return res
+
                 
 class Union(ShapeOperator):
         """ Returns the unions of all the children shapes"""

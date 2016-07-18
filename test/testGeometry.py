@@ -47,6 +47,20 @@ class TestFitnessFake(unittest.TestCase):
         printMatrix( canvas.toMatrice(candidate, binaryBinning) )
         matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "rectangleTest.png")
         
+    def test_substract(self):
+        print("Testing Substraction")
+        canvas = Canvas(dim=(1.0,1.0), res=(32,32))
+        
+        difference = Difference()
+        difference.addShape(Rectangle(0.25,0.25,0.25,0.25))
+        difference.addShape(Circle(-0.1,0.0,0.10))
+        difference.addShape(Circle(0.1,0.0,0.10))
+        
+        candidate = Indi(withSymmetry=False)
+        candidate.addShape(difference)      
+        printMatrix( canvas.toMatrice(candidate, binaryBinning) )
+        matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "rectangleTest.png")
+        
     def test_inverse(self):
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)
