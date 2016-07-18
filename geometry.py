@@ -6,6 +6,7 @@
 #	- created by damien.marchal@univ-lille1.fr
 #############################################################################
 import math
+from linalg import Vec2
 
 class Shape(object):
         """Base class for implicit shape description based on distance field. 
@@ -47,12 +48,17 @@ class Rectangle(Shape):
                 self.right = cx+halfwidth
                 self.bottom = cy-halfheight
                 self.top = cy+halfheight
+                self.center = Vec2(cx-halfwidth, cy-halfheight)
+                self.dim = Vec2(halfwidth, halfheight)
                 
         def getValueAt(self, pos):
-                if pos[0] >= self.left and pos[0] <= self.right and pos[1] >= self.bottom and pos[1] <= self.top:
-                        return [-1.0]
-                return [1.0]         
-
+                if not isinstance(pos, Vec2):
+                        pos = Vec2(pos[0],pos[1])
+                pos = pos - self.center 
+                # Centered distance field         
+                d = pos.abs() - self.dim;
+                return [min(max(d.x,d.y),0.0) + Vec2.length(Vec2.max(d,Vec2())) ]
+                
 class Inverse(ShapeOperator):
         """ Returns the inverse of the children """
         def __init__(self, aShape):

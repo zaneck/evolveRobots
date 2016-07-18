@@ -13,6 +13,14 @@ from fakeFitness import *
 from indi import *
 from imgTools import *
 
+def absBinning(value):
+        return abs(value[0])
+
+def binaryBinning(value):
+        if value[0] < 0:
+                return 1
+        return 0
+
 class TestFitnessFake(unittest.TestCase):
     def setUp(self):
         pass
@@ -27,6 +35,18 @@ class TestFitnessFake(unittest.TestCase):
         candidate.addShape(Circle(0.2,-0.2,0.2))  
         printMatrix( fitness.toMatrice(candidate) )
 
+    def test_rectangle(self):
+        print("Testing Rectangle")
+        canvas = Canvas(dim=(1.0,1.0), res=(32,32))
+        
+        union = Union()
+        union.addShape(Rectangle(0.5,0.5,0.25,0.25))
+        
+        candidate = Indi(withSymmetry=False)
+        candidate.addShape(union)      
+        printMatrix( canvas.toMatrice(candidate, binaryBinning) )
+        matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "rectangleTest.png")
+        
     def test_inverse(self):
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)
@@ -46,7 +66,7 @@ class TestFitnessFake(unittest.TestCase):
         printMatrix( fitness.toMatrice(candidate) )
 
     def test_offset(self):
-        """The Offset if not working for rectangles shapes FIXME"""
+        """Offset a shape along its normal"""
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)
         
@@ -58,8 +78,7 @@ class TestFitnessFake(unittest.TestCase):
         candidate = Indi(withSymmetry=False)
         candidate.addShape(Offset(union, offset=+0.1))    
         printMatrix( fitness.toMatrice(candidate) )
-        self.assertEqual(1, 0)
-
+        
         
 if __name__ == '__main__':
     unittest.main()
