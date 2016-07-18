@@ -48,7 +48,7 @@ class TestFitnessFake(unittest.TestCase):
         matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "rectangleTest.png")
         
     def test_substract(self):
-        print("Testing Substraction")
+        print("Testing Substraction Shape Operator")
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         
         difference = Difference()
@@ -61,6 +61,33 @@ class TestFitnessFake(unittest.TestCase):
         printMatrix( canvas.toMatrice(candidate, binaryBinning) )
         matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "rectangleTest.png")
         
+    def test_repeat(self):
+        print("Testing Repeat Shape Operator (FIXME: the behavior is not what I expect.")
+        canvas = Canvas(dim=(1.0,1.0), res=(32,32))
+
+        #repeater = Repeat(Rectangle(0.0,0.0, 0.1, 0.1), Vec2(0.1,0.1))
+        repeater = Repeat(Circle(0.0,0.0,0.05), Vec2(0.13,0.13))
+        
+        candidate = Indi(withSymmetry=False)
+        candidate.addShape(repeater)      
+        printMatrix( canvas.toMatrice(candidate, binaryBinning) )
+        matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "repeatTest.png")    
+        assertEqual(True, False)
+
+    def test_microstructure(self):
+        print("Testing MicroStructure Shape Operator (FIXME: the behavior is not what I expect.")
+        canvas = Canvas(dim=(1.0,1.0), res=(128,128))
+
+        #repeater = Repeat(Rectangle(0.0,0.0, 0.1, 0.1), Vec2(0.1,0.1))
+        repeater = MicroStructure(Circle(0.0,0.0,0.5))
+        
+        candidate = Indi(withSymmetry=False)
+        candidate.addShape(repeater)      
+        printMatrix( canvas.toMatrice(candidate, binaryBinning) )
+        matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "microStructureTest.png")    
+        assertEqual(True, False)
+
+       
     def test_inverse(self):
         canvas = Canvas(dim=(1.0,1.0), res=(32,32))
         fitness = FitnessFake("A fake fitness", canvas)

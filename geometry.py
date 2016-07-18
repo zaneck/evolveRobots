@@ -34,31 +34,7 @@ class Shape(object):
 class ShapeOperator(Shape):
         def getValueAt(self, pos):
                 return [0.0]
-                
-class Rectangle(Shape):
-        """A rectangular shape defined by it center cx,cy 
-           and its halfwidth/halfheight. 
-           Example:
-                r=Rectangle(1,1,2,3) 
-                defines a rectangle centerd at (1,1) with a 
-                width of length 4 and a height of length of length 6
-           """
-        def __init__(self, cx, cy, halfwidth, halfheight):
-                self.left = cx-halfwidth
-                self.right = cx+halfwidth
-                self.bottom = cy-halfheight
-                self.top = cy+halfheight
-                self.center = Vec2(cx-halfwidth, cy-halfheight)
-                self.dim = Vec2(halfwidth, halfheight)
-                
-        def getValueAt(self, pos):
-                if not isinstance(pos, Vec2):
-                        pos = Vec2(pos[0],pos[1])
-                pos = pos - self.center 
-                # Centered distance field         
-                d = pos.abs() - self.dim;
-                return [min(max(d.x,d.y),0.0) + Vec2.length(Vec2.max(d,Vec2())) ]
-                
+                                
 class Inverse(ShapeOperator):
         """ Returns the inverse of the children """
         def __init__(self, aShape):
@@ -70,7 +46,7 @@ class Inverse(ShapeOperator):
                 return res
 
 class Difference(ShapeOperator):
-        """ Returns the difference of the first child minus the others shapes"""
+        """ Returns the difference between the first child minus the others shapes"""
         def __init__(self):
                 self.children = []
         
@@ -155,6 +131,7 @@ class Symmetry(ShapeOperator):
                 return self.child.getValueAt((nx,ny))
 
 class Offset(ShapeOperator):
+        """Displace the object border of a given value."""
         def __init__(self, aChild, offset=0.1):
                 self.child = aChild
                 self.offset = offset
@@ -163,16 +140,68 @@ class Offset(ShapeOperator):
                 res = self.child.getValueAt(pos)
                 res[0] = res[0]-self.offset
                 return res 
-                                
+
+class Repeat(ShapeOperator):
+        def __init__(self, child, c):
+                self.child=child
+                self.c=c
+       
+        def getValueAt(self, pos):
+             if not isinstance(pos, Vec2):
+                pos = Vec2(pos[0],pos[1])
+             
+             q = Vec2.mod(pos+0.5,self.c) - (self.c*0.5) 
+             return self.child.getValueAt(q)  
+
+class MicroStructure(ShapeOperator):
+       """Implement a very simple substructuring operator to see if it works"""
+       def __init__(self, child):
+                self.child = child
+                self.c = Vec2(0.1,0.1)
+       
+       def getValueAt(self, pos):
+               if not isinstance(pos, Vec2):
+                      pos = Vec2(pos[0],pos[1])
+               res = self.child.getValueAt(pos)
+               res[0]=res[0]
+               s=0.05 #abs(res[0])/10.0
+               q = Vec2.mod(pos+0.5,self.c) - (self.c*0.5)
+               res2 = self.child.getValueAt(q.div(s))
+               res2[0]=res2[0]*s
+               return [max(res[0], res2[0])]
+
+class Rectangle(Shape):
+        """A rectangular shape defined by it center cx,cy 
+           and its halfwidth/halfheight. 
+           Example:
+                r=Rectangle(1,1,2,3) 
+                defines a rectangle centerd at (1,1) with a 
+                width of length 4 and a height of length of length 6
+           """
+        def __init__(self, cx, cy, halfwidth, halfheight):
+                self.left = cx-halfwidth
+                self.right = cx+halfwidth
+                self.bottom = cy-halfheight
+                self.top = cy+halfheight
+                self.center = Vec2(cx-halfwidth, cy-halfheight)
+                self.dim = Vec2(halfwidth, halfheight)
+                
+        def getValueAt(self, pos):
+                if not isinstance(pos, Vec2):
+                        pos = Vec2(pos[0],pos[1])
+                pos = pos - self.center 
+                # Centered distance field         
+                d = pos.abs() - self.dim;
+                return [min(max(d.x,d.y),0.0) + Vec2.length(Vec2.max(d,Vec2())) ]
                                 
 class Circle(Shape):
         def __init__(self, cx, cy, radius):
-                self.cx = cx 
-                self.cy = cy
+                self.center = Vec2(cx,cy)
                 self.radius = radius
                         
         def getValueAt(self, pos):
-                dx=pos[0]-self.cx 
-                dy=pos[1]-self.cy 
-                return [math.sqrt(dx*dx + dy*dy)-self.radius]
+                if not isinstance(pos, Vec2):
+                        pos = Vec2(pos[0], pos[1])
+                d=pos-self.center
+                return [math.sqrt(d.x*d.x + d.y*d.y)-self.radius]
 
