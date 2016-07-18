@@ -9,15 +9,11 @@
 #       - damien.marchal@univ.lille1.fr
 #############################################################################
 import json
-
-import json
 import inspect
 
 class ObjectEncoder(json.JSONEncoder):
     def default(self, obj):
-        if hasattr(obj, "to_json"):
-            return self.default(obj.to_json())
-        elif hasattr(obj, "__dict__"):
+        if hasattr(obj, "__dict__"):
             d = dict(
                 (key, value)
                 for key, value in inspect.getmembers(obj)
@@ -42,7 +38,10 @@ class Config(object):
     
     #Indi
     indiSizeMax = 1024 #maximum size of x, y, where x * y is the size of the grid
-    indiSquareMaxSize = 4 #maximum distance between the center of a square and his side
+    indiSquareMaxSize = 0.2 #maximum distance between the center of a square and his side
+    indiSquareMinSize = 0.1 #maximum distance between the center of a square and his side
+    centerMinValue = -0.5
+    centerMaxValue =  0.5
     
     #Population
     PopulationPopMax = 100

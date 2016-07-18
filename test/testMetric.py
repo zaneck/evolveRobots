@@ -1,11 +1,19 @@
+#!/usr/bin/python3 -O
+#############################################################################
+# Contributors:
+#	- created by Valentin Oczwarek
+#############################################################################
 import sys
 
+sys.path.insert(0,"..")
 from indi import *
 from genetic import *
 from fitness import *
 
 sizex, sizey = 16, 16
 
+print(sys.argv[0]+" IS DEPRECATED---SHOULD BE REMOVED----")
+sys.exit(-1)
 p = Population()
 
 imageDict = {
@@ -15,7 +23,6 @@ imageDict = {
     4:("cross",cross(sizex, sizey, int(sizex/2), int(sizey/2))),
 }
 
-
 metricDict = {
     1:("hausdorff"),
     2:("hausdorffAverage"),
@@ -23,7 +30,6 @@ metricDict = {
     4:("maxRessemblance"),
 }
 
-    
 for forme in range(1,5):
     print(imageDict[forme][0])
     print("     ", end="")

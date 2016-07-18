@@ -4,7 +4,7 @@ from indi import *
 from config import Config
 
 class Fitness(object):
-    def __init__(self,):
+    def __init__(self):
         self.name="Abstract fitness fun"
         self.bestOverAll = None
         self.bestNumber = 0
@@ -24,10 +24,6 @@ class Fitness(object):
             item = self.queue.get()
             fit = self.simulate(item)
             item.fitness = fit
-
-            print("")
-            imgTest = item.toMatrice()
-            printMatrix(imgTest, self.x, self.y)
             
             #lock the best
             with self.bestOverAllLock:
@@ -54,34 +50,3 @@ class Fitness(object):
         
     def simulate(self, n, idTask=0):
         raise NotImplementedError
-
-
-class FitnessImage(Fitness):
-    def __init__(self, name, draw, metric, x, y):
-        Fitness.__init__(self)
-        self.name=name
-        
-        self.x = x
-        self.y = y
-
-        self.metric = metric
-        
-        self.img = draw
-        self.matriceImg = matriceTocouple(self.img, self.x, self.y)
-#        printPict(self.img, self.x, self.y)
-              
-    def simulate(self, n, taskId=0):
-        imgTest = n.toMatrice()
-
-        if self.metric == 1:
-            cptOk = fitnessHausdorff(imgTest, self.matriceImg, self.x, self.y)
-        elif self.metric == 2:
-            cptOk = fitnessHausdorffAverage(imgTest, self.matriceImg, self.x, self.y)
-        elif self.metric == 3:
-            cptOk = fitnessSorensenDice(imgTest, self.img, self.x, self.y)
-        else:
-            cptOk = fitnessMaxRessemblance(imgTest, self.img, self.x, self.y)
-            
-        return cptOk
-
-

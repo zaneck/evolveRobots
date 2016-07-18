@@ -17,18 +17,18 @@ class History(object):
         def __init__(self):
                 self.events = []
             
-        def addEvent(self, aCandidate, prev, genId):
+        def addEvent(self, aCandidate, prev, genId, score):
                 if prev[1] != None:
                         prev[1] = prev[1].myId
                 if prev[2] != None:
                         prev[2] = prev[2].myId
                    
-                self.events.append([aCandidate.myId, prev[0], prev[1], prev[2], genId])
+                self.events.append([aCandidate.myId, prev[0], prev[1], prev[2], genId, score])
             
             
         def saveToCSV(self, filename):
                 theFile = open(filename, "w+t")
-                theFile.write("id,type,a,b,gen\n")
+                theFile.write("id,type,a,b,gen,score\n")
                 for event in self.events:
-                        theFile.write("{0},{1},{2},{3},{4}\n".format(event[0], event[1], event[2], event[3], event[4]))
+                        theFile.write("{0},{1},{2},{3},{4},{5}\n".format(event[0], event[1], event[2], event[3], event[4], event[5]))
                 theFile.close()

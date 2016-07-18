@@ -9,36 +9,36 @@
 from config import Config
 from indi import *
 import dump 
+from distancefct import sorensenDice
 
 class Population(object):
     def __init__(self):
         self.numberOfIndi = 0
-        self.popMax = Config.PopulationPopMax
-        self.pop =[]
+        self.populationMax = Config.PopulationPopMax
+        self.members =[]
 
     def __len__(self):
-        return len(self.pop)
+        return len(self.members)
 
     def addIndi(self, i):
-        #incr numberOfNetwork
         self.numberOfIndi += 1
-        self.pop.append(i)
+        self.members.append(i)
 
     def reducePopulation(self):
-        """Reduce the population to keep it below self.popMax. The Candidates that are 
+        """Reduce the population to keep it below self.populationMax. The Candidates that are 
            removed are the one with the highest fitness function """
-        self.pop = sorted(self.pop, key = lambda x : x.fitness)
-        self.pop = self.pop[:self.popMax]
+        self.members = sorted(self.members, key = lambda x : x.fitness)
+        self.members = self.members[:self.populationMax]
 
     def cleanPop(self):
-        self.pop = []
+        self.members = []
         self.numberOfIndi = 0
 
     def tournament(self, nbCandidate=4):
-        s = random.choice(self.pop) 
+        s = random.choice(self.members) 
 
         for _ in range(nbCandidate):
-            sCandidate = random.choice(self.pop)
+            sCandidate = random.choice(self.members)
             if s.fitness > sCandidate.fitness:
                 s = sCandidate
             
@@ -46,7 +46,7 @@ class Population(object):
         
 class GeneticAlgo(object):
     def __init__(self, fitnessFun, population):
-        self.pop = population
+        self.population = population
         self.fitnessFun = fitnessFun
 
         self.nbCycle = 0
@@ -62,68 +62,75 @@ class GeneticAlgo(object):
         self.nbCross = int(self.nbAugmentation * self.crossRate) 
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
 
-        self.nbSplit = 30
+#        self.nbSplit = 30
         
     def evolve(self, historyLog=False):
-        self.pop.reducePopulation()
+        print("========================= generation {0} ================================".format(self.nbCycle))
+        self.population.reducePopulation()
         newCandidates = []
         newBest = []
+        events = {}
         
         for i in range(self.best):
-            newBest.append(self.pop.pop[i])
+            newBest.append(self.population.members[i])
         
         for _ in range(self.nbAdd):
-            best = self.pop.tournament()
-            
+            best = self.population.tournament()
             child = best.copy()
-            child.addRandomSquare()
+            child.addRandomShape()
             newCandidates.append(child)
             if historyLog:
-                historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
+                events[child] = [child, ["A", best, None], self.nbCycle, -1]
         
         for _ in range(self.nbClean):
-            best = self.pop.tournament()
+            best = self.population.tournament()
             child = best.copy()
-            res = child.removeRandomSquare()
+            res = child.removeShapeAtRandom()
             if res == 1:
                 newCandidates.append(child)           
+
                 if historyLog:
-                    historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
-            
+                    events[child] = [child, ["D", best, None], self.nbCycle, -1]
+                    
         for _ in range(self.nbCross):
-            best1 = self.pop.tournament()
-            best2 = self.pop.tournament()
+            best1 = self.population.tournament()
+            best2 = self.population.tournament()
             
             child1, child2 = best1.crossOver(best2)
             newCandidates.append(child1)
             newCandidates.append(child2)
 
             if historyLog:
-                historyLog.addEvent(child1, ["X", best1, best2], self.nbCycle)    
-                historyLog.addEvent(child2, ["X", best1, best2], self.nbCycle)    
-
-        for _ in range(self.nbSplit):
-            best = self.pop.tournament()
-            child = best.copy()
-            res = child.splitSquare()
+                events[child1] = [child1, ["X", best1, best2], self.nbCycle, -1]
+                events[child2] = [child2, ["X", best1, best2], self.nbCycle, -1]
             
-            if res == 1:
-                newCandidates.append(child)           
-                if historyLog:
-                    historyLog.addEvent(child, ["S", best, None], self.nbCycle)    
 
+        # for _ in range(self.nbSplit):
+        #     best = self.population.tournament()
+        #     child = best.copy()
+        #     res = child.splitSquare()
             
-        self.pop.cleanPop()
+        #     if res == 1:
+        #         newCandidates.append(child)           
+        #         if historyLog:
+        #             historyLog.addEvent(child, ["S", best, None], self.nbCycle)    
+
+        self.population.cleanPop()
 
         # Evaluates all the candidates. 
         self.fitnessFun.computeValues(newCandidates)
-        
+        if historyLog:
+                for c in newCandidates:
+                        evt = events[c]
+                        evt[3] = c.fitness
+                        historyLog.addEvent(evt[0], evt[1], evt[2], 1.0/evt[3])    
+                        
         for i in newCandidates:
-            self.pop.addIndi(i)
+            self.population.addIndi(i)
 
         for i in newBest:
-            self.pop.addIndi(i)
+            self.population.addIndi(i)
             
         if dump.activated():
-                dump.addGeneration(newCandidates) 
+                dump.addGeneration(newCandidates, self.fitnessFun) 
         self.nbCycle += 1
