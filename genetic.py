@@ -61,6 +61,8 @@ class GeneticAlgo(object):
         self.nbAdd = int(self.nbAugmentation * self.addRate) 
         self.nbCross = int(self.nbAugmentation * self.crossRate) 
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
+
+        self.nbSplit = 30
         
     def evolve(self, historyLog=False):
         self.pop.reducePopulation()
@@ -70,7 +72,7 @@ class GeneticAlgo(object):
         for i in range(self.best):
             newBest.append(self.pop.pop[i])
         
-        for alpha in range(self.nbAdd):
+        for _ in range(self.nbAdd):
             best = self.pop.tournament()
             
             child = best.copy()
@@ -79,7 +81,7 @@ class GeneticAlgo(object):
             if historyLog:
                 historyLog.addEvent(child, ["A", best, None], self.nbCycle)    
         
-        for alpha in range(self.nbClean):
+        for _ in range(self.nbClean):
             best = self.pop.tournament()
             child = best.copy()
             res = child.removeRandomSquare()
@@ -88,7 +90,7 @@ class GeneticAlgo(object):
                 if historyLog:
                     historyLog.addEvent(child, ["D", best, None], self.nbCycle)    
             
-        for alpha in range(self.nbCross):
+        for _ in range(self.nbCross):
             best1 = self.pop.tournament()
             best2 = self.pop.tournament()
             
@@ -100,7 +102,17 @@ class GeneticAlgo(object):
                 historyLog.addEvent(child1, ["X", best1, best2], self.nbCycle)    
                 historyLog.addEvent(child2, ["X", best1, best2], self.nbCycle)    
 
+        for _ in range(self.nbSplit):
+            best = self.pop.tournament()
+            child = best.copy()
+            res = child.splitSquare()
+            
+            if res == 1:
+                newCandidates.append(child)           
+                if historyLog:
+                    historyLog.addEvent(child, ["S", best, None], self.nbCycle)    
 
+            
         self.pop.cleanPop()
 
         # Evaluates all the candidates. 

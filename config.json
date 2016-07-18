@@ -1,7 +1,7 @@
 {
   "PopulationPopMax": 100,
   "evolveFirstGen": 100,
-  "evolveNbCycle": 10,
+  "evolveNbCycle": 25,
   "fitnessFunction": "sofa",
   "fitnessRateScore": 1,
   "fitnessRateVoxel": 0.1,
@@ -11,8 +11,9 @@
   "genticAddRate": 0.3,
   "genticCleanRate": 0.2,
   "genticCrossRate": 0.5,
+  "geneticSplitRate": 0.1,  
   "genticNbAugmentation": 100,
   "indiSizeMax": 1024,
   "indiSquareMaxSize": 4,
-  "nbThread": 6
+  "nbThread": 4
 }

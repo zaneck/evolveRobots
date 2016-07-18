@@ -51,8 +51,8 @@ class Indi(object):
             
     def addRandomSquare(self):
         x, y = self.canvas.getMaxXY()
-        centX = random.randint(0,self.x-1)
-        centY = random.randint(0,self.y-1)
+        centX = random.randint(0,x-1)
+        centY = random.randint(0,y-1)
         radius = random.randint(0, Config.indiSquareMaxSize)
         
         self.draw.append((centX,centY,radius))
@@ -66,8 +66,30 @@ class Indi(object):
             return 1
         else:
             return 0
-            
-            
+
+    #find the first splitable square, remove from the list
+    #and add 4 new square at the end of the drawing list
+    def splitSquare(self):
+        cpt=0
+
+        while cpt < len(self.draw) and self.draw[cpt][2] < 1 :
+            cpt += 1
+
+        if cpt == len(self.draw):
+            return 0
+
+        s = self.draw[cpt]
+        self.draw.remove(s)
+
+        rad = math.ceil(s[2] / 2)
+        
+        self.draw.append((s[0] - rad, s[1] - rad, rad))
+        self.draw.append((s[0] - rad, s[1] + rad, rad))
+        self.draw.append((s[0] + rad, s[1] - rad, rad))
+        self.draw.append((s[0] + rad, s[1] + rad, rad))
+
+        return 1
+        
     def crossOver(self, i):
         res1 = Indi(self.x, self.y)
         res2 = Indi(self.x, self.y)
