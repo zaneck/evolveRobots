@@ -1,5 +1,6 @@
 ToDos:
-        - il faut un setup.py voir un truc qui gère les dépendence genre PIP
+	- Restaurer sofaFitness function apres le merge (multithread<=extendedGeom
+	- il faut un setup.py voir un truc qui gère les dépendence genre PIP
         - il faut restaurer les tests pour qu'ils marchent à nouveau. 
         - il faut pouvoir changer la "scene" sofa facilement:
                 - générer la scène, les contraintes et la actuateurs à partir d'un modèle simplifié
