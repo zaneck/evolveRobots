@@ -2,7 +2,7 @@
   "PopulationPopMax": 100,
   "evolveFirstGen": 100,
   "evolveNbCycle": 10,
-  "fitnessFunction": "fake",
+  "fitnessFunction": "sofa",
   "fitnessRateScore": 1,
   "fitnessRateVoxel": 0.1,
   "generalX": 20,
@@ -14,5 +14,5 @@
   "genticNbAugmentation": 100,
   "indiSizeMax": 1024,
   "indiSquareMaxSize": 4,
-  "nbThread": 1
+  "nbThread": 6
 }
