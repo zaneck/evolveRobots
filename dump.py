@@ -80,7 +80,7 @@ def addGeneration(theGeneration, theFitnessFunction):
                                 Score: {1:.0f}
                                 </center>
                         </td>
-                """.format(imageName, 1.0/candidate.fitness, candidate.myId))
+                """.format(imageName, candidate.fitness, candidate.myId))
                 num+=1
                 
         theGenerationIndexFile.write("""</tr></table></body></html>""")
