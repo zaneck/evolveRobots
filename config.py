@@ -52,6 +52,7 @@ class Config(object):
     genticAddRate = 0.30
     genticCrossRate = 0.50
     genticCleanRate = 0.20
+    geneticSplitRate = 0.1
     
     #evolve
     evolveFirstGen = 100
@@ -59,7 +60,9 @@ class Config(object):
     
     #fitness
     # use this to select the fitness function between ["fake", "sofa"]
-    fitnessFunction = "fake"   
+    fitnessFunction = "fake"
+    fitnessTimeStep = 25
+    fitnessSofaSceneFolder = "sofaScene"
     fitnessRateScore = 1
     fitnessRateVoxel = 0.1
     

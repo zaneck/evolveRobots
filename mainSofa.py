@@ -69,7 +69,6 @@ if dump.activated():
 g = GeneticAlgo(f, p)
 print("======== START =======")
 for alpha in range(Config.evolveNbCycle):
-    print("evolve {0}/{1}\r".format(alpha+1, Config.evolveNbCycle), end="\n")
     g.evolve(historyLog)
 print("")
 

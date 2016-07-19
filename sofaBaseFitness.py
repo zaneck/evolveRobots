@@ -36,7 +36,7 @@ class FitnessSofa(Fitness):
         for t in allThread:
             if t != mainThread:
                 Popen(["mkdir", "-p", "/tmp/evolveRobots/{0}".format(t.ident)])
-                Popen(["cp", "sofaScene/controller.py", "sofaScene/"+sofaScene, "sofaScene/tools.py", "/tmp/evolveRobots/{0}".format(t.ident)]) #copy object
+                Popen(["cp", Config.fitnessSofaSceneFolder + "/controller.py", Config.fitnessSofaSceneFolder + "/"+sofaScene, Config.fitnessSofaSceneFolder + "/tools.py", "/tmp/evolveRobots/{0}".format(t.ident)]) #copy object
     
     def toMatrice(self, candidate):
         return self.canvas.toMatrice(candidate, binarybin)
@@ -83,9 +83,9 @@ class FitnessSofa(Fitness):
         
         # In order to score the candidate we need to benchmark it using a sofa simulation
         # the following line is starting sofa as an external application. Sofa is started 
-        # in batch mode (-g batch) and will do 50 iterations (-n).  
+        # in batch mode (-g batch) and will do Config.fitnessTimeStep iterations (-n).  
         # At each iteration step the score will be printed to the standard output 
-        a = Popen(["runSofa", "-g", "batch", "-n", "50", "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
+        a = Popen(["runSofa", "-g", "batch", "-n", "{0}".format(Config.fitnessTimeStep), "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
         astdout, _ = a.communicate()
 
         a.stdout.close()
