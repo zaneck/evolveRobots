@@ -9,8 +9,10 @@ class controller(Sofa.PythonScriptController):
         #find the box
         self.tetras=node.getObject('tetras').position
 
+        box = node.getObject('ROI3').pointsInROI 
+        
         for i in range(len(self.tetras)):
-            if self.tetras[i][0]>=20 and self.tetras[i][0]<=30 and  self.tetras[i][1]>=45 and self.tetras[i][1]<=50:
+            if self.tetras[i] in box:
                     self.pos.append(i)
             
 
@@ -20,7 +22,4 @@ class controller(Sofa.PythonScriptController):
         
         print("animation"),
         for i in self.pos:
-            #issue with fall over the map
-            #dist = math.sqrt(math.pow(self.tetras[i][0]-tetras[i][0],2) + math.pow(self.tetras[i][1]-tetras[i][1],2)) 
-            #print("{0},".format(dist)),
             print("{0},".format(self.tetras[i][1] - tetras[i][1])),
