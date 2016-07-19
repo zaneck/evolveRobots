@@ -47,8 +47,16 @@ def matriceToImage(m, w, h, destinationPath):
                 
     draw.point(color, fill=(255,0,0))
     img.save(destinationPath)
-    
-def matriceToGrayImage(m, destinationPath):
+
+def simpleColorMap(c):
+      dist=c[0]
+      if dist > -0.01 and dist < 0.01:
+        return (255,0,0)
+      else:
+        g=int(dist*255)
+        return (g,g,cg)
+           
+def matriceToGrayImage(m, destinationPath, getColor=simpleColorMap):
     """ Save a scalar [0,1] matrix into an RGB image of size w,h with a given name 
         w is width and h height. 
         destinationPath is the name of the destination file. No directory is created in case a path is given 
@@ -80,9 +88,7 @@ def matriceToGrayImage(m, destinationPath):
     # Draw the candidate data into the image
     for i in range(1,w+1):
         for j in range(1,h+1):
-                c=int(m[i-1][j-1]*255)
-                if m[i-1][j-1] > -0.01 and m[i-1][j-1] < 0.01:
-                      draw.point((i,j), fill=(255,0,0))
-                else:
-                      draw.point((i,j), fill=(c,c,c))
+                draw.point((i,j), getColor(m[i-1][j-1]))
+                    
+        
     img.save(destinationPath)    
