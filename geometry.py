@@ -154,7 +154,7 @@ class Repeat(ShapeOperator):
              return self.child.getValueAt(q)  
 
 class MicroStructure(ShapeOperator):
-       """Implement a very simple substructuring operator to see if it works"""
+       """Implements a very simple substructuring operator to see if it works"""
        def __init__(self, child):
                 self.child = child
                 self.c = Vec2(0.1,0.1)
@@ -162,13 +162,52 @@ class MicroStructure(ShapeOperator):
        def getValueAt(self, pos):
                if not isinstance(pos, Vec2):
                       pos = Vec2(pos[0],pos[1])
+                      
+               # Distance Field inside the circle 
                res = self.child.getValueAt(pos)
+               if res[0] < 0:
+                        s="s"
+                        sp=0.1
+                        dpos = Vec2.mod(pos, Vec2(sp, sp))
+                        dpos = (pos-dpos)
+                        dpos2 = dpos + Vec2(sp,sp)
+                        dpos3 = dpos - Vec2(sp,sp)
+
+                        #print("DPOS: "+str(pos.x)+" -> " +str(dpos.x) + ".." +str(dpos2.x))
+                        if abs(dpos2.x-pos.x) < abs(dpos.x-pos.x):
+                                dpos.x = dpos2.x           
+                                s="r"
+                                
+                        if abs(dpos3.x-pos.x) < abs(dpos.x-pos.x):
+                                dpos.x=dpos3.x        
+                                s="l"
+                        
+                        if abs(dpos2.y-pos.y) < abs(dpos.y-pos.y):
+                                dpos.y = dpos2.y           
+                                s="r"
+                                
+                        if abs(dpos3.y-pos.y) < abs(dpos.y-pos.y):
+                                dpos.y=dpos3.y        
+                                s="l"
+                                
+                        r=sp/2.0
+                        if r > abs(res[0]):
+                                r=abs(res[0]) 
+                        c=Circle(dpos.x,dpos.y, r*1) 
+                        res2 = c.getValueAt(pos)
+                        if -res2[0] < res[0]:
+                                return [max(res[0],-res2[0]), pos, dpos, "i"]
+                        return [max(res[0],-res2[0]), pos, dpos, "e"]
+                                
+               return [1.0, pos, Vec2(0,00), "s"]
+
+               
                res[0]=res[0]
-               s=0.05 #abs(res[0])/10.0
+               s=0.1 #abs(res[0])/10.0
                q = Vec2.mod(pos+0.5,self.c) - (self.c*0.5)
                res2 = self.child.getValueAt(q.div(s))
                res2[0]=res2[0]*s
-               return [max(res[0], res2[0])]
+               return [min(res[0], res2[0]), pos, Vec2(0,0)]
 
 class Rectangle(Shape):
         """A rectangular shape defined by it center cx,cy 

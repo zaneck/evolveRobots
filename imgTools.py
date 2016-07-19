@@ -58,7 +58,6 @@ def simpleColorMap(c):
            
 def matriceToGrayImage(m, destinationPath, getColor=simpleColorMap):
     """ Save a scalar [0,1] matrix into an RGB image of size w,h with a given name 
-        w is width and h height. 
         destinationPath is the name of the destination file. No directory is created in case a path is given 
         Example of use:
                 matriceToImage(aMatrix, 16, 16, "myFile.png")

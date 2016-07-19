@@ -13,6 +13,9 @@ from fakeFitness import *
 from indi import *
 from imgTools import *
 
+def noBinning(value):
+        return value
+
 def absBinning(value):
         return abs(value[0])
 
@@ -20,6 +23,35 @@ def binaryBinning(value):
         if value[0] < 0:
                 return 1
         return 0
+
+def myDebugColor(c):
+      dist = c[0]
+      pos = c[1]
+      dpos = c[2]
+      l = c[3]
+      # Draw the object border in red
+      if dist > -0.01 and dist < 0.01:
+        return (255,0,255)
+      else:
+        if Vec2.length(pos-dpos) < 0.01:
+                return (0,255,255)
+        
+        if dist < 0.0:
+                dist = abs(dist)
+                #return(255,0,0)        
+                
+        if l == "e":
+                return (255,255,255)
+        #if l == "r":
+        #        return (0,127,255)
+        
+        if dist >= 1.0:
+                return (255,255,255)
+        return (255,0,255)
+                
+                #dist = 1.0
+        g=int(dist*255)
+        return (g,g,g)
 
 class TestFitnessFake(unittest.TestCase):
     def setUp(self):
@@ -76,7 +108,7 @@ class TestFitnessFake(unittest.TestCase):
 
     def test_microstructure(self):
         print("Testing MicroStructure Shape Operator (FIXME: the behavior is not what I expect.")
-        canvas = Canvas(dim=(1.0,1.0), res=(128,128))
+        canvas = Canvas(dim=(1.0,1.0), res=(256,256))
 
         #repeater = Repeat(Rectangle(0.0,0.0, 0.1, 0.1), Vec2(0.1,0.1))
         repeater = MicroStructure(Circle(0.0,0.0,0.5))
@@ -84,7 +116,7 @@ class TestFitnessFake(unittest.TestCase):
         candidate = Indi(withSymmetry=False)
         candidate.addShape(repeater)      
         printMatrix( canvas.toMatrice(candidate, binaryBinning) )
-        matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "microStructureTest.png")    
+        matriceToGrayImage(canvas.toMatrice(candidate,noBinning), "microStructureTest.png", myDebugColor)    
         assertEqual(True, False)
 
        
