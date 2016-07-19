@@ -24,7 +24,7 @@ class FitnessSofa(Fitness):
         self.canvas = theCanvas        
         self.sofaScene = sofaScene
 
-        sys.path.insert(0,"sofaScene")
+        sys.path.insert(0, Config.fitnessSofaSceneFolder)
         
         exec("import {0}".format(topologyMinFile)) 
         self.topologyMin = sys.modules[topologyMinFile].topology
