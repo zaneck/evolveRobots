@@ -49,12 +49,14 @@ def matriceToImage(m, w, h, destinationPath):
     img.save(destinationPath)
 
 def simpleColorMap(c):
+      if not isinstance(c, list):
+         c = [c]  
       dist=c[0]
       if dist > -0.01 and dist < 0.01:
         return (255,0,0)
       else:
         g=int(dist*255)
-        return (g,g,cg)
+        return (g,g,g)
            
 def matriceToGrayImage(m, destinationPath, getColor=simpleColorMap):
     """ Save a scalar [0,1] matrix into an RGB image of size w,h with a given name 
