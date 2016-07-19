@@ -2,10 +2,10 @@ ToDos:
         - ajouter d'autres scène de tests tiré du papier:
                 "Evolving Morphologies with CPPN-NEAT and a Dynamic Substrate" de Daniel Richards and Martyn Amos (ALIFE2014)        
         - ajouter un autre scène de test sur un système de préhension. 
-        
         - comparer théoriquement Frep/Distance Field/Implicit Surface vs CPPN 
         - voir si on peut remplacer CPPN par des surface implicites dans l'algo CPPN-NEAT. 
-
+        - étudier si on peut modifier les paramètre des primitives géométriques (nombre de répétitions, diamètre des sections etc...). 
+        - étudier si on peut  faire des cross-over sur des individu ayant une géométrie de base commune (NEAT)        
         - il faut un setup.py voir un truc qui gère les dépendence genre PIP
         - il faut pouvoir changer la "scene" sofa facilement:
                 - générer la scène, les contraintes et la actuateurs à partir d'un modèle simplifié
