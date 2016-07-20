@@ -27,7 +27,7 @@ def createScene(rootNode):
                 obstacle.createObject('EulerImplicit', firstOrder='1')
                 obstacle.createObject('CGLinearSolver', iterations='100')
                 obstacle.createObject('MechanicalObject', position='25  42.5  2.5')
-                obstacle.createObject('Sphere', radius='5', group='2')
+                obstacle.createObject('Sphere', radius='4', group='2')
                 obstacle.createObject('UncoupledConstraintCorrection')
 
                 ##########################################
@@ -72,20 +72,26 @@ def createScene(rootNode):
                 ##########################################
                 # Contact                                #
                 ##########################################
-                objectContact = object.createChild('contact')
-                #points cool uniquement
-                objectContact.createObject('Mesh', src='@/object/subTopo')
-                #objectContact.createObject('Mesh', hexahedra=hexaStr )
-                objectContact.createObject('MechanicalObject')
-                objectContact.createObject('TTriangleModel', group="0")
-                objectContact.createObject('TLineModel', group="0")
-                #objectContact.createObject('TPointModel', group="0")
-                objectContact.createObject('BarycentricMapping')
+                leftContact = object.createChild('contact')
+                leftContact.createObject('RegularGridTopology', n="3 11 2", max="5 50 5", min="0 25 0")
+                leftContact.createObject('MechanicalObject')
+                leftContact.createObject('TTriangleModel', group="3", bothSide="1")
+                leftContact.createObject('TLineModel', group="3")
+                leftContact.createObject('TPointModel', group="3")
+                leftContact.createObject('BarycentricMapping')
 
+                rightContact = object.createChild('contact')
+                rightContact.createObject('RegularGridTopology', n="3 11 2", max="50 50 5", min="45 25 0")
+                rightContact.createObject('MechanicalObject')
+                rightContact.createObject('TTriangleModel', group="3", bothSide="1")
+                rightContact.createObject('TLineModel', group="3")
+                rightContact.createObject('TPointModel', group="3")
+                rightContact.createObject('BarycentricMapping')
+                
                 ##########################################
                 # Controller                             
                 ##########################################
                 object.createObject('PythonScriptController', filename="controller.py", classname="controller")
-                
+
                 return rootNode
 

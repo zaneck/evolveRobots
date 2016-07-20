@@ -32,12 +32,20 @@ class controller(Sofa.PythonScriptController):
             leftCentroidX += tetras[a][0]
             leftCentroidY += tetras[a][1]
 
+        leftCentroidX /= len(self.leftBox)
+        leftCentroidY /= len(self.leftBox)
+
         rightCentroidX = 0
         rightCentroidY = 0
         for a in self.rightBox:
             rightCentroidX += tetras[a][0]
             rightCentroidY += tetras[a][1]            
+
+        
+        rightCentroidX /= len(self.rightBox)
+        rightCentroidY /= len(self.rightBox)
+
             
         print("animation"),
         # for i in self.pos:
-        print("{0},".format(1-math.sqrt(math.pow(rightCentroidX - leftCentroidX,2) + math.pow(rightCentroidY - leftCentroidY,2)))),
+        print("{0},".format(math.sqrt(math.pow(rightCentroidX - leftCentroidX,2) + math.pow(rightCentroidY - leftCentroidY,2)))),
