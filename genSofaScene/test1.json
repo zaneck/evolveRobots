@@ -1,0 +1,46 @@
+{
+  "ConstantForceField": [
+    {
+      "dirZ": 0,
+      "dirY": -100,
+      "dirX": 0,
+      "bz": 1,
+      "by": 19,
+      "bx": 10,
+      "tz": 0,
+      "ty": 20,
+      "tx": 11
+    }
+  ],
+  "FixedConstraint": [
+    {
+      "bz": 0,
+      "by": 0,
+      "bx": 0,
+      "tz": 1,
+      "ty": 1,
+      "tx": 2
+    },
+    {
+      "bz": 0,
+      "by": 0,
+      "bx": 18,
+      "tz": 1,
+      "ty": 1,
+      "tx": 20
+    }
+  ],
+  "PartialFixedConstraint": {
+    "z": 1,
+    "y": 0,
+    "x": 0
+  },
+  "Canvas": {
+    "divZ": 1,
+    "divY": 20,
+    "divX": 20,
+    "z": 5,
+    "y": 50,
+    "x": 50
+  }
+}
