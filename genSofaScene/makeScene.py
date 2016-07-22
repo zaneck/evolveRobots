@@ -1,11 +1,49 @@
+#!/usr/bin/python3 -O
+########################################################################################################
+#
+# This application is generating a complete trial for the evolveRobots application from a simplified
+# configuration file that provides a high level view of the experiment.   
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#       - damien.marchal@univ-lille1.fr
+########################################################################################################
 import json
 import sys
-
+import argparse
 import sofaObjectUsable
 import sofaObject
+import os 
 from organisor import *
 
-f = open("test1.json")
+parser = argparse.ArgumentParser(description="""This application creates an evolveRobots trials from a trial file. """)
+
+parser.add_argument('--source', metavar='file', 
+                     default='defaulttrial.json', type=argparse.FileType('r'),
+                     help='file with the description of the trial to do (defaults to defaulttrials.json)')
+parser.add_argument('--dest', metavar='file', 
+                     default='Trial1', action='store',
+                     help='output directory where the trial data files are generated (Trial1)')
+parser.add_argument('--force', default=False, action='store_true',
+                     help='automatically remove the output directory before to create a new trial.')
+                     
+args = parser.parse_args()
+
+args.dest = os.path.abspath(args.dest)
+
+if os.path.exists(args.dest):
+        if args.force:
+                os.rmdir(args.dest)
+        else:
+                print(
+"""The directory {0} already exists. 
+Please remove it before to use this software or use the --force option for their automatic removal.""".format(args.dest))
+                sys.exit(-1)
+                
+if not os.path.exists(args.dest):
+        os.mkdir(args.dest)
+
+f = open(args.source.name)
 
 res = json.load(f)
 f.close()
@@ -28,31 +66,4 @@ minTopo = printMintopoFile(orga, ".")
 
 pyscn.printFile()
 minTopo.printFile()
-
-# head = Head()
-# canvas = Canvas(50,50,5,20,20,1)
-# fem = FEM()
-# partialConstraint = PartialFixedConstraint(0,0,1)
-# fixedConstraint1 = FixedConstraint(0,0,0,2,1,1)
-# fixedConstraint2 = FixedConstraint(18,0,0,20,1,1)
-# constantForceField = ConstantForceField(10,19,0,11,20,1,0,-100,0)
-
-# tail = Tail()
-
-# print(head)
-
-#print(canvas)
-
-# print(fem)
-
-# print(partialConstraint)
-# print(fixedConstraint1)
-# print(fixedConstraint2)
-# print(constantForceField)
-
-# print(tail)
-
-# a=["x":50, "y":50, "z":5, "divX":20, "divY":20, "divZ":1]
-# c1 = Canvas(a)
-# print(c1)
  
