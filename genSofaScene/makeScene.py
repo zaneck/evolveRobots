@@ -50,15 +50,15 @@ f.close()
 
 orga = Organisor()
 
-for a in res.keys():
-    cls = getattr(sofaObjectUsable, a)
+for k in res.keys():
+    cls = getattr(sofaObjectUsable, k)
 
     if cls.unique == False:
-        for context in res[a]:
+        for context in res[k]:
             a = cls(context)
             orga.addToStock(a)
     else:
-        a=cls(res[a])
+        a=cls(res[k])
         orga.addToStock(a)
 
 pyscn = printPyscnFile(orga, args.dest)
