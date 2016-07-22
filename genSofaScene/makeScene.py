@@ -61,8 +61,8 @@ for a in res.keys():
         a=cls(res[a])
         orga.addToStock(a)
 
-pyscn = printPyscnFile(orga, ".")
-minTopo = printMintopoFile(orga, ".")
+pyscn = printPyscnFile(orga, args.dest)
+minTopo = printMintopoFile(orga, args.dest)
 
 pyscn.printFile()
 minTopo.printFile()
