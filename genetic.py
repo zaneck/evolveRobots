@@ -9,7 +9,6 @@
 from config import Config
 from indi import *
 import dump 
-from distancefct import sorensenDice
 
 class Population(object):
     def __init__(self):

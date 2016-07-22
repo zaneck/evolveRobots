@@ -1,7 +1,14 @@
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot. 
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#############################################################################
 import threading
 import os
 
-#import numpy as np
 from subprocess import Popen, PIPE, call
 
 from fitness import Fitness
@@ -17,7 +24,8 @@ def binarybin(values):
         return 0
 
 class FitnessSofa(Fitness):
-    def __init__(self, name, theCanvas, sofaScene="test1.pyscn", topologyMinFile="minTopoTest1"):
+    def __init__(self, name, theCanvas, 
+                 sofaScene="test1.pyscn", topologyMinFile="minTopoTest1"):
         Fitness.__init__(self)
         self.name=name
 
@@ -111,6 +119,6 @@ class FitnessSofa(Fitness):
                     
         
         res = max(pos)
-        #TODO valentin : moyenne des carré
         
+       
         return (res * Config.fitnessRateScore) + (cptVoxel * Config.fitnessRateVoxel)
