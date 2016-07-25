@@ -1,6 +1,5 @@
 # coding: utf8 
 #############################################################################
-#
 # This file is part of evolveRobot.
 #
 # Contributors:
@@ -10,7 +9,7 @@
 # an arbitrary value for the canvas.  
 g_maxresolution = 4096
 from indi import Indi
-from geometry import Union
+from geometry import Shape 
 
 class Canvas(object):
     """A Canvas is used to discreetize a candidate into a grid
@@ -47,9 +46,8 @@ class Canvas(object):
         """ 
         res =[[0 for _ in range(self.res[1])] for _ in range(self.res[0])]
 
-        if not isinstance(candidate, Indi) and not isinstance(candidate, Union):
-            print(type(candidate))
-            raise TypeError("The 'candidate' parameter must be of class 'Indi or Union")
+        if not isinstance(candidate, (Shape, Indi)):
+                raise TypeError("The 'candidate' parameter must be of class 'Shape or Indi'")
 
         if not callable(binfct):
                 raise TypeError("The 'binfct' must be a callable object")

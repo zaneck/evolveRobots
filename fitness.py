@@ -1,8 +1,17 @@
+# coding: utf8 
+#############################################################################
+#
+# This file is part of evolveRobot. 
+#
+# Contributors:
+#	- created by Valentin Owczarek
+#############################################################################
 import threading
 import queue
 from indi import *
 from config import Config
 
+# Tasklet/TasksManager/TaskDispatcher/DIstributeComputation
 class Fitness(object):
     def __init__(self):
         self.name="Abstract fitness fun"

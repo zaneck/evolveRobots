@@ -1,6 +1,8 @@
 ToDos:
-	- Restaurer sofaFitness function apres le merge (multithread<=extendedGeom
 	- il faut un setup.py voir un truc qui gère les dépendence genre PIP
+	- Utilise un moteur de template pour le générateur de scène ??? 
+		list sur: https://wiki.python.org/moin/Templating#Templating_Engines
+	- dans sofaBaseFitness il faut faire la moyenne des carré
         - il faut restaurer les tests pour qu'ils marchent à nouveau. 
         - il faut pouvoir changer la "scene" sofa facilement:
                 - générer la scène, les contraintes et la actuateurs à partir d'un modèle simplifié

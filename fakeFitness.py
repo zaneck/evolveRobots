@@ -41,4 +41,4 @@ class FitnessFake(Fitness):
                 if imgTest[i][j] == 1:
                     cptVoxel += 1
                     
-        return 1.0/(cptVoxel+1)
+        return (cptVoxel+1)
