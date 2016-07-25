@@ -84,3 +84,5 @@ if dump.activated():
         dump.endExperiment()
         historyLog.saveToCSV("log/history/history.csv")
         
+
+f.writeBestResult("BEST")
