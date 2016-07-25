@@ -10,6 +10,7 @@
 # an arbitrary value for the canvas.  
 g_maxresolution = 4096
 from indi import Indi
+from geometry import Union
 
 class Canvas(object):
     """A Canvas is used to discreetize a candidate into a grid
@@ -46,8 +47,9 @@ class Canvas(object):
         """ 
         res =[[0 for _ in range(self.res[1])] for _ in range(self.res[0])]
 
-        if not isinstance(candidate, Indi):
-                raise TypeError("The 'candidate' parameter must be of class 'Indi'")
+        if not isinstance(candidate, Indi) and not isinstance(candidate, Union):
+            print(type(candidate))
+            raise TypeError("The 'candidate' parameter must be of class 'Indi or Union")
 
         if not callable(binfct):
                 raise TypeError("The 'binfct' must be a callable object")
@@ -59,7 +61,6 @@ class Canvas(object):
                     # grid position, resolution and dimmension.  
                     px = ( self.dim[0] * i / self.res[0] ) - 0.5 * self.dim[0] + 0.5 * self.dim[0] / self.res[0] 
                     py = ( self.dim[1] * j / self.res[1] ) - 0.5 * self.dim[1] + 0.5 * self.dim[1] / self.res[1]
-                    
                     # Query the candidate to get its content at the calculated location px,py 
                     res[i][j] = binfct( candidate.getValueAt( (px,py) ))
         return res
