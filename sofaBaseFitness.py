@@ -16,6 +16,8 @@ from indi import *
 
 from config import Config
 
+from agregator import *
+
 def binarybin(values):
         """This binning function is using the first value at [0]. If < 0 it return 1.0 (there is matter at
            this location. Otherwise it return 0 (no matter)"""
@@ -50,11 +52,11 @@ class FitnessSofa(Fitness):
                 return self.canvas.toMatrice(candidate, binarybin)
 
         """
-        Create the Candidate matrix and return the matrix and
-        the number of voxel use to discribe it
+        Create the Candidate matrix representation.
+        return the matrix and the number of voxel
         The function use the minTopo.py file,
         where the 1 value code for materials and
-        -1 for no materials
+        2 for no materials
         """
         def makeCandidateMatrix(self, candidate):
                 #imgTest = self.canvas.toMatrice(candidate, binarybin)
@@ -62,10 +64,10 @@ class FitnessSofa(Fitness):
                 cptVoxel = 0
                 for i in range(self.canvas.resolution[0]):
                         for j in range(self.canvas.resolution[1]):
+                                if self.topologyMin[i][j] == 2:
+                                        imgTest[i][j] = 0
                                 if self.topologyMin[i][j] == 1:
                                         imgTest[i][j] = 1
-                                elif self.topologyMin[i][j] == -1:
-                                        imgTest[i][j] = 0
                                 if imgTest[i][j] == 1:
                                         cptVoxel += 1
                                 
@@ -79,20 +81,19 @@ class FitnessSofa(Fitness):
                 temp = astdout.split("animation")
                 temp = temp[2:]
                 temp = temp[:len(temp)-1] 
-        
+                
                 pos = []
                 for t in temp: #for all step
                         tSplit = t.split(",")
 
-                for i in tSplit:#for all value
-                        try:
-                                posUnit = float(i)
-                                if posUnit >= 40:
-                                        return [sys.maxsize]
-                                pos.append(posUnit)
-                        except ValueError:
-
-                                pass
+                        for i in tSplit:#for all value
+                                try:
+                                        posUnit = float(i)
+                                        if posUnit >= 50:
+                                                return [sys.maxsize]
+                                        pos.append(posUnit)
+                                except ValueError:
+                                        pass
                 return pos
 
         def writeCandidateMatrix(self, basedir, candidate, imgTest):
@@ -108,8 +109,7 @@ class FitnessSofa(Fitness):
                 topo.write("topology = [\n")
 
                 # Into the shape description file we are writing the image generated from the 
-                # candidate using the canvas and the provided binning function. The matrix
-                # is written in column row mode
+                # candidate using the canvas and the provided binning function.
                 for j in range(self.canvas.resolution[1]):
                         topo.write("[")
                         topo.write("{0}".format(imgTest[0][j]))
@@ -140,9 +140,16 @@ class FitnessSofa(Fitness):
             a = Popen(["runSofa", "-g", "batch", "-n", "{0}".format(Config.fitnessTimeStep), "/tmp/evolveRobots/{0}/{1}".format(idThread, self.sofaScene)], stdout=PIPE, universal_newlines=True) #add /tmp/thread.ident
             astdout, _ = a.communicate()
             a.stdout.close()
-            
-            pos = self.parseResult(astdout)
-            res = max(pos)
-            #TODO valentin : moyenne des carré
 
+            pos = self.parseResult(astdout)
+
+            if Config.fitnessAgregator == "max":
+                    res = maxAgregator(pos)
+            elif Config.fitnessAgregator == "max":
+                    res = minAgregator(pos)
+            else:
+                    raise ValueError
+        
+                    
+        #TODO valentin : moyenne des carré
             return (res * Config.fitnessRateScore) + (cptVoxel * Config.fitnessRateVoxel)
