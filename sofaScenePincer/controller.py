@@ -19,7 +19,7 @@ class controller(Sofa.PythonScriptController):
                 
             if tetras[i] in rightBox:
                 self.rightBox.append(i)
-                
+        
     #print distance from init position
     def onEndAnimationStep(self,deltaTime):
         tetras = self.node.getObject('tetras').position

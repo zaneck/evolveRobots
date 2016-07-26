@@ -14,7 +14,7 @@ def createScene(rootNode):
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
 
                 rootNode.createObject('FreeMotionAnimationLoop')
-                rootNode.createObject('GenericConstraintSolver')
+                rootNode.createObject('GenericConstraintSolver', maxIterations='200')
                 rootNode.createObject('CollisionPipeline', verbose="0")
                 rootNode.createObject('BruteForceDetection', name="N2")
                 rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0")
@@ -26,10 +26,11 @@ def createScene(rootNode):
                 obstacle = rootNode.createChild('obstacle')
                 obstacle.createObject('EulerImplicit', firstOrder='1')
                 obstacle.createObject('CGLinearSolver', iterations='100')
-                obstacle.createObject('MechanicalObject', position='25  42.5  2.5')
-                obstacle.createObject('Sphere', radius='4', group='2')
+                obstacle.createObject('MechanicalObject', position='25  43  2.5')
+                obstacle.createObject('Sphere', radius='3', group='2')
                 obstacle.createObject('UncoupledConstraintCorrection')
-
+                obstacle.createObject('FixedConstraint', indices=0)
+                
                 ##########################################
                 # FEM Model                              
                 ##########################################
@@ -38,28 +39,34 @@ def createScene(rootNode):
 
                 object = rootNode.createChild('object')
                 object.createObject('EulerImplicit', name='odesolver', firstOrder='0')
-                object.createObject('CGLinearSolver')
+                #object.createObject('CGLinearSolver')
+
+                object.createObject('ShewchukPCGLinearSolver', iterations=15, preconditioners='preconditioner', use_precond='true', update_step='1', use_first_precond='false')
+                
                 grid = object.createObject('RegularGridTopology', name= 'grid', n="{0} {1} {2}".format(x, y, z), max="{0} {1} {2}".format(sizeX, sizeY, sizeZ), min="0 0 0")
                 hexa = grid.findData('hexahedra').value
 
                 object.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
                 object.createObject('UniformMass', totalmass='0.02')
-                object.createObject('PartialFixedConstraint', fixedDirections='0 0 1', fixAll="true")
-                
-                object.createObject('BoxROI', name='ROI1', box='0 0 0 5 2.5 5', drawBoxes='true')
-                object.createObject('FixedConstraint', indices='@ROI1.indices')
-                
-                object.createObject('BoxROI', name='ROI2', box='45 0 0 50 2.5 5', drawBoxes='true')
-                object.createObject('FixedConstraint', indices='@ROI2.indices')
-                
-                object.createObject('BoxROI', name='ROI3', box='22.5 0 0 27.5 2.5 5', drawBoxes='true')
-                object.createObject('ConstantForceField', force='0 -25 0', points='@ROI3.indices')
 
-                object.createObject('BoxROI', name='LEFTBOX', box='0 47.5 0 5 50 5', drawBoxes='true')
-                object.createObject('BoxROI', name='RIGHTBOX', box='45 47.5 0 50 50 5', drawBoxes='true')
+                object.createObject('BoxROI', name='ROI0', box='50 50 5 0 10 5 ', drawBoxes='true')
+                nbPoint = x*y*z
+                
+                object.createObject('BoxROI', name='ROI1', box='0 0 0 5 2.5 5', drawBoxes='false')
+                object.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness="1e12")
+                
+                object.createObject('BoxROI', name='ROI2', box='45 0 0 50 2.5 5', drawBoxes='false')
+                object.createObject('RestShapeSpringsForceField', points='@ROI2.indices', stiffness="1e12")
+                
+                object.createObject('BoxROI', name='ROI3', box='22.5 0 0 27.5 2.5 5', drawBoxes='false')
+                object.createObject('ConstantForceField', force='0 -15 0', points='@ROI3.indices')
 
-                object.createObject('UncoupledConstraintCorrection')                
-                ##########################################
+                #object.createObject('BoxROI', name='LEFTBOX', box='0 47.5 0 5 50 5', drawBoxes='false')
+                #object.createObject('BoxROI', name='RIGHTBOX', box='45 47.5 0 50 50 5', drawBoxes='false')
+
+                #object.createObject('UncoupledConstraintCorrection')            
+
+		##########################################
                 # Subtopology for Force Field            
                 ##########################################
                 mask = matrixImageToMask(topo.topology, x-1, y-1)
@@ -67,21 +74,29 @@ def createScene(rootNode):
 
                 subTopo = object.createChild('subTopo')
                 subTopo.createObject('HexahedronSetTopologyContainer', name='HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaStr)
-                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
-                
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='600')    
+                subTopo.createObject('PartialFixedConstraint', fixedDirections='0 0 1', indices=range(nbPoint)) #indices='@../ROI0.indices')
+	
+                object.createObject('SparseLDLSolver', name='preconditioner', useWarping='true')
+                object.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+
                 ##########################################
                 # Contact                                #
                 ##########################################
+                
+                object.createObject('BoxROI', name='LEFTBOX', box='0 40 0 5 50 5', drawBoxes='false')
+                object.createObject('BoxROI', name='RIGHTBOX', box='45 40 0 50 50 5', drawBoxes='false')
+                
                 leftContact = object.createChild('contact')
-                leftContact.createObject('RegularGridTopology', n="3 11 2", max="5 50 5", min="0 25 0")
+                leftContact.createObject('RegularGridTopology', n="3 5 2", max="5 50 5", min="0 40 0")
                 leftContact.createObject('MechanicalObject')
-                leftContact.createObject('TTriangleModel', group="3", bothSide="1")
+                leftContact.createObject('TTriangleModel', group="3")
                 leftContact.createObject('TLineModel', group="3")
                 leftContact.createObject('TPointModel', group="3")
                 leftContact.createObject('BarycentricMapping')
 
                 rightContact = object.createChild('contact')
-                rightContact.createObject('RegularGridTopology', n="3 11 2", max="50 50 5", min="45 25 0")
+                rightContact.createObject('RegularGridTopology', n="3 5 2", max="50 50 5", min="45 40 0")
                 rightContact.createObject('MechanicalObject')
                 rightContact.createObject('TTriangleModel', group="3", bothSide="1")
                 rightContact.createObject('TLineModel', group="3")
@@ -91,7 +106,7 @@ def createScene(rootNode):
                 ##########################################
                 # Controller                             
                 ##########################################
-                object.createObject('PythonScriptController', filename="controller.py", classname="controller")
+		object.createObject('PythonScriptController', filename="controller.py", classname="controller")
 
                 return rootNode
 
