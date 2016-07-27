@@ -35,7 +35,7 @@
     "y": 0,
     "x": 0
   },
-  "Canvas": {
+  "CanvasDef": {
     "divZ": 1,
     "divY": 20,
     "divX": 20,

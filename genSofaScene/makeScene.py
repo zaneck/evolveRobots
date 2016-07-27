@@ -11,10 +11,13 @@
 import json
 import sys
 import argparse
+import os 
+
 import sofaObjectUsable
 import sofaObject
-import os 
-from organisor import *
+
+from bagOfObject import *
+from printFile import *
 
 parser = argparse.ArgumentParser(description="""This application creates an evolveRobots trials from a trial file. """)
 
@@ -48,7 +51,7 @@ f = open(args.source.name)
 res = json.load(f)
 f.close()
 
-orga = Organisor()
+bag = BagOfObject()
 
 for k in res.keys():
     cls = getattr(sofaObjectUsable, k)
@@ -56,13 +59,13 @@ for k in res.keys():
     if cls.unique == False:
         for context in res[k]:
             a = cls(context)
-            orga.addToStock(a)
+            bag.addToStock(a)
     else:
         a=cls(res[k])
-        orga.addToStock(a)
+        bag.addToStock(a)
 
-pyscn = printPyscnFile(orga, args.dest)
-minTopo = printMintopoFile(orga, args.dest)
+pyscn = printPyscnFile(bag, args.dest)
+minTopo = printMintopoFile(bag, args.dest)
 
 pyscn.printFile()
 minTopo.printFile()

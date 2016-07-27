@@ -114,6 +114,7 @@ class BoxROI(SofaObject):
         
     
     def __str__(self):
+        #value between [0, gridSize]
         a = """
         bx = unitX*{3}
         by = unitY*{4}

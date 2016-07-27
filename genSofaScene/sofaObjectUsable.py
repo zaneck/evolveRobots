@@ -1,6 +1,6 @@
 from sofaObject import SofaObject, BoxROI
 
-class Canvas(SofaObject):
+class CanvasDef(SofaObject):
     """ Standard head of a sofa pyscn
     """
     def __init__(self, context):
