@@ -11,10 +11,8 @@
 from controllerObject import ControllerObject
 from sofaObject import BoxROI
 
-controllerObjectList = ["DistanceFromOrigin", "DistanceBetweenTwoBox", "SimpleResult"]
-
-
 class DistanceFromOrigin(ControllerObject):
+    unique = False
     def __init__(self, context):
         self.key = "DistanceFromOrigin"
         self.haveBoxROI = True
@@ -35,8 +33,12 @@ class DistanceFromOrigin(ControllerObject):
         """
 
         return ""
+        
+    def getBoxROI(self):
+        return [self.box]
 
 class DistanceBetweenTwoBox(ControllerObject):
+    unique = False
     def __init__(self, context):
         self.key = "DistanceBetweenTwoBox"
         self.haveBoxROI = True
@@ -85,6 +87,8 @@ class DistanceBetweenTwoBox(ControllerObject):
         {0} = math.sqrt(math.pow(rightCentroidX - leftCentroidX, 2) + math.pow(rightCentroidY - leftCentroidY, 2))
 """.format(self.distanceName)
 
+    def getBoxROI(self):
+        return [self.boxOne, self.boxTwo]
     
 class SimpleResult(ControllerObject):
     def __init__(self, context):

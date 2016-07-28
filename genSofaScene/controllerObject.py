@@ -14,10 +14,11 @@ from sofaObject import BoxROI
    Used to create controller py
 """
 class ControllerObject(object):
+    unique = True
     def __init__(self, context):
         self.key = "ControllerObject"
         self.haveBoxROI = False
-
+        
     def initObject(self):
         """
         return the init object part for the initGraph fun

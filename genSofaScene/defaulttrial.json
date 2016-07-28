@@ -1,46 +1,74 @@
 {
-  "ConstantForceField": [
-    {
-      "dirZ": 0,
-      "dirY": -100,
-      "dirX": 0,
-      "bz": 1,
-      "by": 19,
-      "bx": 10,
-      "tz": 0,
-      "ty": 20,
-      "tx": 11
-    }
-  ],
-  "FixedConstraint": [
-    {
-      "bz": 0,
-      "by": 0,
-      "bx": 0,
-      "tz": 1,
-      "ty": 1,
-      "tx": 2
+  "SofaObject": {
+    "CanvasDef": {
+      "x": 50,
+      "y": 50,
+      "z": 5,
+      "divX": 20,
+      "divY": 20,
+      "divZ": 1
     },
-    {
-      "bz": 0,
-      "by": 0,
-      "bx": 18,
-      "tz": 1,
-      "ty": 1,
-      "tx": 20
-    }
-  ],
-  "PartialFixedConstraint": {
-    "z": 1,
-    "y": 0,
-    "x": 0
+    "PartialFixedConstraint": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "FixedConstraint": [
+      {
+        "tx": 2,
+        "ty": 1,
+        "tz": 1,
+        "bx": 0,
+        "by": 0,
+        "bz": 0
+      },
+      {
+        "tx": 20,
+        "ty": 1,
+        "tz": 1,
+        "bx": 18,
+        "by": 0,
+        "bz": 0
+      }
+    ],
+    "ConstantForceField": [
+      {
+        "tx": 11,
+        "ty": 20,
+        "tz": 0,
+        "bx": 10,
+        "by": 19,
+        "bz": 1,
+        "dirX": 0,
+        "dirY": -100,
+        "dirZ": 0
+      }
+    ]
   },
-  "CanvasDef": {
-    "divZ": 1,
-    "divY": 20,
-    "divX": 20,
-    "z": 5,
-    "y": 50,
-    "x": 50
+  "Controller": {
+    "SimpleResult": {
+      "distanceName": "D1"
+    },
+    "DistanceBetweenTwoBox": [
+      {
+        "distanceName": "D1",
+        "boxTwo": {
+          "tx": 2,
+          "ty": 1,
+          "tz": 1,
+          "bx": 0,
+          "by": 0,
+          "bz": 0
+        },
+        "boxOne": {
+          "tx": 2,
+          "ty": 1,
+          "tz": 1,
+          "bx": 0,
+          "by": 0,
+          "bz": 0
+        }
+      }
+    ]
   }
 }

@@ -9,25 +9,21 @@
 #############################################################################
 from sofaObject import *
 
-from controllerObject import controllerObjectList
-
 class BagOfObject(object):
     stockSofa = {}
     stockController = {}
 
-    def addToStock(self, o):
-        if o.key in controllerObjectList:
-            try:
-                BagOfObject.stockController[o.key].append(o)
-            except KeyError:
-                BagOfObject.stockController[o.key] = [o]
-            return
-        else:
-            try:
-                BagOfObject.stockSofa[o.key].append(o)
-            except KeyError:
-                BagOfObject.stockSofa[o.key] = [o]
-            return
+    def addToStockSofa(self, o):
+        try:
+            BagOfObject.stockSofa[o.key].append(o)
+        except KeyError:
+            BagOfObject.stockSofa[o.key] = [o]
+
+    def addToStockController(self, o):
+        try:
+            BagOfObject.stockController[o.key].append(o)
+        except KeyError:
+            BagOfObject.stockController[o.key] = [o]
    
     
     def getStockSofa(self):
