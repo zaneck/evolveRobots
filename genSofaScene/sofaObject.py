@@ -20,7 +20,6 @@ class SofaObject(object):
     unique = True 
     def __init__(self, context):
         self.key = "SofaObject"
-        pass
     
     def __str__(self):
         """ return a pyscn instruction.
