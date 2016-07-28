@@ -145,7 +145,7 @@ class FitnessSofa(Fitness):
 
             if Config.fitnessAgregator == "max":
                     res = maxAgregator(pos)
-            elif Config.fitnessAgregator == "max":
+            elif Config.fitnessAgregator == "min":
                     res = minAgregator(pos)
             else:
                     raise ValueError
