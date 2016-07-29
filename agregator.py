@@ -12,3 +12,11 @@ def maxAgregator(l):
 
 def minAgregator(l):
     return min(l)
+
+def averageAgregator(l):
+    res = 0.0
+
+    for i in l:
+        res += i
+
+    return res / len(l)
