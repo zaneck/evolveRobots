@@ -12,7 +12,7 @@ import json
 import sys
 import argparse
 import os 
-
+import shutil 
 import sofaObjectUsable
 import sofaObject
 
@@ -36,7 +36,7 @@ args.dest = os.path.abspath(args.dest)
 
 if os.path.exists(args.dest):
         if args.force:
-                os.rmdir(args.dest)
+                shutil.rmtree(args.dest, ignore_errors=True)
         else:
                 print(
 """The directory {0} already exists. 
@@ -54,6 +54,10 @@ f.close()
 bag = BagOfObject()
 
 for k in res.keys():
+    if not hasattr(sofaObjectUsable, k):
+        print("Controller is not implemented. Please send your complaines to the authors.") 
+        break 
+	
     cls = getattr(sofaObjectUsable, k)
 
     if cls.unique == False:
