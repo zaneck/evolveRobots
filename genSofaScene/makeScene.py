@@ -16,6 +16,8 @@ import shutil
 import sofaObjectUsable
 import sofaObject
 
+from jsonParser import JsonParser
+
 from bagOfObject import *
 from printFile import *
 
@@ -46,27 +48,10 @@ Please remove it before to use this software or use the --force option for their
 if not os.path.exists(args.dest):
         os.mkdir(args.dest)
 
-f = open(args.source.name)
+parser = JsonParser(args.source.name) 
+parser.checkValidJson()
+bag=parser.genBagOfObject()
 
-res = json.load(f)
-f.close()
-
-bag = BagOfObject()
-
-for k in res.keys():
-    if not hasattr(sofaObjectUsable, k):
-        print("Controller is not implemented. Please send your complaines to the authors.") 
-        break 
-	
-    cls = getattr(sofaObjectUsable, k)
-
-    if cls.unique == False:
-        for context in res[k]:
-            a = cls(context)
-            bag.addToStock(a)
-    else:
-        a=cls(res[k])
-        bag.addToStock(a)
 
 pyscn = printPyscnFile(bag, args.dest)
 minTopo = printMintopoFile(bag, args.dest)
