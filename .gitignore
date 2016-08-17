@@ -3,3 +3,8 @@ __pycache__
 *~
 *.png
 *.html
+*.aux
+*.bbl		
+*.blg
+*.log
+*.toc
