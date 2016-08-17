@@ -1,0 +1,80 @@
+\documentclass[pdftex, a4paper, 12pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage[top=2.3cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage[babel=true]{csquotes}
+\usepackage{natbib}
+\usepackage{caption}
+
+
+%formatage des chapitre
+%marche seulement avec report et book
+\usepackage{titlesec}
+%macro pour retirer ``chapitre #''
+%% \titleformat{\chapter}[display]
+%%             {\normalfont\huge\bfseries}{}{0pt}{\Huge}
+%%             \titlespacing*{\chapter}{0pt}{10pt}{40pt}
+
+            \begin{document}
+
+            %insertion page titre perso
+            \input{title.tex}
+
+            \tableofcontents
+
+            \chapter{Introduction}
+            \section{Thesis Contribution}
+            \section{Thesis outline}
+            
+            \chapter{Background}
+            \section{Soft robotics}
+            
+            \section{Shape generation}
+            \subsection{CPPN}
+            \subsection{Functionnal representation (F-rep)}
+            \subsection{One-hot encoding}
+            
+            \section{Optimization}
+            %késako, goal, for which type of prob
+            \subsection{Evolutionary algorithm}
+            \subsection{Direct vs indirect encoding}
+            \subsection{CPPN-NEAT}
+            
+            \chapter{Contributions}
+            \section{Model}
+            \subsection{Specification}
+            \subsection{Why using this representation}
+            \subsection{Comparison with other representation}
+            
+            \section{Using an evolutionnary algorithm}
+
+            \chapter{Result and discussion}
+            \section{Benchmarks}
+            \section{Visual comparison}
+            \section{Statistical analysis}
+
+            \section{criticism}
+            \subsection{Mecanical fracture}
+            \subsection{Apply a symetry to help the optimization}
+            
+            \chapter{Conclusion and perspectives}                    
+            
+            
+            %% \input{partOne.tex}
+            %% \input{partTwo.tex}
+            %% \input{partThree.tex}
+
+            
+            \bibliographystyle{plain}
+            \bibliography{bliblio}
+            \addcontentsline{toc}{chapter}{Bibliograpy}
+            \end{document}
