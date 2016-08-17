@@ -4,7 +4,7 @@ __pycache__
 *.png
 *.html
 *.aux
-*.bbl		
+*.bbl
 *.blg
 *.log
 *.toc
