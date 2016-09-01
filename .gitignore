@@ -8,3 +8,9 @@ __pycache__
 *.blg
 *.log
 *.toc
+
+resultReport/arch
+resultReport/shortBridge
+resultReport/squareBeam
+resultReport/wheel
+resultReport/*.txt
