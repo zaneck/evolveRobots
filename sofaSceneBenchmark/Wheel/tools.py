@@ -9,8 +9,8 @@ def tabToString(tab, mask):
 def matrixImageToMask(m, x, y):
     res = []
 
-    for i in range(x-1,-1,-1):
-        for j in range(y):
+    for i in range(y-1,-1,-1):
+        for j in range(x):
             if m[i][j] == 1:
                 res.append(1)
             else:

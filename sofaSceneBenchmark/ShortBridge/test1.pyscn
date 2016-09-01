@@ -57,7 +57,7 @@ def createScene(rootNode):
 
                 subTopo = object.createChild('subTopo')
                 subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaStr)
-                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='5000')
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 
 
                 ##########################################
