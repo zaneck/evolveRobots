@@ -3,11 +3,12 @@ import math
 class controller(Sofa.PythonScriptController):
     def initGraph(self, node):
         self.node = node
-        self.leftBox = []
-        self.rightBox = []
-
         #get all tetras
         tetras = node.getObject('tetras').position
+
+
+        self.leftBox = []
+        self.rightBox = []
         #and 2 boxes to watch
         leftBox = node.getObject('LEFTBOX').pointsInROI
         rightBox = node.getObject('RIGHTBOX').pointsInROI
@@ -45,7 +46,9 @@ class controller(Sofa.PythonScriptController):
         rightCentroidX /= len(self.rightBox)
         rightCentroidY /= len(self.rightBox)
 
-            
+
+        res = math.sqrt(math.pow(rightCentroidX - leftCentroidX, 2) + math.pow(rightCentroidY - leftCentroidY, 2))
+        
         print("animation"),
         # for i in self.pos:
-        print("{0},".format(math.sqrt(math.pow(rightCentroidX - leftCentroidX,2) + math.pow(rightCentroidY - leftCentroidY,2)))),
+        print("{0},".format(res)),
