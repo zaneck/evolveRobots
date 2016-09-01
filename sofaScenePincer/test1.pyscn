@@ -23,13 +23,13 @@ def createScene(rootNode):
                 ##########################################
                 # Obstacle                               #
                 ##########################################
-                obstacle = rootNode.createChild('obstacle')
-                obstacle.createObject('EulerImplicit', firstOrder='1')
-                obstacle.createObject('CGLinearSolver', iterations='100')
-                obstacle.createObject('MechanicalObject', position='25  43  2.5')
-                obstacle.createObject('Sphere', radius='3', group='2')
-                obstacle.createObject('UncoupledConstraintCorrection')
-                obstacle.createObject('FixedConstraint', indices=0)
+                # obstacle = rootNode.createChild('obstacle')
+                # obstacle.createObject('EulerImplicit', firstOrder='1')
+                # obstacle.createObject('CGLinearSolver', iterations='100')
+                # obstacle.createObject('MechanicalObject', position='25  43  2.5')
+                # obstacle.createObject('Sphere', radius='3', group='2')
+                # obstacle.createObject('UncoupledConstraintCorrection')
+                # obstacle.createObject('FixedConstraint', indices=0)
                 
                 ##########################################
                 # FEM Model                              
@@ -49,7 +49,6 @@ def createScene(rootNode):
                 object.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
                 object.createObject('UniformMass', totalmass='0.02')
 
-                object.createObject('BoxROI', name='ROI0', box='50 50 5 0 10 5 ', drawBoxes='true')
                 nbPoint = x*y*z
                 
                 object.createObject('BoxROI', name='ROI1', box='0 0 0 5 2.5 5', drawBoxes='false')
@@ -87,21 +86,32 @@ def createScene(rootNode):
                 object.createObject('BoxROI', name='LEFTBOX', box='0 40 0 5 50 5', drawBoxes='false')
                 object.createObject('BoxROI', name='RIGHTBOX', box='45 40 0 50 50 5', drawBoxes='false')
                 
-                leftContact = object.createChild('contact')
-                leftContact.createObject('RegularGridTopology', n="3 5 2", max="5 50 5", min="0 40 0")
-                leftContact.createObject('MechanicalObject')
-                leftContact.createObject('TTriangleModel', group="3")
-                leftContact.createObject('TLineModel', group="3")
-                leftContact.createObject('TPointModel', group="3")
-                leftContact.createObject('BarycentricMapping')
+                # maskLeft = halfPart(topo.topology, x-1, y-1, "L")
+                # leftStr = tabToString(hexa, maskLeft)
 
-                rightContact = object.createChild('contact')
-                rightContact.createObject('RegularGridTopology', n="3 5 2", max="50 50 5", min="45 40 0")
-                rightContact.createObject('MechanicalObject')
-                rightContact.createObject('TTriangleModel', group="3", bothSide="1")
-                rightContact.createObject('TLineModel', group="3")
-                rightContact.createObject('TPointModel', group="3")
-                rightContact.createObject('BarycentricMapping')
+                # maskRight = halfPart(topo.topology, x-1, y-1, "R")
+                # rightStr = tabToString(hexa, maskRight)
+                
+                # leftContact = object.createChild('contact')
+
+                # leftContact.createObject('Mesh', position='@../grid.position', hexahedra=leftStr)
+                
+                # leftContact.createObject('MechanicalObject')
+                # leftContact.createObject('TTriangleModel', group="3")
+                # leftContact.createObject('TLineModel', group="3")
+                # leftContact.createObject('TPointModel', group="3")
+                # leftContact.createObject('BarycentricMapping')
+
+                # rightContact = object.createChild('contact')
+
+                
+                # rightContact.createObject('Mesh', position='@../grid.position', hexahedra=rightStr)
+
+                # rightContact.createObject('MechanicalObject')
+                # rightContact.createObject('TTriangleModel', group="2", bothSide="1")
+                # rightContact.createObject('TLineModel', group="2")
+                # rightContact.createObject('TPointModel', group="2")
+                # rightContact.createObject('BarycentricMapping')
                 
                 ##########################################
                 # Controller                             

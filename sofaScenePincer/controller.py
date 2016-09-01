@@ -1,6 +1,43 @@
 import math
+import topo
+from tools import *
 
 class controller(Sofa.PythonScriptController):
+    def bwdInitGraph(self, node):
+        x , y , z = 21, 21, 2
+        grid = node.getObject('grid')
+        hexa = grid.findData('hexahedra').value
+        position = grid.findData('position').value
+        
+        ##########################################
+        # Contact                                #
+        ##########################################
+        maskLeft = halfPart(topo.topology, x-1, y-1, "L")
+        leftHexa = selectHexa(hexa, maskLeft)
+        
+        reduceLeftPosition, reduceLeftHexa = reducePositionOverHexa(position, leftHexa)
+        
+        leftContact = node.createChild('contact')        
+        leftContact.createObject('Mesh', position=reduceLeftPosition, hexahedra=reduceLeftHexa)
+        leftContact.createObject('MechanicalObject')
+        leftContact.createObject('TTriangleModel', group="3")
+        leftContact.createObject('TLineModel', group="3")
+        leftContact.createObject('TPointModel', group="3")
+        leftContact.createObject('BarycentricMapping')
+
+        maskRight = halfPart(topo.topology, x-1, y-1, "R")
+        rightHexa = selectHexa(hexa, maskRight)
+        
+        reduceRightPosition, reduceRightHexa = reducePositionOverHexa(position, rightHexa)
+        
+        rightContact = node.createChild('contact')        
+        rightContact.createObject('Mesh', position=reduceRightPosition, hexahedra=reduceRightHexa)
+        rightContact.createObject('MechanicalObject')
+        rightContact.createObject('TTriangleModel', group="4")
+        rightContact.createObject('TLineModel', group="4")
+        rightContact.createObject('TPointModel', group="4")
+        rightContact.createObject('BarycentricMapping')
+        
     def initGraph(self, node):
         self.node = node
         #get all tetras
@@ -10,6 +47,7 @@ class controller(Sofa.PythonScriptController):
         self.leftBox = []
         self.rightBox = []
         #and 2 boxes to watch
+
         leftBox = node.getObject('LEFTBOX').pointsInROI
         rightBox = node.getObject('RIGHTBOX').pointsInROI
 
