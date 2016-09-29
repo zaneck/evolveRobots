@@ -65,6 +65,8 @@ class Config(object):
     fitnessSofaSceneFolder = "sofaScene"
     fitnessRateScore = 1
     fitnessRateVoxel = 0.1
+    #how to deal with simulation data 
+    fitnessAgregator = "max"
     
     def save(filename):
         f = open(filename, "w+t")

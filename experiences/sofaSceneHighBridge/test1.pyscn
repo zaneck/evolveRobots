@@ -1,0 +1,66 @@
+import Sofa
+
+import topo
+from tools import *
+
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.findData("gravity").value = "0 -9810 0"
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+
+                ##########################################
+                # FEM Model                              
+                ##########################################
+                sizeX, sizeY, sizeZ = 50, 50, 5
+                x , y , z = 21, 21, 2
+
+                object = rootNode.createChild('object')
+                object.createObject('EulerImplicit', name='odesolver', firstOrder='0')
+                object.createObject('CGLinearSolver')
+                grid = object.createObject('RegularGridTopology', name= 'grid', n="{0} {1} {2}".format(x, y, z), max="{0} {1} {2}".format(sizeX, sizeY, sizeZ), min="0 0 0")
+                hexa = grid.findData('hexahedra').value
+
+                object.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                object.createObject('UniformMass', totalmass='0.02')
+                object.createObject('PartialFixedConstraint', fixedDirections='0 0 1', fixAll="true")
+                
+                object.createObject('BoxROI', name='ROI1', box='0 47.5 0 5 50 5', drawBoxes='true')
+                object.createObject('FixedConstraint', indices='@ROI1.indices')
+                
+                object.createObject('BoxROI', name='ROI2', box='45 47.5 0 50 50 5', drawBoxes='true')
+                object.createObject('FixedConstraint', indices='@ROI2.indices')
+                
+                object.createObject('BoxROI', name='FORCE1', box='12.5 47.5 0 15 50 5', drawBoxes='true')
+                object.createObject('ConstantForceField', force='0 -100 0', points='@FORCE1.indices')
+
+                object.createObject('BoxROI', name='FORCE2', box='22.5 47.5 0 27.5 50 5', drawBoxes='true')
+                object.createObject('ConstantForceField', force='0 -100 0', points='@FORCE2.indices')
+                
+                object.createObject('BoxROI', name='FORCE3', box='35 47.5 0 37.5 50 5', drawBoxes='true')
+                object.createObject('ConstantForceField', force='0 -100 0', points='@FORCE3.indices')
+                
+                ##########################################
+                # Subtopology for Force Field            
+                ##########################################
+                mask = matrixImageToMask(topo.topology, x-1, y-1)
+                hexaStr = tabToString(hexa, mask)
+
+                subTopo = object.createChild('subTopo')
+                subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaStr)
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+
+
+                ##########################################
+                # Controller                             
+                ##########################################
+                object.createObject('PythonScriptController', filename="controller.py", classname="controller")
+                
+                return rootNode
+

@@ -61,7 +61,14 @@ class TestIndie(unittest.TestCase):
         a.addRandomSquare()
         a.addRandomSquare()
         res = a.removeShapeAtRandom()
-        self.assertEqual(res, 1)   
+        self.assertEqual(res, 1)
+
+        a = Indi()
+        a.addRandomSquare()
+        a.addRandomSquare()
+        a.addRandomSquare()
+        res = a.removeShapeAtRandom()
+        self.assertEqual(res, 1)
         
 if __name__ == '__main__':
     unittest.main()

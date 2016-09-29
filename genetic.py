@@ -9,7 +9,6 @@
 from config import Config
 from indi import *
 import dump 
-from distancefct import sorensenDice
 
 class Population(object):
     def __init__(self):
@@ -65,7 +64,7 @@ class GeneticAlgo(object):
 #        self.nbSplit = 30
         
     def evolve(self, historyLog=False):
-        print("========================= generation {0} ================================".format(self.nbCycle))
+#        print("========================= generation {0} ================================".format(self.nbCycle))
         self.population.reducePopulation()
         newCandidates = []
         newBest = []

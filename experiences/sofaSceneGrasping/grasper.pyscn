@@ -1,0 +1,157 @@
+import Sofa
+import math
+import os
+
+from math import cos
+from math import sin
+from math import asin
+from math import sqrt
+
+path = os.path.dirname(os.path.abspath(__file__))+'/'
+
+
+def createScene(rootNode):
+    rootNode.createObject('RequiredPlugin', pluginName='SoftRobots');
+    #rootNode.createObject('RequiredPlugin', pluginName='BeamAdapter');
+    rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields ');
+            
+    rootNode.findData('dt').value= 0.03;
+    rootNode.findData('gravity').value= '0 0 -9.81';
+                
+    rootNode.createObject('FreeMotionAnimationLoop');
+    rootNode.createObject('GenericConstraintSolver', maxIt="1000", tolerance="1.0e-20", scaleTolerance="false");
+                
+    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
+    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
+    
+    rootNode.createObject('CollisionPipeline', verbose="0")
+    rootNode.createObject('BruteForceDetection', name="N2")
+    rootNode.createObject('RuleBasedContactManager', name="Response", response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
+    rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="0.01", contactDistance="0.003", angleCone="0.01")
+
+
+    ## Meca finger
+    finger = rootNode.createChild('finger')
+    finger.createObject('EulerImplicit', name='odesolver', firstOrder='0');
+    finger.createObject('PCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance="1e-15");
+    finger.createObject('SparseLDLSolver', name='preconditioner', useWarping='false');
+
+    load=finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger0.vtu');
+
+    topo=finger.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
+
+    finger.createObject('TetrahedronSetTopologyModifier');
+    finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d');
+    geom=finger.createObject('TetrahedronSetGeometryAlgorithms',  template='Vec3d',drawEdges='0');
+    
+    mo=finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', position='@loader.position');
+    finger.createObject('UniformMass', totalmass='1');
+    finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.45',  youngModulus='14000000000');
+    
+    finger.createObject('LinearSolverConstraintCorrection', solverName='preconditioner');
+    
+    ## Fixed points 
+    finger.createObject('BoxROI', name='boxROI', box="-0.10 -0.02 -0.05 0.10 0.02 0.05", drawBoxes='true');
+    finger.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12');
+    
+    ## Modele visuel
+    visualFinger = finger.createChild('visualFinger')
+
+    visualFinger.createObject('MeshSTLLoader', filename=path+'finger.stl', name='loaderSurf')
+    visualFinger.createObject('OglModel', name='mappedBodyVisual', src='@loaderSurf' ,color="1.0 1.0 0.0 0.0")
+    visualFinger.createObject('BarycentricMapping', name='BMVisual')
+
+
+    ## Modele collision
+    collisionFinger = finger.createChild('collisionFinger')
+    collisionFinger.createObject('Point')
+
+
+    
+
+    # controleur
+    finger.createObject('PythonScriptController', filename='controllergrasper.py', classname='controllergrasper')
+        
+    ## cable 0 
+    cable0 = finger.createChild('cable0')
+    cable0.createObject('MechanicalObject', name="cable0", position="0.05 0 0 "+
+                            "0.05 0.05 0 "+
+                            "-0.10 0.15 0 " );
+    cable0.createObject('CableConstraint', template='Vec3d', name='c0', printLog="1", indices='0 1 2', hasPullPoint= 'false')
+    cable0.createObject('BarycentricMapping', name='BM0')
+
+    ## cable 1 
+    cable1 = finger.createChild('cable1')
+    cable1.createObject('MechanicalObject', name="cable0", position="-0.05 0 0 "+
+                            "-0.05 0.05 0 "+
+                            "0.10 0.15 0 " );
+    cable1.createObject('CableConstraint', template='Vec3d', name='c1', printLog="1", indices='0 1 2', hasPullPoint= 'false')
+    cable1.createObject('BarycentricMapping', name='BM1')
+
+    ################################ Grasped Object ###################################
+    
+    # controleur
+    rootNode.createObject('PythonScriptController', filename='controllercube.py', classname='controllercube')
+
+    # mechanics
+    cube1 =rootNode.createChild('cube1')
+    cube1.createObject('EulerImplicit', name='odesolver')
+    cube1.createObject('SparseLDLSolver', name='solver', useWarping='false');
+    cube1.createObject('MechanicalObject', template="Rigid", scale="1", dx="0.05", dy="0.20", dz="0", rx="0" ,ry="0")
+    cube1.createObject('UniformMass', totalMass='0.025',showAxisSizeFactor='0.15'); 
+
+    cube1.createObject('RestShapeSpringsForceField', stiffness= '150000000000', angularStiffness='1000000000',name='fixation'); 
+    cube1.createObject('LinearSolverConstraintCorrection', solverName='solver');
+
+    # mechanics
+    cube2 =rootNode.createChild('cube2')
+    cube2.createObject('EulerImplicit', name='odesolver')
+    cube2.createObject('SparseLDLSolver', name='solver', useWarping='false');
+    cube2.createObject('MechanicalObject', template="Rigid", scale="1", dx="-0.05", dy="0.20", dz="0", rx="0" ,ry="0")
+    cube2.createObject('UniformMass', totalMass='0.025',showAxisSizeFactor='0.15'); 
+
+    cube2.createObject('RestShapeSpringsForceField', stiffness= '150000000000', angularStiffness='1000000000',name='fixation'); 
+    cube2.createObject('LinearSolverConstraintCorrection', solverName='solver');
+                
+    #collision
+    cubeCollis1 = cube1.createChild('cubeCollis1')
+    cubeCollis1.createObject('MeshObjLoader', name="loader", filename=path+"smCube27.obj", triangulate="true",  scale="0.005")
+    cubeCollis1.createObject('Mesh', src="@loader")
+    cubeCollis1.createObject('MechanicalObject')
+    cubeCollis1.createObject('Triangle')
+    cubeCollis1.createObject('Line')
+    cubeCollis1.createObject('Point')
+    cubeCollis1.createObject('RigidMapping')
+                
+    #visualization
+    # cubeVisu1 = cube1.createChild('cubeVisu1')
+    # cubeVisu1.createObject('OglModel', name="Visual", fileMesh=path+"smCube27.obj", color="0.0 0.1 0.5", scale="0.005")
+    # cubeVisu1.createObject('RigidMapping')
+
+    #collision
+    cubeCollis2 = cube2.createChild('cubeCollis2')
+    cubeCollis2.createObject('MeshObjLoader', name="loader", filename=path+"smCube27.obj", triangulate="true",  scale="0.005")
+    cubeCollis2.createObject('Mesh', src="@loader")
+    cubeCollis2.createObject('MechanicalObject')
+    cubeCollis2.createObject('Triangle')
+    cubeCollis2.createObject('Line')
+    cubeCollis2.createObject('Point')
+    cubeCollis2.createObject('RigidMapping')
+                
+    # #visualization
+    # cubeVisu2 = cube2.createChild('cubeVisu2')
+    # cubeVisu2.createObject('OglModel', name="Visual", fileMesh=path+"smCube27.obj", color="0.0 0.1 0.5", scale="0.005")
+    # cubeVisu2.createObject('RigidMapping')
+                
+
+
+    return rootNode
+
+
+
+
+
+                
+
+
+

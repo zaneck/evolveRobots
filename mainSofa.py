@@ -40,15 +40,16 @@ canvas = Canvas(dim=(1.0,1.0),res=(Config.generalX, Config.generalY))
 if Config.fitnessFunction == "fake":
         f = FitnessFake("fake", canvas)
 else:
-        f = FitnessSofa("sofa", canvas) 
+        f = FitnessSofa("sofa", canvas)
+        
 p = Population()
-historyLog = History() 
+historyLog = False#History() 
 
 
 #### Randomly creates an initial population composed of 'Config.evolveFirstGen' candidates. 
 firstIndi = []
 for alpha in range(Config.evolveFirstGen):
-    print("init {0}/{1}\r".format(alpha+1, Config.evolveFirstGen), end="")
+#    print("init {0}/{1}\r".format(alpha+1, Config.evolveFirstGen), end="")
     a = Indi()
     a.addRandomSquare()
     firstIndi.append(a)
@@ -67,20 +68,23 @@ if dump.activated():
 
 #### Create the algorithm and do the iterations 
 g = GeneticAlgo(f, p)
-print("======== START =======")
+#print("======== START =======")
 for alpha in range(Config.evolveNbCycle):
-    g.evolve(historyLog)
-print("")
+    g.evolve()#historyLog)
+#print("")
 
 
 #### Dump the results.
 best = f.bestOverAll
 
-print("======= RESULT =======")
+#print("======= RESULT =======")
 imgTest = f.toMatrice(best)
-printMatrix(imgTest)
+#printMatrix(imgTest)
 
 if dump.activated():
         dump.endExperiment()
         historyLog.saveToCSV("log/history/history.csv")
         
+
+f.writeBestResult("BEST")
+print(best.fitness)

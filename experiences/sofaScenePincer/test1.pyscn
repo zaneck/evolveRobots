@@ -1,0 +1,124 @@
+import Sofa
+
+import topo
+from tools import *
+
+
+def createScene(rootNode):
+		rootNode.dt = "0.005"
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.findData("gravity").value = "0 -9810 0"
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")	
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+                rootNode.createObject('GenericConstraintSolver', maxIterations='200')
+                rootNode.createObject('CollisionPipeline', verbose="0")
+                rootNode.createObject('BruteForceDetection', name="N2")
+                rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0")
+                rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="2", contactDistance="1")
+                
+                ##########################################
+                # Obstacle                               #
+                ##########################################
+                # obstacle = rootNode.createChild('obstacle')
+                # obstacle.createObject('EulerImplicit', firstOrder='1')
+                # obstacle.createObject('CGLinearSolver', iterations='100')
+                # obstacle.createObject('MechanicalObject', position='25  43  2.5')
+                # obstacle.createObject('Sphere', radius='3', group='2')
+                # obstacle.createObject('UncoupledConstraintCorrection')
+                # obstacle.createObject('FixedConstraint', indices=0)
+                
+                ##########################################
+                # FEM Model                              
+                ##########################################
+                sizeX, sizeY, sizeZ = 50, 50, 5
+                x , y , z = 21, 21, 2
+
+                object = rootNode.createChild('object')
+                object.createObject('EulerImplicit', name='odesolver', firstOrder='0')
+                #object.createObject('CGLinearSolver')
+
+                object.createObject('ShewchukPCGLinearSolver', iterations=15, preconditioners='preconditioner', use_precond='true', update_step='1', use_first_precond='false')
+                
+                grid = object.createObject('RegularGridTopology', name= 'grid', n="{0} {1} {2}".format(x, y, z), max="{0} {1} {2}".format(sizeX, sizeY, sizeZ), min="0 0 0")
+                hexa = grid.findData('hexahedra').value
+
+                object.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                object.createObject('UniformMass', totalmass='0.02')
+
+                nbPoint = x*y*z
+                
+                object.createObject('BoxROI', name='ROI1', box='0 0 0 5 2.5 5', drawBoxes='false')
+                object.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness="1e12")
+                
+                object.createObject('BoxROI', name='ROI2', box='45 0 0 50 2.5 5', drawBoxes='false')
+                object.createObject('RestShapeSpringsForceField', points='@ROI2.indices', stiffness="1e12")
+                
+                object.createObject('BoxROI', name='ROI3', box='22.5 0 0 27.5 2.5 5', drawBoxes='false')
+                object.createObject('ConstantForceField', force='0 -15 0', points='@ROI3.indices')
+
+                #object.createObject('BoxROI', name='LEFTBOX', box='0 47.5 0 5 50 5', drawBoxes='false')
+                #object.createObject('BoxROI', name='RIGHTBOX', box='45 47.5 0 50 50 5', drawBoxes='false')
+
+                #object.createObject('UncoupledConstraintCorrection')            
+
+		##########################################
+                # Subtopology for Force Field            
+                ##########################################
+                mask = matrixImageToMask(topo.topology, x-1, y-1)
+                hexaStr = tabToString(hexa, mask)
+
+                subTopo = object.createChild('subTopo')
+                subTopo.createObject('HexahedronSetTopologyContainer', name='HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaStr)
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='600')    
+                subTopo.createObject('PartialFixedConstraint', fixedDirections='0 0 1', indices=range(nbPoint)) #indices='@../ROI0.indices')
+	
+                object.createObject('SparseLDLSolver', name='preconditioner', useWarping='true')
+                object.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+
+                ##########################################
+                # Contact                                #
+                ##########################################
+                
+                object.createObject('BoxROI', name='LEFTBOX', box='0 40 0 5 50 5', drawBoxes='false')
+                object.createObject('BoxROI', name='RIGHTBOX', box='45 40 0 50 50 5', drawBoxes='false')
+                
+                # maskLeft = halfPart(topo.topology, x-1, y-1, "L")
+                # leftStr = tabToString(hexa, maskLeft)
+
+                # maskRight = halfPart(topo.topology, x-1, y-1, "R")
+                # rightStr = tabToString(hexa, maskRight)
+                
+                # leftContact = object.createChild('contact')
+
+                # leftContact.createObject('Mesh', position='@../grid.position', hexahedra=leftStr)
+                
+                # leftContact.createObject('MechanicalObject')
+                # leftContact.createObject('TTriangleModel', group="3")
+                # leftContact.createObject('TLineModel', group="3")
+                # leftContact.createObject('TPointModel', group="3")
+                # leftContact.createObject('BarycentricMapping')
+
+                # rightContact = object.createChild('contact')
+
+                
+                # rightContact.createObject('Mesh', position='@../grid.position', hexahedra=rightStr)
+
+                # rightContact.createObject('MechanicalObject')
+                # rightContact.createObject('TTriangleModel', group="2", bothSide="1")
+                # rightContact.createObject('TLineModel', group="2")
+                # rightContact.createObject('TPointModel', group="2")
+                # rightContact.createObject('BarycentricMapping')
+                
+                ##########################################
+                # Controller                             
+                ##########################################
+		object.createObject('PythonScriptController', filename="controller.py", classname="controller")
+
+                return rootNode
+
