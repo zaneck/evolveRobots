@@ -104,7 +104,7 @@ class TestFitnessFake(unittest.TestCase):
         candidate.addShape(repeater)      
         printMatrix( canvas.toMatrice(candidate, binaryBinning) )
         matriceToGrayImage(canvas.toMatrice(candidate,absBinning), "repeatTest.png")    
-        assertEqual(True, False)
+        self.assertEqual(True, False)
 
     def test_microstructure(self):
         print("Testing MicroStructure Shape Operator (FIXME: the behavior is not what I expect.")
@@ -117,7 +117,7 @@ class TestFitnessFake(unittest.TestCase):
         candidate.addShape(repeater)      
         printMatrix( canvas.toMatrice(candidate, binaryBinning) )
         matriceToGrayImage(canvas.toMatrice(candidate,noBinning), "microStructureTest.png", myDebugColor)    
-        assertEqual(True, False)
+        self.assertEqual(True, False)
 
        
     def test_inverse(self):
