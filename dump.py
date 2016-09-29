@@ -36,6 +36,7 @@ def saveHistories(theCandidates):
 def addGeneration(theGeneration, theFitnessFunction):
         global generationCount
         theHistoryIndexFileName = "../../"+theBasePath+"/history/index.html"  
+        theScoringFileName = "../../"+theBasePath+"/history/score.html"  
         generationPath = theBasePath+"/generation{0}".format(generationCount)                
         if not os.path.exists(generationPath): 
                 os.mkdir(generationPath)
@@ -58,12 +59,12 @@ def addGeneration(theGeneration, theFitnessFunction):
         <header>
         </header>
         <body>
-        <center><h1>Generation: {0}</h1> <a href='{2}'>[prev]</a><a href='{4}'>history</a><a href='{3}'>[next]</a></center>
+        <center><h1>Generation: {0}</h1> <a href='{2}'>[prev]</a>[<a href='{4}'>history</a>][<a href='{5}'>scoring</a>]<a href='{3}'>[next]</a></center>
         <hr>
         Number of candidates: {1} <br> 
         <hr>
         <table width='100%'><tr= width='100%'>
-        """.format(generationCount, len(theGeneration), prevGenerationPath, nextGenerationPath, theHistoryIndexFileName))
+        """.format(generationCount, len(theGeneration), prevGenerationPath, nextGenerationPath, theHistoryIndexFileName, theScoringFileName))
         num=0
         for candidate in theGeneration:
                 if num % 20 == 0 and num != 0:
