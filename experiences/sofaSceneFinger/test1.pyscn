@@ -1,0 +1,84 @@
+import Sofa
+
+import topo
+from tools import *
+
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+                rootNode.createObject('GenericConstraintSolver', tolerance="1e-5", maxIterations="100")
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+                rootNode.findData("gravity").value = "0 -9810 0"
+                
+                ##########################################
+                # FEM Model                              
+                ##########################################
+                sizeX, sizeY, sizeZ = 60, 60, 5
+                x , y , z = 21, 21, 2
+
+                object = rootNode.createChild('object')
+                object.createObject('EulerImplicit', name='odesolver', firstOrder='0')
+                object.createObject('SparseLDLSolver', name='preconditioner')
+                
+                grid = object.createObject('RegularGridTopology', name= 'grid', n="{0} {1} {2}".format(x, y, z), max="{0} {1} {2}".format(sizeX, sizeY, sizeZ), min="0 0 0")
+
+                hexa = grid.findData('hexahedra').value
+                
+                object.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                object.createObject('UniformMass', totalmass='0.5')
+
+                #object.createObject('PartialFixedConstraint', fixedDirections='0 0 1', fixAll="true")
+                                
+                object.createObject('BoxROI', name='GOAL', box='57 27 0 60 33 5', drawBoxes='true')
+                object.createObject('BoxROI', name='FIXE', box='0 0 0 3 60 5', drawBoxes='true')
+                object.createObject('FixedConstraint', indices='@FIXE.indices')
+                
+                ##########################################
+                # Subtopology for Force Field            
+                ##########################################
+                mask = matrixImageToMask(topo.topology, x-1, y-1)
+                hexaStr = tabToString(hexa, mask)
+
+                subTopo = object.createChild('subTopo')
+                subTopo.createObject('HexahedronSetTopologyContainer', position='@../grid.position', hexahedra=hexaStr)
+                subTopo.createObject('HexahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='50000')
+
+
+
+                object.createObject('LinearSolverConstraintCorrection')
+                ##########################################
+                # Cable                                  #
+                ##########################################
+                positionsIndices = createCable(topo.topology, 1, 10, sizeX, sizeY, x, y)
+
+                cable = object.createChild('cable')
+                cable.createObject('MechanicalObject', 
+                                   position=positionsIndices[0])
+                                                           
+                # Create a CableConstraint object with a name. 
+                # the indices are referring to the MechanicalObject's positions. 
+                # The last indice is where the pullPoint is connected.      
+                cable.createObject('CableConstraint', name="aCable", 
+                                   indices=positionsIndices[1],
+                                   pullPoint="-5.0 28.5 2.5")
+ 
+                # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
+                #between the cable's DoFs and the finger's ones so that movements of the cable's DoFs will be mapped
+                #to the finger and vice-versa;  
+                cable.createObject('BarycentricMapping')       
+
+                
+                ##########################################
+                # Controller                             
+                ##########################################
+                object.createObject('PythonScriptController', filename="controller.py", classname="controller")
+                
+                return rootNode
+

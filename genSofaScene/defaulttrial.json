@@ -1,0 +1,74 @@
+{
+  "SofaObject": {
+    "CanvasDef": {
+      "x": 50,
+      "y": 50,
+      "z": 5,
+      "divX": 20,
+      "divY": 20,
+      "divZ": 1
+    },
+    "PartialFixedConstraint": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "FixedConstraint": [
+      {
+        "tx": 2,
+        "ty": 1,
+        "tz": 1,
+        "bx": 0,
+        "by": 0,
+        "bz": 0
+      },
+      {
+        "tx": 20,
+        "ty": 1,
+        "tz": 1,
+        "bx": 18,
+        "by": 0,
+        "bz": 0
+      }
+    ],
+    "ConstantForceField": [
+      {
+        "tx": 11,
+        "ty": 20,
+        "tz": 0,
+        "bx": 10,
+        "by": 19,
+        "bz": 1,
+        "dirX": 0,
+        "dirY": -100,
+        "dirZ": 0
+      }
+    ]
+  },
+  "Controller": {
+    "SimpleResult": {
+      "distanceName": "D1"
+    },
+    "DistanceBetweenTwoBox": [
+      {
+        "distanceName": "D1",
+        "boxTwo": {
+          "tx": 2,
+          "ty": 1,
+          "tz": 1,
+          "bx": 0,
+          "by": 0,
+          "bz": 0
+        },
+        "boxOne": {
+          "tx": 2,
+          "ty": 1,
+          "tz": 1,
+          "bx": 0,
+          "by": 0,
+          "bz": 0
+        }
+      }
+    ]
+  }
+}

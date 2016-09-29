@@ -9,7 +9,6 @@
 from config import Config
 from indi import *
 import dump 
-from distancefct import sorensenDice
 
 class Population(object):
     def __init__(self):
@@ -34,7 +33,16 @@ class Population(object):
         self.members = []
         self.numberOfIndi = 0
 
+    def tournament(self, nbCandidate=4):
+        s = random.choice(self.members) 
 
+        for _ in range(nbCandidate):
+            sCandidate = random.choice(self.members)
+            if s.fitness > sCandidate.fitness:
+                s = sCandidate
+            
+        return s
+        
 class GeneticAlgo(object):
     def __init__(self, fitnessFun, population):
         self.population = population
@@ -52,9 +60,11 @@ class GeneticAlgo(object):
         self.nbAdd = int(self.nbAugmentation * self.addRate) 
         self.nbCross = int(self.nbAugmentation * self.crossRate) 
         self.nbClean = int(self.nbAugmentation * self.cleanRate) 
+
+#        self.nbSplit = 30
         
     def evolve(self, historyLog=False):
-        print("========================= generation {0} ================================".format(self.nbCycle))
+#        print("========================= generation {0} ================================".format(self.nbCycle))
         self.population.reducePopulation()
         newCandidates = []
         newBest = []
@@ -63,56 +73,46 @@ class GeneticAlgo(object):
         for i in range(self.best):
             newBest.append(self.population.members[i])
         
-        for alpha in range(self.nbAdd):
-            # Among 4 random choice select the one with the smallest fitness score and select it 
-            # as a parent for candidate that will be generated.
-            s1 = random.choice(self.population.members)
-            s2 = random.choice(self.population.members)
-            s3 = random.choice(self.population.members)
-            s4 = random.choice(self.population.members)
-
-            if s1.fitness < s2.fitness:
-                best1 = s1
-            else:
-                best1 = s2
-
-            if s3.fitness < s4.fitness:
-                best2 = s3
-            else:
-                best2 = s4
-
-            if best1.fitness < best2.fitness:
-                best = best1
-            else:
-                best = best2
-
+        for _ in range(self.nbAdd):
+            best = self.population.tournament()
             child = best.copy()
             child.addRandomShape()
             newCandidates.append(child)
             if historyLog:
                 events[child] = [child, ["A", best, None], self.nbCycle, -1]
         
-        for alpha in range(self.nbClean):
-            # todo(valentin): pourquoi tu ne prend pas 4 éléments comme pour le add ou le cross ?
-            s1 = random.choice(self.population.members)
+        for _ in range(self.nbClean):
+            best = self.population.tournament()
             child = best.copy()
             res = child.removeShapeAtRandom()
             if res == 1:
-                newCandidates.append(child)
+                newCandidates.append(child)           
+
+                if historyLog:
+                    events[child] = [child, ["D", best, None], self.nbCycle, -1]
+                    
+        for _ in range(self.nbCross):
+            best1 = self.population.tournament()
+            best2 = self.population.tournament()
             
-            if historyLog:
-                events[child] = [child, ["D", best, None], self.nbCycle, -1]
-            
-        for alpha in range(self.nbCross):
-            samples = random.sample(self.population.members, 2)
-            
-            child1, child2 = samples[0].crossOver(samples[1])
+            child1, child2 = best1.crossOver(best2)
             newCandidates.append(child1)
             newCandidates.append(child2)
+
+            if historyLog:
+                events[child1] = [child1, ["X", best1, best2], self.nbCycle, -1]
+                events[child2] = [child2, ["X", best1, best2], self.nbCycle, -1]
             
-            events[child1] = [child1, ["X", best1, best2], self.nbCycle, -1]
-            events[child2] = [child2, ["X", best1, best2], self.nbCycle, -1]
+
+        # for _ in range(self.nbSplit):
+        #     best = self.population.tournament()
+        #     child = best.copy()
+        #     res = child.splitSquare()
             
+        #     if res == 1:
+        #         newCandidates.append(child)           
+        #         if historyLog:
+        #             historyLog.addEvent(child, ["S", best, None], self.nbCycle)    
 
         self.population.cleanPop()
 
@@ -124,7 +124,6 @@ class GeneticAlgo(object):
                         evt[3] = c.fitness
                         historyLog.addEvent(evt[0], evt[1], evt[2], 1.0/evt[3])    
                         
-
         for i in newCandidates:
             self.population.addIndi(i)
 

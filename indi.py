@@ -68,6 +68,7 @@ class Indi(object):
         halfW = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         halfH = random.uniform(Config.indiSquareMinSize, Config.indiSquareMaxSize)
         self.addShape(Rectangle(centX,centY,halfW,halfH))
+
         
     def removeShapeAtRandom(self):
         if len(self.rootunion) >=2:
@@ -76,7 +77,30 @@ class Indi(object):
             return 1
         else:
             return 0
-            
+
+    # #find the first splitable square, remove from the list
+    # #and add 4 new square at the end of the drawing list
+    # def splitSquare(self):
+    #     cpt=0
+
+    #     while cpt < len(self.draw) and self.draw[cpt][2] < 1 :
+    #         cpt += 1
+
+    #     if cpt == len(self.draw):
+    #         return 0
+
+    #     s = self.draw[cpt]
+    #     self.draw.remove(s)
+
+    #     rad = math.ceil(s[2] / 2)
+        
+    #     self.draw.append((s[0] - rad, s[1] - rad, rad))
+    #     self.draw.append((s[0] - rad, s[1] + rad, rad))
+    #     self.draw.append((s[0] + rad, s[1] - rad, rad))
+    #     self.draw.append((s[0] + rad, s[1] + rad, rad))
+
+    #     return 1
+        
     def crossOver(self, i):
         res1 = Indi()
         res2 = Indi()
