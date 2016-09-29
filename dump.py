@@ -13,7 +13,7 @@ from imgTools import matriceToImage
 from datetime import datetime
 
 def activated():
-        return True
+        return False#True
 
 theBasePath = None
 theIndexFileName = None        

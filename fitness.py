@@ -38,10 +38,10 @@ class Fitness(object):
             with self.bestOverAllLock:
                 if self.bestOverAll == None:
                     self.bestOverAll = item
-                    print("NONE record {0}".format(self.bestOverAll.fitness))
+#                    print("NONE record {0}".format(self.bestOverAll.fitness))
                     
                 if self.bestOverAll.fitness > item.fitness:
-                    print("New record {0}/{1}".format(item.fitness, self.bestOverAll.fitness))
+#                    print("New record {0}/{1}".format(item.fitness, self.bestOverAll.fitness))
                     self.bestOverAll = item
                     self.bestNumber += 1
 

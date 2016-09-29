@@ -64,7 +64,7 @@ class GeneticAlgo(object):
 #        self.nbSplit = 30
         
     def evolve(self, historyLog=False):
-        print("========================= generation {0} ================================".format(self.nbCycle))
+#        print("========================= generation {0} ================================".format(self.nbCycle))
         self.population.reducePopulation()
         newCandidates = []
         newBest = []

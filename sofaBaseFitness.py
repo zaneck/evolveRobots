@@ -9,6 +9,7 @@
 import threading
 import os
 import hashlib
+import json
 
 from subprocess import Popen, PIPE, call
 
@@ -80,7 +81,7 @@ class FitnessSofa(Fitness):
                 ##############
                 self.cacheLock = threading.Lock()
                 self.cache = {}
-                
+
                 
         def toMatrice(self, candidate):
                 return self.canvas.toMatrice(candidate, binarybin)
@@ -176,11 +177,11 @@ class FitnessSofa(Fitness):
                                 fitScore = self.cache[key]
         
                 if fitScore != None:
-                        #     for i in range(len(imgTest)):
-                        #             for j in range(len(imgTest[0])):
-                        #                     if imgTest[i][j] != fitScore[1][i][j]:
-                        #                             print("ERROR")
-                        #                            raise NotImplementedError
+                        for i in range(len(imgTest)):
+                                for j in range(len(imgTest[0])):
+                                        if imgTest[i][j] != fitScore[1][i][j]:
+                                                print("Collision \n {0} \n {1}".format(fitScore[1], imgTest))
+                                                raise NotImplementedError
                         return fitScore[0]
             
                 # In order to score the candidate we need to benchmark it using a sofa simulation
