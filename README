@@ -14,10 +14,10 @@ You also need to install sofa and the softRobot plugin following these docs:
         https://project.inria.fr/softrobot/
 
 To run the example simulation:
-```
-cd experiences
-./../mainSofa.py --config arch.json
-```
+
+
+    $ cd experiences
+    $ ./../mainSofa.py --config arch.json
 
 ========================================================================
 To benchmark the code you can run gprof.sh (you need to install graphiz)
