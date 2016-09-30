@@ -2,7 +2,7 @@
 EvolveRobots is tool that generates soft robots using genetic algorithms
 
 Authors: 
-	Valentin Owczarek
+	Valentin Owczarek [val.owczarek@gmail.com]
 	damien.marchal@univ-lille1.fr
 ========================================================================
 To run the application you need to have the following libraries...
@@ -13,8 +13,12 @@ To run the application you need to have the following libraries...
 You also need to install sofa and the softRobot plugin following these docs:
         https://project.inria.fr/softrobot/
 
-evolveRobots is composed of one application that you can run by:
-        ./python3 main.py
+To run the example simulation:
+```
+cd experiences
+./../mainSofa.py --config arch.json
+```
+
 ========================================================================
 To benchmark the code you can run gprof.sh (you need to install graphiz)
 
